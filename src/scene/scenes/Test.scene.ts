@@ -7,7 +7,7 @@ export function createTestScreen() {
     scene.background = new THREE.Color(0x222222);
 
     const camera = new THREE.PerspectiveCamera(
-        60, // wider FOV looks better in 2.5D
+        130, // wider FOV looks better in 2.5D
         window.innerWidth / window.innerHeight,
         0.1,
         1000
