@@ -1,8 +1,8 @@
 import * as THREE from 'three';
 import {GLTFLoader} from 'three/addons/loaders/GLTFLoader.js';
 import {FBXLoader} from 'three/addons/loaders/FBXLoader.js';
-import modelUrl from '@/assets/models/BuyButton.glb';
-import dinoUrl from '@/assets/models/dino.fbx';
+import modelUrl from './assets/models/BuyButton.glb';
+import dinoUrl from './assets/models/dino.fbx';
 
 const canvas = document.getElementById('webgl') as HTMLCanvasElement;
 const renderer = new THREE.WebGLRenderer({canvas, antialias: true});
