@@ -4,15 +4,11 @@ import {updateRendererSize} from "./helpers/layout.ts";
 import {initScene} from "./helpers/initScene.ts";
 
 const {canvas, renderer, scene} = initScene();
-import { loadGraphModel } from "./graph.ts"
+import { loadGraphModel, updateGraphData } from "./graph.ts"
 
-const camera = new THREE.PerspectiveCamera(
-    75,
-    window.innerWidth / window.innerHeight,
-    0.1,
-    1000
-);
-camera.position.set(0, 1.5, 5);
+const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+camera.position.set(0, 5, 0);
+camera.lookAt(new THREE.Vector3(0, 0, 0));
 
 const ambientLight = new THREE.AmbientLight(0xffffff, 0.4); // soft white light
 scene.add(ambientLight);
@@ -33,6 +29,14 @@ async function loadModels() {
 loadModels();
 updateRendererSize(renderer, camera, canvas);
 
+let values: number[] = [2, 3, 3, 3, 8, 12, 10, 11, 10, 12];
+
+// Update every second with new random value
+setInterval(() => {
+    const newVal = Math.floor(Math.random() * 15);
+    values.push(newVal);
+    updateGraphData(values);
+}, 1000);
 
 // Animate
 function animate() {
