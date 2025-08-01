@@ -3,6 +3,8 @@ import * as THREE from 'three';
 import {fitToPortrait} from '../../helpers/layout.ts';
 import {buyButtonModelUrl, dinoModelUrl, loadModel, loadModelInteractive} from '../../models.ts';
 import {getRenderer} from "../initRenderer.ts";
+import {loadGraphModel, updateGraphData} from "../../graph.ts";
+
 
 export function createGameScreen() {
     const scene = new THREE.Scene();
@@ -42,10 +44,18 @@ export function createGameScreen() {
         }, 5000)
     });
 
+    loadGraphModel(scene);
+
+    let values: number[] = [2, 3, 3, 3, 8, 12, 10, 11, 10, 12];
+
     function update(delta: number) {
         if (buyButtonModel) {
             buyButtonModel.rotation.y += delta;
         }
+
+        const newVal = Math.floor(Math.random() * 15);
+        values.push(newVal);
+        updateGraphData(values);
     }
 
     return {scene, camera, update};
