@@ -62,7 +62,7 @@ export function createGameScreen() {
         // updateGraphData(values);
     }
 
-    addText("Cool", {}, scene).then(t => {
+    addText("Cool", scene).then(t => {
     });
 
 

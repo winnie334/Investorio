@@ -3,13 +3,14 @@ import {getScene, loadScene} from "./scene/sceneManager.ts";
 import {loadDefaultFont} from "./models.ts";
 
 let lastTime = performance.now();
+const path = window.location.pathname; // e.g., "/game/menu"
+const sceneToLoad = path.split('/').filter(Boolean).pop() ?? 'title';
 
 
 async function loadAssets() {
-
     await loadDefaultFont();
     initRenderer();
-    loadScene('title');
+    loadScene(sceneToLoad);
 }
 
 loadAssets().then(animate)

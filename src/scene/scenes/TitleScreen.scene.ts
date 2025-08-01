@@ -3,7 +3,6 @@ import * as THREE from 'three';
 import {loadScene} from '../sceneManager.ts';
 import {fitToPortrait} from '../../helpers/layout.ts';
 import {getRenderer} from '../initRenderer.ts';
-import {addText} from "../../models.ts";
 
 export function createTitleScreen() {
     const scene = new THREE.Scene();
@@ -24,7 +23,7 @@ export function createTitleScreen() {
     plane.position.z = -5;
     scene.add(plane);
 
-
+    document.getElementById('title-screen')!.style.display = 'flex';
     const playBtn = document.getElementById('play-btn');
     if (playBtn) {
         playBtn.onclick = () => {
@@ -32,11 +31,6 @@ export function createTitleScreen() {
             loadScene('game');
         };
     }
-
-    addText("Cool", {}, scene).then(t => {
-        if (!t) return;
-        t.position.y = 1;
-    });
 
 
     return {scene, camera};

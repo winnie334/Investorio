@@ -24,6 +24,11 @@ export function loadScene(key: SceneKey) {
     currentScene = scene;
     currentCamera = camera;
     currentUpdate = update;
+
+    const newPath = `/${key}`;
+    if (window.location.pathname !== newPath) {
+        window.history.pushState({}, '', newPath);
+    }
 }
 
 export function getScene() {

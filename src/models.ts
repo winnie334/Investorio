@@ -118,8 +118,9 @@ const defaultTextGeometryParams: Partial<TextGeometryParameters> = {
 
 export async function addText(
     title: string,
+    scene?: Scene,
+    color = 0x00ff0,
     userParams: Partial<TextGeometryParameters> = {},
-    scene?: Scene
 ) {
     if (!defaultFont) {
         console.error('Default font not loaded');
@@ -131,7 +132,7 @@ export async function addText(
         ...userParams,
     });
 
-    const material = new THREE.MeshBasicMaterial({color: 0x00ff0});
+    const material = new THREE.MeshBasicMaterial({color});
     const text = new THREE.Mesh(textGeometry, material);
 
 
