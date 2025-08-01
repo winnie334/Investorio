@@ -6,17 +6,15 @@ import {getRenderer} from "../initRenderer.ts";
 import {loadGraphModel, updateGraphData} from "../../graph.ts";
 
 
+const newValueFrequency = 1 // 1 val per sec
+
 export function createGameScreen() {
     const scene = new THREE.Scene();
     scene.background = new THREE.Color(0x222222);
 
-    const camera = new THREE.PerspectiveCamera(
-        75,
-        window.innerWidth / window.innerHeight,
-        0.1,
-        1000
-    );
-    camera.position.set(0, 1.5, 5);
+    const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+    camera.position.set(0, 5, 0);
+    camera.lookAt(new THREE.Vector3(0, 0, 0));
 
     const renderer = getRenderer();
     const canvas = renderer.domElement;
@@ -30,7 +28,7 @@ export function createGameScreen() {
     dirLight.position.set(5, 10, 7.5);
     scene.add(dirLight);
 
-    loadModel(dinoModelUrl, scene);
+    // loadModel(dinoModelUrl, scene);
 
     let buyButtonModel: THREE.Group | undefined;
     loadModelInteractive(buyButtonModelUrl, scene, camera, canvas, () => {
@@ -44,18 +42,22 @@ export function createGameScreen() {
         }, 5000)
     });
 
-    loadGraphModel(scene);
+    loadGraphModel(scene, 0, 0);
 
-    let values: number[] = [2, 3, 3, 3, 8, 12, 10, 11, 10, 12];
+    let values: number[] = [2];
+    let progressToNextValue = 0
 
     function update(delta: number) {
-        if (buyButtonModel) {
-            buyButtonModel.rotation.y += delta;
+        if (buyButtonModel) buyButtonModel.scale.set(0, 0, 0)
+
+        progressToNextValue += delta;
+        while (progressToNextValue > newValueFrequency) {
+            progressToNextValue -= newValueFrequency;
+            const newVal = values[values.length-1] + (4 * Math.random() - 1)
+            values.push(newVal);
+            updateGraphData(values);
         }
 
-        const newVal = Math.floor(Math.random() * 15);
-        values.push(newVal);
-        updateGraphData(values);
     }
 
     return {scene, camera, update};
