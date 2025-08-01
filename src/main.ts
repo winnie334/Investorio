@@ -1,8 +1,6 @@
 import * as THREE from 'three';
-import {GLTFLoader} from 'three/addons/loaders/GLTFLoader.js';
-import {FBXLoader} from 'three/addons/loaders/FBXLoader.js';
-import modelUrl from './assets/models/BuyButton.glb';
-import dinoUrl from './assets/models/dino.fbx';
+import {buyButtonModelUrl, dinoModelUrl, loadModel, loadModelInteractive} from "./models.ts";
+
 
 const canvas = document.getElementById('webgl') as HTMLCanvasElement;
 const renderer = new THREE.WebGLRenderer({canvas, antialias: true});
@@ -26,34 +24,15 @@ const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
 directionalLight.position.set(5, 10, 7.5);
 scene.add(directionalLight);
 
-const gltfLoader = new GLTFLoader();
-gltfLoader.load(
-    modelUrl,
-    (gltf) => {
-        const model = gltf.scene;
-        model.scale.set(1, 1, 1);
-        model.position.set(-1.5, 0, 0);
-        scene.add(model);
-    },
-    undefined,
-    (error) => {
-        console.error('Error loading GLB model:', error);
-    }
-);
+async function loadModels() {
+    const dino = await loadModel(dinoModelUrl, scene);
+    const buyButton = await loadModelInteractive(buyButtonModelUrl, scene, camera, canvas, () => {
+        console.log('Clicked');
+    });
+}
 
-const fbxLoader = new FBXLoader();
-fbxLoader.load(
-    dinoUrl,
-    (dino) => {
-        dino.scale.set(1, 1, 1); // FBX models are often huge
-        dino.position.set(1.5, 0, 0);
-        scene.add(dino);
-    },
-    undefined,
-    (error) => {
-        console.error('Error loading FBX model:', error);
-    }
-);
+loadModels();
+
 
 // Animate
 function animate() {
