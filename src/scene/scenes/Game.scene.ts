@@ -50,6 +50,12 @@ export function createGameScreen() {
     function update(delta: number) {
         if (buyButtonModel) buyButtonModel.scale.set(0, 0, 0)
 
+        if (text) {
+            text.rotateZ(delta * 0.7)
+            text.rotateX(delta * 0.6)
+            text.rotateY(delta * 0.5)
+        }
+
         progressToNextValue += delta;
         while (progressToNextValue > newValueFrequency) {
             progressToNextValue -= newValueFrequency;
@@ -62,7 +68,9 @@ export function createGameScreen() {
         // updateGraphData(values);
     }
 
+    let text: THREE.Mesh | undefined;
     addText("Cool", scene).then(t => {
+        text = t;
     });
 
 

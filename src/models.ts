@@ -7,6 +7,8 @@ import * as THREE from 'three';
 import {TextGeometry, type TextGeometryParameters} from 'three/examples/jsm/geometries/TextGeometry.js';
 import {FontLoader, Font} from 'three/addons/loaders/FontLoader.js';
 
+const defaultFontUrl = new URL('./assets/fonts/undoredo.json', import.meta.url).href;
+
 const fontLoader = new FontLoader();
 
 type InteractionCallback = (model: Group, event?: Event) => void;
@@ -99,6 +101,7 @@ export async function loadModelInteractive(
 
 export async function loadFont(fontUrl: string) {
     try {
+        console.log('Loading font', fontUrl);
         return await fontLoader.loadAsync(fontUrl);
     } catch (error) {
         console.error(`Error loading font ${fontUrl}:`, error);
@@ -109,11 +112,12 @@ let defaultFont: Font | undefined = undefined;
 
 export async function loadDefaultFont() {
     // @ts-ignore
-    defaultFont = await loadFont('undoredo.json')
+    defaultFont = await loadFont(defaultFontUrl)
 }
 
 const defaultTextGeometryParams: Partial<TextGeometryParameters> = {
-    size: 0.01,
+    size: 1,
+    depth: 0.1
 };
 
 export async function addText(
@@ -126,6 +130,7 @@ export async function addText(
         console.error('Default font not loaded');
         return undefined;
     }
+
     const textGeometry = new TextGeometry(title, {
         font: defaultFont,
         ...defaultTextGeometryParams,
