@@ -4,7 +4,6 @@ import * as THREE from "three";
 
 export function addFreeCamControls(camera: Camera, renderer: THREE.WebGLRenderer) {
     const controls = new OrbitControls(camera, renderer.domElement);
-    console.log("si")
 
     controls.enableDamping = true;     // Smooth movement
     controls.dampingFactor = 0.05;

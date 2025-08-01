@@ -1,9 +1,10 @@
 // scenes/Game.scene.ts
 import * as THREE from 'three';
 import {fitToPortrait} from '../../helpers/layout.ts';
-import {addText, buyButtonModelUrl, dinoModelUrl, loadModel, loadModelInteractive} from '../../models.ts';
+import {addText, buyButtonModelUrl} from '../../models.ts';
 import {getRenderer} from "../initRenderer.ts";
 import {loadGraphModel, updateGraphData} from "../../graph.ts";
+import {createGameLogic} from "../../gameLogic.ts";
 
 
 const newValueFrequency = 0.15
@@ -18,6 +19,9 @@ export function createGameScreen() {
 
     const renderer = getRenderer();
     const canvas = renderer.domElement;
+
+    const gameLogic = createGameLogic()
+    gameLogic.start()
 
     fitToPortrait(renderer, camera, canvas);
 
@@ -63,6 +67,7 @@ export function createGameScreen() {
             values.push(newVal);
             updateGraphData(values);
         }
+        gameLogic.update(delta)
     }
 
     let text: THREE.Mesh | undefined;

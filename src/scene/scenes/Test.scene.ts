@@ -36,7 +36,7 @@ export function createTestScreen() {
 
     // Walls
     const wallMaterial = new THREE.MeshStandardMaterial({color: 0x444444});
-    const wallHeight = 7;
+    const wallHeight = 50;
     const wallThickness = 1;
 
     const backWall = new THREE.Mesh(new THREE.BoxGeometry(30, wallHeight, wallThickness), wallMaterial);
