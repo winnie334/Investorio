@@ -60,9 +60,25 @@ export function createGameLogic() {
         stockToPriceMap = startStockToPrice;
     }
 
+    function getBalance() {
+        return balance;
+    }
+
+    function getTrades() {
+        return trades;
+    }
+
+    function getPortfolio() {
+        return portfolio;
+    }
+
 
     function getPrices(stock: Stock) {
         return stockToPriceMap[stock];
+    }
+
+    function getAge(){
+       return currentAge
     }
 
     function getMarketIndex() {
@@ -107,6 +123,10 @@ export function createGameLogic() {
         return true;
     }
 
+    function getSelectedStock() {
+        return selectedStock;
+    }
+
     function sellStock(stock: Stock, amount: number) {
         const owned = portfolio[stock];
         if (owned < amount) return false;
@@ -134,10 +154,10 @@ export function createGameLogic() {
         }
     }
 
-    function update(delta: number) {
-        if (isGameFinished) return;
+    function update(delta: number): boolean {
+        if (isGameFinished) return false;
         timeLeftBeforeLogicUpdate -= delta;
-        if (timeLeftBeforeLogicUpdate > 0) return;
+        if (timeLeftBeforeLogicUpdate > 0) return false;
         timeLeftBeforeLogicUpdate = UPDATE_LOGIC_TIME_INTERVAL_IN_SECONDS;
         time += UPDATE_LOGIC_TIME_INTERVAL_IN_SECONDS;
         if (time > GAME_DURATION_IN_SECONDS) isGameFinished = true;
@@ -145,13 +165,14 @@ export function createGameLogic() {
         updateGraphData(getSelectedStockHistoricData());
 
         updateStocks();
+        return true;
     }
 
 
     return {
-        balance,
-        trades,
-        portfolio,
+        getBalance,
+        getTrades,
+        getPortfolio,
         getPrices,
         buyStock,
         sellStock,
@@ -159,11 +180,11 @@ export function createGameLogic() {
         start,
         isFinished: () => isGameFinished,
         getMarketIndex,
-        currentAge,
+        getAge,
         getNetWorth,
-        selectedStock,
         selectStock,
         getSelectedStockHistoricData,
-        addToBalance
+        addToBalance,
+        getSelectedStock
     };
 }

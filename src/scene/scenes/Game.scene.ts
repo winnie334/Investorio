@@ -3,8 +3,9 @@ import {getRenderer} from '../initRenderer.ts';
 import {fitToPortrait} from '../../helpers/layout.ts';
 import {createGameLogic, Stock} from "../../gameLogic.ts";
 import {loadGraphModel} from "../../graph.ts";
-import {addInteractiveText, addText} from "../../models.ts";
+import {addInteractiveText, addText, buyButtonModelUrl, loadModelInteractive, updateTextValue} from "../../models.ts";
 import {Euler, Vector3} from "three";
+
 
 function createRoom(scene: THREE.Scene, camera: THREE.Camera, canvas: any, gameLogic: any) {
     // Ambient light
@@ -75,8 +76,8 @@ function createRoom(scene: THREE.Scene, camera: THREE.Camera, canvas: any, gameL
 
     loadGraphModel(scene, -4, 6, -14, new THREE.Euler(Math.PI / 2, 0, 0), 4)
 
-    const accountBalance = addText("1000$", 0x00ff00, {}, new Vector3(-10, 6, -14), new Euler(0, 0, 0))
-    scene.add(accountBalance)
+    const balance = addText("1000$", 0x00ff00, {}, new Vector3(-10, 6, -14), new Euler(0, 0, 0))
+    scene.add(balance)
 
     const xStart = -10;
     const xOffset = 4; // spacing between each stock label
@@ -100,6 +101,11 @@ function createRoom(scene: THREE.Scene, camera: THREE.Camera, canvas: any, gameL
         );
     });
 
+    loadModelInteractive(buyButtonModelUrl, scene, camera, canvas, () => {
+        gameLogic.buyStock(Stock.AMZN, 200)
+    }, new Vector3(1, 1, 1), new Vector3(0, 1, -10))
+
+    return balance
 }
 
 export function createGameScreen() {
@@ -125,12 +131,15 @@ export function createGameScreen() {
     fitToPortrait(renderer, camera, canvas);
 
     const logic = createGameLogic()
-    createRoom(scene, camera, canvas, logic)
+    const balance = createRoom(scene, camera, canvas, logic)
 
     logic.start()
 
     function update(deltaT: number) {
-        logic.update(deltaT)
+        const updated = logic.update(deltaT)
+        if (!updated) return
+
+        if (balance) updateTextValue(balance, logic.getBalance().toString())
     }
 
 

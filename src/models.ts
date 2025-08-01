@@ -1,7 +1,6 @@
 import {GLTFLoader} from 'three/addons/loaders/GLTFLoader.js';
 import {FBXLoader} from 'three/addons/loaders/FBXLoader.js';
 import buyButtonUrl from "./assets/models/BuyButton.glb";
-import dinoUrl from "./assets/models/dino.fbx";
 import * as THREE from "three";
 import {Camera, Group, Raycaster, Scene, Vector2, Vector3} from "three";
 import {TextGeometry, type TextGeometryParameters} from 'three/examples/jsm/geometries/TextGeometry.js';
@@ -13,7 +12,6 @@ const fontLoader = new FontLoader();
 
 type InteractionCallback = (model: Group, event?: Event) => void;
 
-export const dinoModelUrl = dinoUrl;
 export const buyButtonModelUrl = buyButtonUrl;
 
 const gltfLoader = new GLTFLoader();
