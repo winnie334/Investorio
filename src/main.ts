@@ -1,15 +1,9 @@
 import * as THREE from 'three';
 import {buyButtonModelUrl, dinoModelUrl, loadModel, loadModelInteractive} from "./models.ts";
 import {updateRendererSize} from "./helpers/layout.ts";
+import {initScene} from "./helpers/initScene.ts";
 
-
-const canvas = document.getElementById('webgl') as HTMLCanvasElement;
-const renderer = new THREE.WebGLRenderer({canvas, antialias: true});
-renderer.setSize(window.innerWidth, window.innerHeight);
-
-// Scene and camera
-const scene = new THREE.Scene();
-scene.background = new THREE.Color(0x222222); // Optional background color
+const {canvas, renderer, scene} = initScene();
 const camera = new THREE.PerspectiveCamera(
     75,
     window.innerWidth / window.innerHeight,
