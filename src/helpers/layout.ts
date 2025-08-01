@@ -1,10 +1,10 @@
 import * as THREE from 'three';
 
 
-export function updateRendererSize(renderer: THREE.WebGLRenderer,
-                                   camera: THREE.PerspectiveCamera,
-                                   canvas: HTMLCanvasElement,
-                                   aspectRatio = 9 / 16) {
+export function fitToPortrait(renderer: THREE.WebGLRenderer,
+                              camera: THREE.PerspectiveCamera,
+                              canvas: HTMLCanvasElement,
+                              aspectRatio = 9 / 16) {
     const desiredAspect = aspectRatio;
     const windowAspect = window.innerWidth / window.innerHeight;
 

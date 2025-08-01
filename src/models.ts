@@ -52,11 +52,11 @@ export async function loadModelInteractive(
     onClick?: InteractionCallback,
     scale: Vector3 = defaultScale,
     position: Vector3 = defaultPosition,
-) {
+): Promise<[Group, () => void] | undefined> {
     const model = await loadModel(url, scene, scale, position);
-    if (!model) return;
-    
-    if (!onClick) return;
+    if (!model) return
+
+    if (!onClick) return
 
     const raycaster = new Raycaster();
     const mouse = new Vector2();
@@ -86,7 +86,7 @@ export async function loadModelInteractive(
 
     canvas.addEventListener('click', handleClick);
 
-    return () => {
+    return [model, () => {
         canvas.removeEventListener('click', handleClick);
-    };
+    }];
 }
