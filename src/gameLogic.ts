@@ -33,7 +33,7 @@ const startStockToPrice: Record<Stock, number[]> = {
 const STARTING_BALANCE = 1000
 const UPDATE_LOGIC_TIME_INTERVAL_IN_SECONDS = 1
 const GAME_DURATION_IN_SECONDS = 3600;
-const FINAL_AGE = 80;
+const FINAL_AGE = 60;
 const STARTING_AGE = 20;
 
 
@@ -49,7 +49,7 @@ export function createGameLogic() {
     let stockToPriceMap: Record<Stock, number[]> = {...startStockToPrice}
 
     let timeLeftBeforeLogicUpdate = UPDATE_LOGIC_TIME_INTERVAL_IN_SECONDS;
-    let selectedStock: Stock | undefined;
+    let selectedStock: Stock = Stock.AAPL;
 
     function start() {
         balance = STARTING_BALANCE;
@@ -100,8 +100,7 @@ export function createGameLogic() {
     function selectStock(stock: Stock) {
         selectedStock = stock;
         console.log('Selected stock', stock);
-        updateGraphData(getSelectedStockHistoricData());
-
+        updateGraphData(stock, time);
     }
 
     function getSelectedStockHistoricData() {
@@ -162,7 +161,8 @@ export function createGameLogic() {
         time += UPDATE_LOGIC_TIME_INTERVAL_IN_SECONDS;
         if (time > GAME_DURATION_IN_SECONDS) isGameFinished = true;
         currentAge = Math.min(FINAL_AGE, Math.floor(time / GAME_DURATION_IN_SECONDS * (FINAL_AGE - STARTING_AGE) + STARTING_AGE));
-        updateGraphData(getSelectedStockHistoricData());
+
+        updateGraphData(selectedStock, time);
 
         updateStocks();
         return true;

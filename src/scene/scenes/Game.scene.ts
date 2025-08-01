@@ -142,6 +142,5 @@ export function createGameScreen() {
         if (balance) updateTextValue(balance, logic.getBalance().toString())
     }
 
-
     return {scene, camera, renderer, update};
 }
