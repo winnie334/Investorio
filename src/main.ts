@@ -4,6 +4,8 @@ import {updateRendererSize} from "./helpers/layout.ts";
 import {initScene} from "./helpers/initScene.ts";
 
 const {canvas, renderer, scene} = initScene();
+import { loadGraphModel } from "./graph.ts"
+
 const camera = new THREE.PerspectiveCamera(
     75,
     window.innerWidth / window.innerHeight,
@@ -24,6 +26,7 @@ async function loadModels() {
     const buyButton = await loadModelInteractive(buyButtonModelUrl, scene, camera, canvas, () => {
         console.log('Clicked');
     });
+    const graph = await loadGraphModel(scene);
 }
 
 
