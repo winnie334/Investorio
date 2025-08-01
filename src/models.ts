@@ -2,10 +2,10 @@ import {GLTFLoader} from 'three/addons/loaders/GLTFLoader.js';
 import {FBXLoader} from 'three/addons/loaders/FBXLoader.js';
 import buyButtonUrl from "./assets/models/BuyButton.glb";
 import dinoUrl from "./assets/models/dino.fbx";
+import * as THREE from "three";
 import {Camera, Group, Raycaster, Scene, Vector2, Vector3} from "three";
-import * as THREE from 'three';
 import {TextGeometry, type TextGeometryParameters} from 'three/examples/jsm/geometries/TextGeometry.js';
-import {FontLoader, Font} from 'three/addons/loaders/FontLoader.js';
+import {Font, FontLoader} from 'three/addons/loaders/FontLoader.js';
 
 const defaultFontUrl = new URL('./assets/fonts/undoredo.json', import.meta.url).href;
 
@@ -122,7 +122,6 @@ const defaultTextGeometryParams: Partial<TextGeometryParameters> = {
 
 export async function addText(
     title: string,
-    scene?: Scene,
     color = 0x00ff0,
     userParams: Partial<TextGeometryParameters> = {},
 ) {
@@ -138,9 +137,5 @@ export async function addText(
     });
 
     const material = new THREE.MeshBasicMaterial({color});
-    const text = new THREE.Mesh(textGeometry, material);
-
-
-    scene?.add(text);
-    return text;
+    return new THREE.Mesh(textGeometry, material);
 }

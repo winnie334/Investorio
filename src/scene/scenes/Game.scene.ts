@@ -6,7 +6,7 @@ import {getRenderer} from "../initRenderer.ts";
 import {loadGraphModel, updateGraphData} from "../../graph.ts";
 
 
-const newValueFrequency = 0.25
+const newValueFrequency = 0.15
 
 export function createGameScreen() {
     const scene = new THREE.Scene();
@@ -44,7 +44,7 @@ export function createGameScreen() {
 
     loadGraphModel(scene, -1, 0);
 
-    let values: number[] = [0, 0.2, 0.4];
+    let values: number[] = [0, 0, 0, 10, 10, 10];
     let progressToNextValue = 0
 
     function update(delta: number) {
@@ -66,8 +66,9 @@ export function createGameScreen() {
     }
 
     let text: THREE.Mesh | undefined;
-    addText("Cool", scene).then(t => {
+    addText("Cool").then(t => {
         text = t;
+        if (t) scene.add(t)
     });
 
 

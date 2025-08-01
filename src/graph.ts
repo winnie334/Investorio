@@ -1,12 +1,14 @@
 import * as THREE from 'three';
 import { Scene, Group } from 'three';
+import {addText} from "./models.ts";
 
-let MAX_VALUES = 50;
-let CUBE_WIDTH = 0.055;
+let MAX_VALUES = 47;
+let CUBE_WIDTH = 0.07;
 let CUBE_SPACING = 0;
 let X_OFFSET = 0;
 let Z_OFFSET = 0;
 let BG_WIDTH = 4
+const annotationCache: Record<number, THREE.Object3D | undefined> = {};
 
 let cubeGroup: Group | null = null;
 
@@ -37,8 +39,8 @@ export function updateGraphData(values: number[]) {
     let range = max - min;
     if (range < 3.5) range = 3.5
 
-    const graphMin = -0.7;
-    const graphMax = -2.4;
+    const graphMin = -0.9;
+    const graphMax = -3;
     const graphHeight = graphMin - graphMax;
 
     visibleValues.forEach((val, index) => {
@@ -48,29 +50,36 @@ export function updateGraphData(values: number[]) {
 
         const scaledZ = graphMin - ((val - min) / range) * graphHeight;
 
-        cube.position.set(
-            X_OFFSET + index * (CUBE_WIDTH + CUBE_SPACING) - 0.3,
-            //index * (CUBE_WIDTH + CUBE_SPACING) - halfWidth + CUBE_WIDTH / 2 + X_OFFSET,
-            1.1,
-            scaledZ + Z_OFFSET
-        );
+        cube.position.set(X_OFFSET + index * (CUBE_WIDTH + CUBE_SPACING) - 0.5, 0.1, scaledZ + Z_OFFSET );
 
-        cubeGroup.add(cube);
+        cubeGroup!.add(cube);
     });
 
     for (let i = Math.ceil(min); i <= Math.floor(max); i++) {
         const scaledZ = graphMin - ((i - min) / range) * graphHeight;
 
-        const geometry = new THREE.BoxGeometry(BG_WIDTH * 0.72, CUBE_WIDTH / 2, CUBE_WIDTH / 5);
+        const geometry = new THREE.BoxGeometry(BG_WIDTH * 0.85, CUBE_WIDTH / 2, CUBE_WIDTH / 5);
         const material = new THREE.MeshStandardMaterial({ color: new THREE.Color(0xbbbbbb) });
         const line = new THREE.Mesh(geometry, material);
 
-        line.position.set(
-            X_OFFSET + 1.05,
-            1.05,
-            scaledZ + Z_OFFSET
-        );
-
+        line.position.set(X_OFFSET + 1.1, 0.05, scaledZ + Z_OFFSET);
         cubeGroup.add(line);
+
+        getAnnotation(Math.ceil(min) + i).then(annotation => {
+            if (!annotation) return;
+            annotation.position.set(X_OFFSET - 0.9, 0.05, scaledZ + Z_OFFSET);
+            annotation.scale.set(0.1, 0.1, 0.1);
+            annotation.rotation.set(-Math.PI/2, 0, 0);
+            cubeGroup!.add(annotation);
+        })
     }
+}
+
+function getAnnotation(i: number): Promise<THREE.Object3D | undefined > {
+    if (annotationCache[i]) return Promise.resolve(annotationCache[i]);
+
+    return addText("$" + i, 0xbbbbbb).then(textMesh => {
+        annotationCache[i] = textMesh;
+        return textMesh;
+    });
 }
