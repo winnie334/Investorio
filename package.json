@@ -12,7 +12,8 @@
     "@types/three": "^0.178.1",
     "i": "^0.3.7",
     "typescript": "~5.8.3",
-    "vite": "^7.0.4"
+    "vite": "^7.0.4",
+    "vite-plugin-glsl": "^1.5.1"
   },
   "dependencies": {
     "three": "^0.179.0"
