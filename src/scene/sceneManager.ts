@@ -3,6 +3,9 @@ import * as THREE from 'three';
 import {createTitleScreen} from "./scenes/TitleScreen.scene.ts";
 import {createGameScreen} from "./scenes/Game.scene.ts";
 import {createTestScreen} from "./scenes/Test.scene.ts";
+import {isDev} from "../main.ts";
+import {addFreeCamControls} from "../helpers/camera.ts";
+import {getRenderer} from "./initRenderer.ts";
 
 type SceneFactory = () => { scene: THREE.Scene; camera: THREE.Camera, update?: (delta: number) => void };
 
@@ -23,6 +26,7 @@ export function loadScene(key: SceneKey) {
     if (!factory) throw new Error(`Scene '${key}' not registered`);
 
     const {scene, camera, update} = factory();
+    if (isDev) addFreeCamControls(camera, getRenderer())
     currentScene = scene;
     currentCamera = camera;
     currentUpdate = update;

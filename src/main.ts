@@ -6,6 +6,8 @@ let lastTime = performance.now();
 const path = window.location.pathname; // e.g., "/game/menu"
 const sceneToLoad = path.split('/').filter(Boolean).pop() ?? 'title';
 
+export const isDev = window.location.href.includes('localhost');
+
 
 async function loadAssets() {
     await loadDefaultFont();
