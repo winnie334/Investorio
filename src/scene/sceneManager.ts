@@ -2,6 +2,7 @@
 import * as THREE from 'three';
 import {createTitleScreen} from "./scenes/TitleScreen.scene.ts";
 import {createGameScreen} from "./scenes/Game.scene.ts";
+import {createTestScreen} from "./scenes/Test.scene.ts";
 
 type SceneFactory = () => { scene: THREE.Scene; camera: THREE.Camera, update?: (delta: number) => void };
 
@@ -14,6 +15,7 @@ let currentUpdate: ((delta: number) => void) | undefined;
 export const sceneRegistry: Record<string, SceneFactory> = {
     title: createTitleScreen,
     game: createGameScreen,
+    test: createTestScreen,
 };
 
 export function loadScene(key: SceneKey) {
