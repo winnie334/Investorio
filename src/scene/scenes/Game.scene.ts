@@ -1,7 +1,7 @@
 // scenes/Game.scene.ts
 import * as THREE from 'three';
 import {fitToPortrait} from '../../helpers/layout.ts';
-import {buyButtonModelUrl, dinoModelUrl, loadModel, loadModelInteractive} from '../../models.ts';
+import {addText, buyButtonModelUrl, dinoModelUrl, loadModel, loadModelInteractive} from '../../models.ts';
 import {getRenderer} from "../initRenderer.ts";
 import {loadGraphModel, updateGraphData} from "../../graph.ts";
 
@@ -57,8 +57,14 @@ export function createGameScreen() {
             values.push(newVal);
             updateGraphData(values);
         }
-
+        // const newVal = Math.floor(Math.random() * 15);
+        // values.push(newVal);
+        // updateGraphData(values);
     }
+
+    addText("Cool", {}, scene).then(t => {
+    });
+
 
     return {scene, camera, update};
 }

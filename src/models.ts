@@ -3,6 +3,11 @@ import {FBXLoader} from 'three/addons/loaders/FBXLoader.js';
 import buyButtonUrl from "./assets/models/BuyButton.glb";
 import dinoUrl from "./assets/models/dino.fbx";
 import {Camera, Group, Raycaster, Scene, Vector2, Vector3} from "three";
+import * as THREE from 'three';
+import {TextGeometry, type TextGeometryParameters} from 'three/examples/jsm/geometries/TextGeometry.js';
+import {FontLoader, Font} from 'three/addons/loaders/FontLoader.js';
+
+const fontLoader = new FontLoader();
 
 type InteractionCallback = (model: Group, event?: Event) => void;
 
@@ -89,4 +94,47 @@ export async function loadModelInteractive(
     return [model, () => {
         canvas.removeEventListener('click', handleClick);
     }];
+}
+
+
+export async function loadFont(fontUrl: string) {
+    try {
+        return await fontLoader.loadAsync(fontUrl);
+    } catch (error) {
+        console.error(`Error loading font ${fontUrl}:`, error);
+    }
+}
+
+let defaultFont: Font | undefined = undefined;
+
+export async function loadDefaultFont() {
+    // @ts-ignore
+    defaultFont = await loadFont('undoredo.json')
+}
+
+const defaultTextGeometryParams: Partial<TextGeometryParameters> = {
+    size: 0.01,
+};
+
+export async function addText(
+    title: string,
+    userParams: Partial<TextGeometryParameters> = {},
+    scene?: Scene
+) {
+    if (!defaultFont) {
+        console.error('Default font not loaded');
+        return undefined;
+    }
+    const textGeometry = new TextGeometry(title, {
+        font: defaultFont,
+        ...defaultTextGeometryParams,
+        ...userParams,
+    });
+
+    const material = new THREE.MeshBasicMaterial({color: 0x00ff0});
+    const text = new THREE.Mesh(textGeometry, material);
+
+
+    scene?.add(text);
+    return text;
 }

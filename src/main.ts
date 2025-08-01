@@ -1,10 +1,18 @@
 import {getRenderer, initRenderer} from "./scene/initRenderer.ts";
 import {getScene, loadScene} from "./scene/sceneManager.ts";
+import {loadDefaultFont} from "./models.ts";
 
 let lastTime = performance.now();
 
-initRenderer();
-loadScene('title');
+
+async function loadAssets() {
+
+    await loadDefaultFont();
+    initRenderer();
+    loadScene('title');
+}
+
+loadAssets().then(animate)
 
 function animate() {
     requestAnimationFrame(animate);

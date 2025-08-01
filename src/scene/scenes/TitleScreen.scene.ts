@@ -3,6 +3,7 @@ import * as THREE from 'three';
 import {loadScene} from '../sceneManager.ts';
 import {fitToPortrait} from '../../helpers/layout.ts';
 import {getRenderer} from '../initRenderer.ts';
+import {addText} from "../../models.ts";
 
 export function createTitleScreen() {
     const scene = new THREE.Scene();
@@ -31,6 +32,11 @@ export function createTitleScreen() {
             loadScene('game');
         };
     }
+
+    addText("Cool", {}, scene).then(t => {
+        if (!t) return;
+        t.position.y = 1;
+    });
 
 
     return {scene, camera};
