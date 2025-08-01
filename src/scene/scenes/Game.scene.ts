@@ -1,10 +1,12 @@
 import * as THREE from 'three';
 import {getRenderer} from '../initRenderer.ts';
 import {fitToPortrait} from '../../helpers/layout.ts';
-import {createGameLogic} from "../../gameLogic.ts";
-import {loadGraphModel, updateGraphData} from "../../graph.ts";
+import {createGameLogic, Stock} from "../../gameLogic.ts";
+import {loadGraphModel} from "../../graph.ts";
+import {addInteractiveText, addText} from "../../models.ts";
+import {Euler, Vector3} from "three";
 
-function createRoom(scene: THREE.Scene) {
+function createRoom(scene: THREE.Scene, camera: THREE.Camera, canvas: any, gameLogic: any) {
     // Ambient light
     scene.add(new THREE.AmbientLight(0xffffff, 0.2));
 
@@ -16,6 +18,7 @@ function createRoom(scene: THREE.Scene) {
     dirLight.shadow.camera.near = 0.5;
     dirLight.shadow.camera.far = 100;
     scene.add(dirLight);
+
 
     // Spotlight from above
     const spotLight = new THREE.SpotLight(0xfffacd, 1.5, 100, Math.PI / 6, 0.3, 1);
@@ -72,12 +75,36 @@ function createRoom(scene: THREE.Scene) {
 
     loadGraphModel(scene, -4, 6, -14, new THREE.Euler(Math.PI / 2, 0, 0), 4)
 
+    const accountBalance = addText("1000$", 0x00ff00, {}, new Vector3(-10, 6, -14), new Euler(0, 0, 0))
+    scene.add(accountBalance)
+
+    const xStart = -10;
+    const xOffset = 4; // spacing between each stock label
+    const y = 1;
+    const z = -14;
+
+    [...Object.values(Stock), "ALL"].forEach((stock, index) => {
+        const x = xStart + index * xOffset;
+        addInteractiveText(
+            stock,
+            scene,
+            camera,
+            canvas,
+            () => {
+                gameLogic.selectStock(stock === "ALL" ? undefined : stock);
+            },
+            0x00ff00,
+            {},
+            new Vector3(x, y, z),
+            new Euler(0, 0, 0)
+        );
+    });
+
 }
 
 export function createGameScreen() {
     const scene = new THREE.Scene();
     scene.background = new THREE.Color(0x222222);
-    scene.fog = new THREE.Fog(0x222222, 40, 80);
 
     const camera = new THREE.PerspectiveCamera(
         50,
@@ -96,9 +123,10 @@ export function createGameScreen() {
 
     const canvas = renderer.domElement;
     fitToPortrait(renderer, camera, canvas);
-    createRoom(scene)
 
     const logic = createGameLogic()
+    createRoom(scene, camera, canvas, logic)
+
     logic.start()
 
     function update(deltaT: number) {

@@ -7,7 +7,7 @@ import {Camera, Group, Raycaster, Scene, Vector2, Vector3} from "three";
 import {TextGeometry, type TextGeometryParameters} from 'three/examples/jsm/geometries/TextGeometry.js';
 import {Font, FontLoader} from 'three/addons/loaders/FontLoader.js';
 
-const defaultFontUrl = new URL('./assets/fonts/undoredo.json', import.meta.url).href;
+const defaultFontUrl = new URL('./assets/fonts/nata.json', import.meta.url).href;
 
 const fontLoader = new FontLoader();
 
@@ -120,10 +120,12 @@ const defaultTextGeometryParams: Partial<TextGeometryParameters> = {
     depth: 0.1
 };
 
-export async function addText(
+export function addText(
     title: string,
     color = 0x00ff0,
     userParams: Partial<TextGeometryParameters> = {},
+    location: Vector3 = new Vector3(0, 0, 0),
+    rotation: THREE.Euler = new THREE.Euler(),
 ) {
     if (!defaultFont) {
         console.error('Default font not loaded');
@@ -137,5 +139,84 @@ export async function addText(
     });
 
     const material = new THREE.MeshBasicMaterial({color});
-    return new THREE.Mesh(textGeometry, material);
+    const text = new THREE.Mesh(textGeometry, material);
+    text.position.copy(location);
+    text.rotation.copy(rotation);
+    return text;
+}
+
+export function updateTextValue(
+    textMesh: THREE.Mesh,
+    newText: string,
+    userParams: Partial<TextGeometryParameters> = {}
+) {
+    if (!defaultFont) {
+        console.error('Default font not loaded');
+        return;
+    }
+
+    const newGeometry = new TextGeometry(newText, {
+        font: defaultFont,
+        ...defaultTextGeometryParams,
+        ...userParams,
+    });
+
+    // Dispose old geometry to free memory
+    textMesh.geometry.dispose();
+
+    // Assign the new geometry
+    textMesh.geometry = newGeometry;
+}
+
+export function addInteractiveText(
+    title: string,
+    scene: Scene,
+    camera: Camera,
+    canvas: HTMLCanvasElement,
+    onClick: InteractionCallback,
+    color = 0x00ff00,
+    userParams: Partial<TextGeometryParameters> = {},
+    location: Vector3 = new Vector3(0, 0, 0),
+    rotation: THREE.Euler = new THREE.Euler(),
+): [THREE.Mesh, () => void] | undefined {
+    if (!defaultFont) {
+        console.error('Default font not loaded');
+        return undefined;
+    }
+
+    const textGeometry = new TextGeometry(title, {
+        font: defaultFont,
+        ...defaultTextGeometryParams,
+        ...userParams,
+    });
+
+    const material = new THREE.MeshBasicMaterial({color});
+    const textMesh = new THREE.Mesh(textGeometry, material);
+    textMesh.position.copy(location);
+    textMesh.rotation.copy(rotation);
+    scene.add(textMesh);
+
+    const raycaster = new Raycaster();
+    const mouse = new Vector2();
+
+    function handleClick(event: MouseEvent) {
+        const rect = canvas.getBoundingClientRect();
+        mouse.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
+        mouse.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
+
+        raycaster.setFromCamera(mouse, camera);
+        const intersects = raycaster.intersectObject(textMesh, true);
+
+
+        if (intersects.length > 0) {
+            onClick(textMesh, event);
+        }
+    }
+
+    canvas.addEventListener('click', handleClick);
+
+    return [textMesh, () => {
+        canvas.removeEventListener('click', handleClick);
+        scene.remove(textMesh);
+    }];
 }

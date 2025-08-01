@@ -1,5 +1,6 @@
 import {updateGraphData} from "./graph.ts";
 
+// @ts-ignore
 export enum Stock {
     AAPL = 'AAPL',
     MSFT = 'MSFT',
@@ -82,6 +83,9 @@ export function createGameLogic() {
 
     function selectStock(stock: Stock) {
         selectedStock = stock;
+        console.log('Selected stock', stock);
+        updateGraphData(getSelectedStockHistoricData());
+
     }
 
     function getSelectedStockHistoricData() {

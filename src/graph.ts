@@ -5,10 +5,6 @@ import {addText} from "./models.ts";
 let MAX_VALUES = 47;
 let CUBE_WIDTH = 0.07;
 let CUBE_SPACING = 0;
-let X_OFFSET = 0;
-let Z_OFFSET = 0;
-let Y_OFFSET = 0
-let X_ROTATION_OFFSET = 0
 let BG_WIDTH = 4
 const annotationCache: Record<number, THREE.Object3D | undefined> = {};
 
@@ -61,7 +57,7 @@ export function updateGraphData(values: number[]) {
         const scaledZ = graphMin - ((val - min) / range) * graphHeight;
 
         cube.position.set(index * (CUBE_WIDTH + CUBE_SPACING) - 0.5, 0.1, scaledZ);
-        cubeGroup.add(cube);
+        cubeGroup?.add(cube);
     });
 
     for (let i = Math.ceil(min); i <= Math.floor(max); i++) {
@@ -74,21 +70,19 @@ export function updateGraphData(values: number[]) {
         line.position.set(1.1, 0.05, scaledZ);
         cubeGroup.add(line);
 
-        getAnnotation(i).then(annotation => {
-            if (!annotation) return;
-            annotation.position.set(-0.9, 0.05, scaledZ);
-            annotation.scale.set(0.1, 0.1, 0.1);
-            annotation.rotation.set(-Math.PI / 2, 0, 0);
-            cubeGroup.add(annotation);
-        });
+        const annotation = getAnnotation(i);
+        if (!annotation) return;
+        annotation.position.set(-0.9, 0.05, scaledZ);
+        annotation.scale.set(0.1, 0.1, 0.1);
+        annotation.rotation.set(-Math.PI / 2, 0, 0);
+        cubeGroup.add(annotation);
     }
 }
 
-function getAnnotation(i: number): Promise<THREE.Object3D | undefined> {
-    if (annotationCache[i]) return Promise.resolve(annotationCache[i]);
+function getAnnotation(i: number): THREE.Object3D | undefined {
+    if (annotationCache[i]) return annotationCache[i]
 
-    return addText("$" + i, 0xbbbbbb).then(textMesh => {
-        annotationCache[i] = textMesh;
-        return textMesh;
-    });
+    const textMesh = addText("$" + i, 0xbbbbbb);
+    annotationCache[i] = textMesh;
+    return textMesh;
 }
