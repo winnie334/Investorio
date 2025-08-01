@@ -36,12 +36,19 @@ const GAME_DURATION_IN_SECONDS = 3600;
 const FINAL_AGE = 60;
 const STARTING_AGE = 20;
 
+let gameLogic = createGameLogic();
 
-export function createGameLogic() {
-    let balance = 0;
+export function getGameLogic() {
+    return gameLogic
+}
+
+
+function createGameLogic() {
+    let balance = STARTING_BALANCE;
     let trades: Trade[] = [];
     let isGameFinished = false;
     let time = 0;
+    let totalInvested = 0
 
     let currentAge = STARTING_AGE;
 
@@ -49,7 +56,8 @@ export function createGameLogic() {
     let stockToPriceMap: Record<Stock, number[]> = {...startStockToPrice}
 
     let timeLeftBeforeLogicUpdate = UPDATE_LOGIC_TIME_INTERVAL_IN_SECONDS;
-    let selectedStock: Stock = Stock.AAPL;
+    let selectedStock: Stock | undefined;
+    let amountMoneyToInvest = 50;
 
     function start() {
         balance = STARTING_BALANCE;
@@ -77,8 +85,8 @@ export function createGameLogic() {
         return stockToPriceMap[stock];
     }
 
-    function getAge(){
-       return currentAge
+    function getAge() {
+        return currentAge
     }
 
     function getMarketIndex() {
@@ -97,11 +105,28 @@ export function createGameLogic() {
         return balance + getPortfolioValue();
     }
 
-    function selectStock(stock: Stock) {
+    function selectStock(stock: Stock | undefined = undefined) {
         selectedStock = stock;
         console.log('Selected stock', stock);
         updateGraphData(stock, time);
     }
+
+    function getTotalInvested() {
+        return totalInvested;
+    }
+
+    function setAmountToInvest(amount: number) {
+        amountMoneyToInvest = amount;
+    }
+
+    function getAmountToInvest() {
+        return amountMoneyToInvest;
+    }
+
+    function getProfit() {
+        return Math.round(getPortfolioValue() - totalInvested)
+    }
+
 
     function getSelectedStockHistoricData() {
         if (selectedStock === undefined) return stockToPriceMap[Stock.AAPL].map((_, index) => {
@@ -110,32 +135,63 @@ export function createGameLogic() {
         return stockToPriceMap[selectedStock]
     }
 
-    function buyStock(stock: Stock, money: number) {
-        const currentPrice = stockToPriceMap[stock].at(-1) ?? 1;
-        if (money > balance) return false;
+    function buyStock(stock: Stock | undefined = selectedStock, money: number = amountMoneyToInvest) {
+        if (!stock) {
+            // we split the amount through all stocks
+            Object.values(Stock).forEach(stock => {
+                const divider = Object.values(Stock).length
+                buyStock(stock, money / divider)
+            })
+        } else {
+            const currentPrice = stockToPriceMap[stock].at(-1) ?? 1;
+            if (money > balance && money > 0) return false;
 
-        const amount = money / currentPrice;
-        portfolio[stock] += amount;
-        balance -= money;
+            const amount = money / currentPrice;
+            portfolio[stock] += amount;
 
-        trades.push({stock, price: currentPrice, amount, date: new Date(), transactionType: 'buy'});
-        return true;
+            totalInvested += money;
+            balance -= money;
+
+            trades.push({stock, price: currentPrice, amount, date: new Date(), transactionType: 'buy'});
+            return true;
+        }
+
     }
 
     function getSelectedStock() {
         return selectedStock;
     }
 
-    function sellStock(stock: Stock, amount: number) {
-        const owned = portfolio[stock];
-        if (owned < amount) return false;
+    function getLatestStockPrice(stock: Stock) {
+        return stockToPriceMap[stock].at(-1) ?? 1;
+    }
 
-        const price = stockToPriceMap[stock].at(-1) ?? 1;
-        balance += amount * price;
-        portfolio[stock] -= amount;
+    function sellStock(stock: Stock | undefined = selectedStock, money: number = amountMoneyToInvest) {
+        if (!stock) {
+            Object.values(Stock).forEach(stock => {
+                const divider = Object.values(Stock).length
+                sellStock(stock, money / divider)
+            })
+        } else {
+            const owned = portfolio[stock];
+            const amountStocksToSell = money / getLatestStockPrice(stock)
+            if (owned < amountStocksToSell) return false;
 
-        trades.push({stock, price, amount, date: new Date(), transactionType: 'sell'});
-        return true;
+            balance += money;
+            totalInvested -= money;
+            totalInvested = Math.max(0, totalInvested)
+            portfolio[stock] -= amountStocksToSell;
+
+            trades.push({
+                stock,
+                price: getLatestStockPrice(stock),
+                amount: amountStocksToSell,
+                date: new Date(),
+                transactionType: 'sell'
+            });
+            return true;
+        }
+
     }
 
     function addToBalance(amount: number) {
@@ -185,6 +241,10 @@ export function createGameLogic() {
         selectStock,
         getSelectedStockHistoricData,
         addToBalance,
-        getSelectedStock
+        getSelectedStock,
+        getTotalInvested,
+        getAmountToInvest,
+        setAmountToInvest,
+        getProfit
     };
 }

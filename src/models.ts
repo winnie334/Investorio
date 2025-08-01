@@ -1,6 +1,10 @@
 import {GLTFLoader} from 'three/addons/loaders/GLTFLoader.js';
 import {FBXLoader} from 'three/addons/loaders/FBXLoader.js';
 import buyButtonUrl from "./assets/models/BuyButton.glb";
+import sellButtonUrl from "./assets/models/SellButton.glb";
+import quantityMinusUrl from "./assets/models/QuantityMinus.glb";
+import quantityPlusUrl from "./assets/models/QuantityPlus.glb";
+import quantityUrl from "./assets/models/Quantity.glb";
 import * as THREE from "three";
 import {Camera, Group, Raycaster, Scene, Vector2, Vector3} from "three";
 import {TextGeometry, type TextGeometryParameters} from 'three/examples/jsm/geometries/TextGeometry.js';
@@ -13,6 +17,10 @@ const fontLoader = new FontLoader();
 type InteractionCallback = (model: Group, event?: Event) => void;
 
 export const buyButtonModelUrl = buyButtonUrl;
+export const sellButtonModelUrl = sellButtonUrl;
+export const quantityMinusModelUrl = quantityMinusUrl;
+export const quantityPlusModelUrl = quantityPlusUrl;
+export const quantityModelUrl = quantityUrl;
 
 const gltfLoader = new GLTFLoader();
 const fbxLoader = new FBXLoader();
