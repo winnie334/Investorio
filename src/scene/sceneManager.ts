@@ -6,7 +6,6 @@ import {createTestScreen} from "./scenes/Test.scene.ts";
 import {isDev} from "../main.ts";
 import {addFreeCamControls} from "../helpers/camera.ts";
 import {getRenderer} from "./initRenderer.ts";
-import {createTest2Screen} from "./scenes/Test2.scene.ts";
 
 type SceneFactory = () => { scene: THREE.Scene; camera: THREE.Camera, update?: (delta: number) => void };
 
@@ -20,7 +19,6 @@ export const sceneRegistry: Record<string, SceneFactory> = {
     title: createTitleScreen,
     game: createGameScreen,
     test: createTestScreen,
-    test2: createTest2Screen,
 };
 
 export function loadScene(key: SceneKey) {

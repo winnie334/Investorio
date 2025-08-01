@@ -1,3 +1,5 @@
+import {updateGraphData} from "./graph.ts";
+
 export enum Stock {
     AAPL = 'AAPL',
     MSFT = 'MSFT',
@@ -28,7 +30,7 @@ const startStockToPrice: Record<Stock, number[]> = {
     [Stock.AMZN]: [250],
 }
 const STARTING_BALANCE = 1000
-const UPDATE_LOGIC_TIME_INTERVAL_IN_SECONDS = 5
+const UPDATE_LOGIC_TIME_INTERVAL_IN_SECONDS = 1
 const GAME_DURATION_IN_SECONDS = 3600;
 const FINAL_AGE = 80;
 const STARTING_AGE = 20;
@@ -46,6 +48,7 @@ export function createGameLogic() {
     let stockToPriceMap: Record<Stock, number[]> = {...startStockToPrice}
 
     let timeLeftBeforeLogicUpdate = UPDATE_LOGIC_TIME_INTERVAL_IN_SECONDS;
+    let selectedStock: Stock | undefined;
 
     function start() {
         balance = STARTING_BALANCE;
@@ -56,38 +59,36 @@ export function createGameLogic() {
         stockToPriceMap = startStockToPrice;
     }
 
-    function getBalance() {
-        return balance;
-    }
-
-    function getTrades() {
-        return trades;
-    }
-
-    function getPortfolio() {
-        return {...portfolio};
-    }
 
     function getPrices(stock: Stock) {
         return stockToPriceMap[stock];
     }
 
-    function getMarketValue() {
+    function getMarketIndex() {
         return Object.values(stockToPriceMap).reduce((acc, val) => acc + val[val.length - 1], 0);
     }
 
     function getPortfolioValue() {
         return Object.entries(portfolio).reduce((acc, [stock, amountOfStock]) => {
+            // @ts-ignore
             return acc + stockToPriceMap[stock][stockToPriceMap[stock].length - 1] * amountOfStock
         }, 0);
     }
 
-    function getAge() {
-        return currentAge;
-    }
 
     function getNetWorth() {
         return balance + getPortfolioValue();
+    }
+
+    function selectStock(stock: Stock) {
+        selectedStock = stock;
+    }
+
+    function getSelectedStockHistoricData() {
+        if (selectedStock === undefined) return stockToPriceMap[Stock.AAPL].map((_, index) => {
+            return Object.values(stockToPriceMap).reduce((acc, val) => acc + val[index], 0)
+        })
+        return stockToPriceMap[selectedStock]
     }
 
     function buyStock(stock: Stock, money: number) {
@@ -114,6 +115,10 @@ export function createGameLogic() {
         return true;
     }
 
+    function addToBalance(amount: number) {
+        balance += amount;
+    }
+
     function updateStocks() {
         for (const stock of Object.values(Stock)) {
             const prices = stockToPriceMap[stock];
@@ -133,22 +138,28 @@ export function createGameLogic() {
         time += UPDATE_LOGIC_TIME_INTERVAL_IN_SECONDS;
         if (time > GAME_DURATION_IN_SECONDS) isGameFinished = true;
         currentAge = Math.min(FINAL_AGE, Math.floor(time / GAME_DURATION_IN_SECONDS * (FINAL_AGE - STARTING_AGE) + STARTING_AGE));
+        updateGraphData(getSelectedStockHistoricData());
+
         updateStocks();
     }
 
 
     return {
-        getBalance,
-        getTrades,
-        getPortfolio,
+        balance,
+        trades,
+        portfolio,
         getPrices,
         buyStock,
         sellStock,
         update,
         start,
         isFinished: () => isGameFinished,
-        getMarketValue,
-        getAge,
-        getNetWorth
+        getMarketIndex,
+        currentAge,
+        getNetWorth,
+        selectedStock,
+        selectStock,
+        getSelectedStockHistoricData,
+        addToBalance
     };
 }
