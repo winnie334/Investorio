@@ -1,7 +1,7 @@
 // scenes/Game.scene.ts
 import * as THREE from 'three';
 import {fitToPortrait} from '../../helpers/layout.ts';
-import {addText, buyButtonModelUrl} from '../../models.ts';
+import {addText, buyButtonModelUrl, loadModelInteractive} from '../../models.ts';
 import {getRenderer} from "../initRenderer.ts";
 import {loadGraphModel, updateGraphData} from "../../graph.ts";
 import {createGameLogic} from "../../gameLogic.ts";
@@ -54,11 +54,11 @@ export function createGameScreen() {
     function update(delta: number) {
         if (buyButtonModel) buyButtonModel.scale.set(0, 0, 0)
 
-        if (text) {
-            text.rotateZ(delta * 0.7)
-            text.rotateX(delta * 0.6)
-            text.rotateY(delta * 0.5)
-        }
+        // if (text) {
+        //     text.rotateZ(delta * 0.7)
+        //     text.rotateX(delta * 0.6)
+        //     text.rotateY(delta * 0.5)
+        // }
 
         progressToNextValue += delta;
         while (progressToNextValue > newValueFrequency) {
@@ -70,11 +70,11 @@ export function createGameScreen() {
         gameLogic.update(delta)
     }
 
-    let text: THREE.Mesh | undefined;
-    addText("Cool").then(t => {
-        text = t;
-        if (t) scene.add(t)
-    });
+    // let text: THREE.Mesh | undefined;
+    // addText("Cool").then(t => {
+    //     text = t;
+    //     if (t) scene.add(t)
+    // });
 
 
     return {scene, camera, update};

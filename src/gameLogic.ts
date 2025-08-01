@@ -37,7 +37,7 @@ const STARTING_AGE = 20;
 export function createGameLogic() {
     let balance = 0;
     let trades: Trade[] = [];
-    let isGameFinished = true;
+    let isGameFinished = false;
     let time = 0;
 
     let currentAge = STARTING_AGE;
@@ -118,7 +118,7 @@ export function createGameLogic() {
         for (const stock of Object.values(Stock)) {
             const prices = stockToPriceMap[stock];
             const last = prices.at(-1) ?? 100;
-            const newPrice = last + (Math.random() - 0.5) * 10;
+            const newPrice = last + (Math.random() - 0.45) * 10;
             prices.push(Math.max(newPrice, 1));
             if (prices.length > 100) prices.shift();
             stockToPriceMap[stock] = prices

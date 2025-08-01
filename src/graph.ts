@@ -65,7 +65,7 @@ export function updateGraphData(values: number[]) {
         line.position.set(X_OFFSET + 1.1, 0.05, scaledZ + Z_OFFSET);
         cubeGroup.add(line);
 
-        getAnnotation(Math.ceil(min) + i).then(annotation => {
+        getAnnotation(i).then(annotation => {
             if (!annotation) return;
             annotation.position.set(X_OFFSET - 0.9, 0.05, scaledZ + Z_OFFSET);
             annotation.scale.set(0.1, 0.1, 0.1);
