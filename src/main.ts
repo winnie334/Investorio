@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import {buyButtonModelUrl, dinoModelUrl, loadModel, loadModelInteractive} from "./models.ts";
+import {updateRendererSize} from "./helpers/layout.ts";
 
 
 const canvas = document.getElementById('webgl') as HTMLCanvasElement;
@@ -31,7 +32,9 @@ async function loadModels() {
     });
 }
 
+
 loadModels();
+updateRendererSize(renderer, camera, canvas);
 
 
 // Animate
