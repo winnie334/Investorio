@@ -16,7 +16,19 @@ import planet from './assets/models/planet.glb';
 import potato from './assets/models/potato.glb';
 import snowball from './assets/models/snowball.glb';
 
-import {Camera, Group, Scene, Vector3, Euler, Mesh, MeshBasicMaterial, Raycaster, Vector2} from 'three';
+import {
+    Camera,
+    Group,
+    Scene,
+    Vector3,
+    Euler,
+    Mesh,
+    MeshBasicMaterial,
+    Raycaster,
+    Vector2,
+    BufferGeometry,
+    Material, type Object3DEventMap
+} from 'three';
 
 export type InteractionCallback = (model: Group | Mesh, event?: Event) => void;
 
@@ -245,7 +257,7 @@ export function addInteractiveText(
     }];
 }
 
-export function updateTextValue(textMesh: Mesh | undefined, newText: any, geometryParams: Partial<TextGeometryParameters> = {}) {
+export function updateTextValue(textMesh: Mesh<BufferGeometry, Material | Material[], Object3DEventMap> | Mesh[] | undefined, newText: any, geometryParams: Partial<TextGeometryParameters> = {}) {
     if (!defaultFont || textMesh === undefined) {
         console.error('Update text called before font and mesh initialized');
         return;

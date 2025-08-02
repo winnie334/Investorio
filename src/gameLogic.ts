@@ -47,7 +47,7 @@ let gameLogic = createGameLogic();
 export let allPrices: number[][] = [];
 
 async function loadPriceData() {
-    const files = ['baba', 'bats', 'gme', 'irtc', 'sp500'];
+    const files = ['iwda', 'bats', 'gme', 'irtc', 'baba'];
     allPrices = await Promise.all(
         files.map(f =>
             fetch(`/${f}.csv`)
@@ -58,6 +58,7 @@ async function loadPriceData() {
 }
 
 await loadPriceData();
+console.log(allPrices);
 
 export function getGameLogic() {
     return gameLogic
@@ -140,7 +141,9 @@ function createGameLogic() {
         if (!portfolioElements) return;
 
         Object.keys(portfolio).forEach(stock => {
-            const value = Math.round(portfolio[stock] * allPrices[stock][day]);
+            // @ts-ignore
+            const value = Math.round(portfolio[stock] * allPrices[+stock][day]);
+            // @ts-ignore
             updateTextValue(portfolioElements?.[stock], `${stockNames[stock]}: $${value} (${portfolio[stock].toString()})`);
         });
     }
