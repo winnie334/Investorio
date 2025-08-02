@@ -162,6 +162,7 @@ function createGameWorld() {
 
 
         // Buy/Sell/Quantity buttons
+        // @ts-ignore
         const [buyButton,] = await loadModelInteractive(buyButtonModelUrl, {
             scene,
             camera,
