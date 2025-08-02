@@ -42,7 +42,6 @@ function createGameWorld() {
     let isLoaded = false
 
 
-
     let roomObjects: Record<string, THREE.Mesh | THREE.Mesh[]> | undefined
     const cashObjects = new Map<string, THREE.Mesh>();
     const characterPortraits: Record<Character, THREE.Mesh | undefined> = {
@@ -283,8 +282,8 @@ function createGameWorld() {
             onClick: () => gameLogic.tapBubble(),
             position: new Vector3(1, 5.2, 7),
             scale: new Vector3(4, 4, 4),
-            rotation: new Euler(-Math.PI/7, Math.PI/2, 0),
-            visible:false,
+            rotation: new Euler(-Math.PI / 7, Math.PI / 2, 0),
+            visible: false,
         });
         textBubble.receiveShadow = false;
 
@@ -299,7 +298,7 @@ function createGameWorld() {
         const textBubbleElement = addText("Heyo", {
             position: new Vector3(-5.8, 6.2, 7.2),
             scale: new Vector3(0.6, 0.6, 0.6),
-            rotation: new Euler(-Math.PI/7, 0, 0),
+            rotation: new Euler(-Math.PI / 7, 0, 0),
             color: 0x000000,
             visible: false,
             scene
@@ -519,35 +518,34 @@ function createGameWorld() {
         bubbleMesh.position.set(0, 5, 8);
         bubbleMesh.visible = false;
         scene.add(bubbleMesh);
-
-        showText("This is a test what if a afwejfiawo fjwaijfwai fjjj owow odowod oodw s", Character.NARRATOR);
     }
 
     type ShowTextOptions = {
         duration?: number;
         onDone?: () => void;
+        character?: Character;
     };
 
     function showText(
         text: string,
-        character: Character,
         options: ShowTextOptions = {}
     ) {
-        const {duration, onDone} = options;
+        const {duration, onDone, character} = options;
+        const characterToUse = character || Character.NARRATOR;
 
         bubbleMesh.visible = true;
-        characterPortraits[character].visible = true;
+        characterPortraits[characterToUse].visible = true;
 
         bubbleMesh.material.opacity = 0.6;
 
-        characterPortraits[character].traverse((child: any) => {
+        characterPortraits[characterToUse].traverse((child: any) => {
             if (child.isMesh && child.material?.transparent !== undefined) {
                 child.material.transparent = true;
                 child.material.opacity = 1.0;
             }
         });
 
-        const maxCharsPerLine = 48;
+        const maxCharsPerLine = 42;
         const wrappedTextLines = wrapText(text, maxCharsPerLine);
 
         const textObjects: { object: any; line: string }[] = wrappedTextLines.map((line, i) => {
@@ -568,7 +566,7 @@ function createGameWorld() {
             textObjects.forEach(({object}) => scene.remove(object));
 
             bubbleMesh.visible = false;
-            characterPortraits[character].visible = false;
+            characterPortraits[characterToUse].visible = false;
 
             window.removeEventListener('click', onClick);
             if (timeoutId !== undefined) {
@@ -587,7 +585,7 @@ function createGameWorld() {
 
         if (duration) {
             timeoutId = window.setTimeout(() => {
-                fadeOutText(bubbleMesh, characterPortraits[character], textObjects, 500, cleanup);
+                fadeOutText(bubbleMesh, characterPortraits[characterToUse], textObjects, 500, cleanup);
             }, duration);
         }
     }
