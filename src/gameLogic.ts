@@ -20,7 +20,7 @@ export type Trade = {
     transactionType: 'buy' | 'sell',
 }
 
-const startPortfolio: Record<Stock, number> = {
+export const startPortfolio: Record<Stock, number> = {
     [Stock.GRAIN]: 0,
     [Stock.WEED]: 0,
     [Stock.TUNGSTEN]: 0,
@@ -41,8 +41,6 @@ const GAME_DURATION_IN_SECONDS = 3600;
 const FINAL_AGE = 60;
 const STARTING_AGE = 20;
 
-const monkey = new ai(AiType.MONKEY, STARTING_BALANCE)
-const rock   = new ai(AiType.ROCK  , STARTING_BALANCE)
 
 let gameLogic = createGameLogic();
 
@@ -82,6 +80,7 @@ function createGameLogic() {
     let timeLeftBeforeLogicUpdate = UPDATE_LOGIC_TIME_INTERVAL_IN_SECONDS;
     let selectedStock: Stock = Stock.ALL;
 
+
     let amountMoneyToInvest = 50;
 
     loadPriceData().then(priceData => {
@@ -90,6 +89,9 @@ function createGameLogic() {
         })
     })
 
+    let monkey: ai | undefined
+    let rock: ai | undefined
+
 
     function start() {
         balance = STARTING_BALANCE;
@@ -97,6 +99,8 @@ function createGameLogic() {
         hasGameStarted = true;
         time = 0;
         portfolio = startPortfolio;
+        monkey = new ai(AiType.MONKEY, STARTING_BALANCE, stockToPricesMap)
+        rock = new ai(AiType.ROCK, STARTING_BALANCE, stockToPricesMap)
     }
 
     function getBalance() {
@@ -228,6 +232,10 @@ function createGameLogic() {
         // TODO add winand logic
     }
 
+    function getStockToPricesMap() {
+        return stockToPricesMap;
+    }
+
     function update(delta: number): boolean {
         if (isGameFinished || !hasGameStarted) return false;
         timeLeftBeforeLogicUpdate -= delta;
@@ -241,8 +249,8 @@ function createGameLogic() {
 
         updateStocks();
 
-        monkey.update()
-        rock.update()
+        monkey?.update()
+        rock?.update()
 
         return true;
     }
@@ -269,6 +277,7 @@ function createGameLogic() {
         setAmountToInvest,
         getProfit,
         getTotalValue,
-        getTime
+        getTime,
+        getStockToPricesMap
     };
 }
