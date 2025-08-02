@@ -7,7 +7,7 @@ export enum AiType {
 }
 
 function day() {
-    return getGameLogic().getTime();
+    return getGameLogic().getDay();
 }
 
 const MONKEY_CHANCE = 0.2

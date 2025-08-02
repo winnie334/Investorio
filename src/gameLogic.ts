@@ -235,6 +235,10 @@ function createGameLogic() {
     }
 
     function getTime() {
+        return secondsPassed;
+    }
+
+    function getDay() {
         return day;
     }
 
@@ -367,6 +371,7 @@ function createGameLogic() {
         getTotalInvested,
         getProfit,
         getTotalValue,
+        getDay,
         getFinishTime,
         incrementQuantity,
         decrementQuantity,
