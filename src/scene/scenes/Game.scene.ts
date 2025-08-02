@@ -47,38 +47,26 @@ function createRoom(scene: THREE.Scene, camera: THREE.Camera, canvas: any) {
     const roomWidth = 21;
 
     // Platform
-    const platform = new THREE.Mesh(
-        new THREE.BoxGeometry(roomWidth, 1, roomDepth),
-        new THREE.MeshStandardMaterial({color: 0x2c2c2c})
-    );
+    const platform = new THREE.Mesh(new THREE.BoxGeometry(roomWidth, 1, roomDepth), new THREE.MeshStandardMaterial({color: 0x2c2c2c}) );
     platform.position.y = -0.5;
     platform.receiveShadow = true;
     scene.add(platform);
 
     // Back wall
-    const backWall = new THREE.Mesh(
-        new THREE.BoxGeometry(roomWidth, wallHeight, wallThickness),
-        wallMaterial
-    );
+    const backWall = new THREE.Mesh(new THREE.BoxGeometry(roomWidth, wallHeight, wallThickness), wallMaterial);
     backWall.position.set(0, wallHeight / 2, -roomDepth / 2);
     backWall.castShadow = true;
     scene.add(backWall);
 
 
     // Left wall
-    const leftWall = new THREE.Mesh(
-        new THREE.BoxGeometry(wallThickness, wallHeight, roomDepth),
-        wallMaterial
-    );
+    const leftWall = new THREE.Mesh(new THREE.BoxGeometry(wallThickness, wallHeight, roomDepth), wallMaterial);
     leftWall.position.set(-roomWidth / 2, wallHeight / 2, 0);
     leftWall.castShadow = true;
     scene.add(leftWall);
 
     // Right wall
-    const rightWall = new THREE.Mesh(
-        new THREE.BoxGeometry(wallThickness, wallHeight, roomDepth),
-        wallMaterial
-    );
+    const rightWall = new THREE.Mesh(new THREE.BoxGeometry(wallThickness, wallHeight, roomDepth), wallMaterial);
     rightWall.position.set(roomWidth / 2, wallHeight / 2, 0);
     rightWall.castShadow = true;
     scene.add(rightWall);

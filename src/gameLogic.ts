@@ -2,10 +2,11 @@ import {updateGraphData} from "./graph.ts";
 
 // @ts-ignore
 export enum Stock {
-    AAPL = 'AAPL',
-    MSFT = 'MSFT',
-    GOOG = 'GOOG',
-    AMZN = 'AMZN',
+    VT,
+    AAPL,
+    MSFT,
+    GOOG,
+    AMZN,
 }
 
 export type Trade = {
@@ -21,15 +22,17 @@ const startPortfolio: Record<Stock, number> = {
     [Stock.MSFT]: 0,
     [Stock.GOOG]: 0,
     [Stock.AMZN]: 0,
+    [Stock.VT]: 0
 };
 
-
 const startStockToPrice: Record<Stock, number[]> = {
+    [Stock.VT]: [],
     [Stock.AAPL]: [100],
     [Stock.MSFT]: [200],
     [Stock.GOOG]: [150],
-    [Stock.AMZN]: [250],
+    [Stock.AMZN]: [250]
 }
+
 const STARTING_BALANCE = 1000
 const UPDATE_LOGIC_TIME_INTERVAL_IN_SECONDS = 1
 const GAME_DURATION_IN_SECONDS = 3600;

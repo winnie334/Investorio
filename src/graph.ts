@@ -11,7 +11,7 @@ const annotationCache: Record<number, THREE.Object3D | undefined> = {};
 
 let cubeGroup: Group | null = null;
 const files = ['baba', 'bats', 'gme', 'irtc', 'sp500'];
-let allPrices: number[][] = [];
+export let allPrices: number[][] = [];
 
 (async () => {
     allPrices = await Promise.all(
