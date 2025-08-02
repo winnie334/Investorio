@@ -8,7 +8,8 @@ import buyButtonUrl from './assets/models/BuyButton.glb';
 import sellButtonUrl from './assets/models/SellButton.glb';
 import quantityMinusUrl from './assets/models/QuantityMinus.glb';
 import quantityPlusUrl from './assets/models/QuantityPlus.glb';
-import quantityUrl from './assets/models/Quantity.glb';
+import panelUrl from './assets/models/panel.glb';
+import screenUrl from './assets/models/screen.glb';
 
 import {Camera, Group, Scene, Vector3, Euler, Mesh, MeshBasicMaterial, Raycaster, Vector2} from 'three';
 
@@ -58,7 +59,8 @@ export const buyButtonModelUrl = buyButtonUrl;
 export const sellButtonModelUrl = sellButtonUrl;
 export const quantityMinusModelUrl = quantityMinusUrl;
 export const quantityPlusModelUrl = quantityPlusUrl;
-export const quantityModelUrl = quantityUrl;
+export const panelModelUrl = panelUrl;
+export const screenModelUrl = screenUrl;
 
 // Loaders
 const gltfLoader = new GLTFLoader();
@@ -104,9 +106,9 @@ export async function loadModelInteractive(
     url: string,
     params: InteractiveModelParams
 ): Promise<[Group, () => void] | undefined> {
-    const {scene, camera, canvas, onClick, scale, position} = params;
+    const {scene, camera, canvas, onClick, scale, position, rotation} = params;
 
-    const model = await loadModel(url, {scene, scale, position});
+    const model = await loadModel(url, {scene, scale, position, rotation});
     if (!model || !onClick) return;
 
     const raycaster = new Raycaster();

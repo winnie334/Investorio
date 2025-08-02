@@ -4,11 +4,19 @@ import {updateTextValue} from "./models.ts";
 import {ai, AiType} from "./ai.ts";
 
 export enum Stock {
-    WORLD,
     GRAIN,
     WEED,
     TUNGSTEN,
-    CURCUMA
+    CURCUMA,
+    WORLD, // TODO important that this on is on the same index as sp500
+}
+
+export const stockNames = {
+    [Stock.WORLD]: 'World',
+    [Stock.GRAIN]: 'Grain',
+    [Stock.WEED]: 'Weed',
+    [Stock.TUNGSTEN]: 'Tungsten',
+    [Stock.CURCUMA]: 'Curcuma',
 }
 
 export type Trade = {
@@ -36,6 +44,7 @@ const STARTING_AGE = 20;
 let gameLogic = createGameLogic();
 
 export let allPrices: number[][] = [];
+
 async function loadPriceData() {
     const files = ['baba', 'bats', 'gme', 'irtc', 'sp500'];
     allPrices = await Promise.all(
@@ -94,7 +103,7 @@ function createGameLogic() {
     }
 
     function getPortfolioValue() {
-        return Object.entries(portfolio).reduce((acc, [s, q]) => acc + allPrices[+s][day] * q, 0);
+        return Object.entries(portfolio).reduce((acc, [s, q]) => acc + allPrices[+s][day] * q, 0); // dit is chinees xd
     }
 
     function getNetWorth() {
@@ -105,7 +114,32 @@ function createGameLogic() {
         console.log("Selected", stock)
         selectedStock = stock;
         updateGraphData(stock, secondsPassed);
+
+        const selectedStockElement = gameWorld.getRoomObjects()?.selectedStock
+        if (!selectedStockElement) return;
+        updateTextValue(selectedStockElement, `Selected Stock: ${stockNames[getSelectedStock()] || 'None'}`)
     }
+
+    function updatePortfolioUI() {
+        updateProfitUI();
+        const portfolioElements = gameWorld.getRoomObjects()?.portFolioTexts;
+        if (!portfolioElements) return;
+
+        const portfolio = gameLogic.getPortfolio();
+
+        Object.keys(portfolio).forEach(stock => {
+            const element = portfolioElements?.[stock];
+            if (element) {
+                const shares = portfolio[stock];
+                const value = Math.round(shares * allPrices[stock][day]);
+                updateTextValue(
+                    element,
+                    `${stockNames[stock]}: $${value} (${shares.toFixed(2).toString()})`
+                );
+            }
+        });
+    }
+
 
     function getTotalInvested() {
         return totalInvested;
@@ -123,6 +157,14 @@ function createGameLogic() {
         updateTextValue(amountToInvestElement, amount.toString())
     }
 
+    function updateInvestedUI(amount: number) {
+        totalInvested = amount;
+        totalInvested = Math.max(0, totalInvested)
+        const element = gameWorld.getRoomObjects()?.invested
+        if (!element) return;
+        updateTextValue(element, `Invested: $${getTotalInvested()}`)
+    }
+
     function getAmountToInvest() {
         return amountMoneyToInvest;
     }
@@ -131,15 +173,23 @@ function createGameLogic() {
         return Math.round(getPortfolioValue() - totalInvested)
     }
 
+    function updateProfitUI() {
+        const element = gameWorld.getRoomObjects()?.profit
+        if (!element) return;
+        updateTextValue(element, `P/L: $${getTotalValue()} (${getProfit() >= 0 ? '+' : ''}${getProfit()})`)
+    }
+
     function buyStock(stock: Stock = selectedStock, money: number = amountMoneyToInvest) {
         const currentPrice = allPrices[stock][day]
         if (money > balance && money > 0) return false;
 
         const amount = money / currentPrice;
         portfolio[stock] += amount;
+        updateInvestedUI(totalInvested + money)
 
-        totalInvested += money;
-        updateGameBalance(-money)
+
+        updateBalanceUI(-money)
+        updatePortfolioUI()
 
         trades.push({stock, price: currentPrice, amount, date: day, transactionType: 'buy'});
         return true;
@@ -159,23 +209,31 @@ function createGameLogic() {
         const amountStocksToSell = money / allPrices[stock][day]
         if (owned < amountStocksToSell) return false;
 
-        updateGameBalance(money);
-        totalInvested -= money;
-        totalInvested = Math.max(0, totalInvested)
+        updateBalanceUI(money);
+        updateInvestedUI(totalInvested - money)
         portfolio[stock] -= amountStocksToSell;
+        updatePortfolioUI()
 
-        trades.push({ stock, price: allPrices[stock][day], amount: amountStocksToSell, date: day, transactionType: 'sell' });
+        trades.push({
+            stock,
+            price: allPrices[stock][day],
+            amount: amountStocksToSell,
+            date: day,
+            transactionType: 'sell'
+        });
+        updatePortfolioUI()
         return true;
+
     }
 
     function addToBalance(amount: number) {
-        updateGameBalance(amount);
+        updateBalanceUI(amount);
     }
 
-    function updateGameBalance(amount: number) {
+    function updateBalanceUI(amount: number) {
         balance += amount;
         const balanceElement = gameWorld.getRoomObjects()?.balance
-        if (balanceElement) updateTextValue(balanceElement, balance.toString())
+        if (balanceElement) updateTextValue(balanceElement, `Balance: $${balance}`)
     }
 
     function update(delta: number): boolean {
@@ -195,6 +253,7 @@ function createGameLogic() {
         if (day % DAYS_PER_YEAR == 0) yearUpdate();
 
         updateGraphData(selectedStock, secondsPassed);
+        updatePortfolioUI()
 
         monkey?.update()
         rock?.update()
@@ -206,6 +265,14 @@ function createGameLogic() {
         year++
         // Todo get recurring income
         if (year == FINAL_AGE) isGameFinished = true;
+    }
+
+    function updateAllUI() {
+        updateBalanceUI(0)
+        selectStock(selectedStock)
+        updateInvestedUI(totalInvested)
+        updatePortfolioUI()
+        updateProfitUI()
     }
 
     return {
@@ -227,5 +294,6 @@ function createGameLogic() {
         getProfit,
         getTotalValue,
         getTime,
+        updateAllUI
     };
 }

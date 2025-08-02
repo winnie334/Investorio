@@ -1,13 +1,13 @@
 import * as THREE from "three";
-import {getGameLogic, Stock} from "./gameLogic.ts";
+import {getGameLogic, Stock, stockNames} from "./gameLogic.ts";
 import {loadGraphModel} from "./graph.ts";
 import {
     addInteractiveText,
     addText,
-    buyButtonModelUrl,
-    loadModelInteractive,
+    buyButtonModelUrl, loadModel,
+    loadModelInteractive, panelModelUrl,
     quantityMinusModelUrl,
-    quantityPlusModelUrl,
+    quantityPlusModelUrl, screenModelUrl,
     sellButtonModelUrl
 } from "./models.ts";
 import {Euler, Vector3} from "three";
@@ -21,17 +21,8 @@ export function getGameWorld() {
 function createGameWorld() {
     let isLoaded = false
 
-    type RoomObjectKeys =
-        'balance'
-        | 'totalInvested'
-        | 'profit'
-        | 'total'
-        | 'amountToInvest'
-        | 'minusButton'
-        | 'plusButton'
-        | 'buyButton'
-        | 'sellButton';
-    let roomObjects: Record<RoomObjectKeys, THREE.Mesh> | undefined
+
+    let roomObjects: Record<string, THREE.Mesh | THREE.Mesh[]> | undefined
 
     function isGameWorldLoaded() {
         return isLoaded;
@@ -69,8 +60,8 @@ function createGameWorld() {
         const floorTexture = textureLoader.load('/textures/woodfloor.jpg');
         wallTexture.needsUpdate = true;
 
-        const wallMaterial = new THREE.MeshStandardMaterial({ map: wallTexture });
-        const floorMaterial = new THREE.MeshStandardMaterial({ map: floorTexture });
+        const wallMaterial = new THREE.MeshStandardMaterial({map: wallTexture});
+        const floorMaterial = new THREE.MeshStandardMaterial({map: floorTexture});
         const wallHeight = 30;
         const wallThickness = 0.5;
         const roomDepth = 30;
@@ -105,48 +96,6 @@ function createGameWorld() {
 
         loadGraphModel(scene, -4, 6, -14, new Euler(Math.PI / 2, 0, 0), 4);
 
-        // HUD text
-        const balance = addText(gameLogic.getBalance().toString(), {
-            position: new Vector3(-10, 6, -14),
-            rotation: new Euler(0, 0, 0),
-            scene
-        });
-
-        const totalInvested = addText(gameLogic.getTotalInvested().toString(), {
-            position: new Vector3(-6, 6, -14),
-            rotation: new Euler(0, 0, 0),
-            scene
-        });
-
-        const profit = addText(gameLogic.getTotalValue().toString(), {
-            position: new Vector3(-2, 6, -14),
-            rotation: new Euler(0, 0, 0),
-            scene
-        });
-
-        const total = addText("0", {
-            position: new Vector3(2, 6, -14),
-            rotation: new Euler(0, 0, 0),
-            scene
-        });
-
-        // Stock selector
-        const xStart = -10;
-        const xOffset = 4;
-        const y = 1;
-        const z = -14;
-
-        Object.values(Stock).forEach((stock, index) => {
-            const x = xStart + index * xOffset;
-            addInteractiveText(stock, {
-                scene,
-                camera,
-                canvas,
-                onClick: () => gameLogic.selectStock(stock),
-                position: new Vector3(x, y, z),
-                rotation: new Euler(0, 0, 0)
-            });
-        });
 
         // Buy/Sell/Quantity buttons
         const [buyButton,] = await loadModelInteractive(buyButtonModelUrl, {
@@ -154,8 +103,10 @@ function createGameWorld() {
             camera,
             canvas,
             onClick: () => gameLogic.buyStock(),
-            position: new Vector3(-7, 1, 4),
-            scale: new Vector3(1, 1, 1)
+            position: new Vector3(-3.8, 2.5, 20),
+            scale: new Vector3(0.5, 0.5, 0.5),
+            rotation: new Euler(Math.PI / 5, 0, 0),
+
         });
 
         const [sellButton,] = await loadModelInteractive(sellButtonModelUrl, {
@@ -163,8 +114,9 @@ function createGameWorld() {
             camera,
             canvas,
             onClick: () => gameLogic.sellStock(),
-            position: new Vector3(-7, 1, 8),
-            scale: new Vector3(1, 1, 1)
+            position: new Vector3(-3.8, 3.3, 19),
+            scale: new Vector3(0.5, 0.5, 0.5),
+            rotation: new Euler(Math.PI / 5, 0, 0),
         });
 
         const [plusButton,] = await loadModelInteractive(quantityPlusModelUrl, {
@@ -172,44 +124,120 @@ function createGameWorld() {
             camera,
             canvas,
             onClick: () => gameLogic.setAmountToInvest(gameLogic.getAmountToInvest() + 10),
-            position: new Vector3(3, 1, 10),
-            scale: new Vector3(4, 4, 4)
+            position: new Vector3(-0.5, 2.5, 20),
+            scale: new Vector3(2, 2, 2),
+            rotation: new Euler(Math.PI / 5, 0, 0),
         });
 
-        const [minusButton, _] = await loadModelInteractive(quantityMinusModelUrl, {
+        const [minusButton,] = await loadModelInteractive(quantityMinusModelUrl, {
             scene,
             camera,
             canvas,
             onClick: () => gameLogic.setAmountToInvest(gameLogic.getAmountToInvest() - 10),
-            position: new Vector3(6, 1, 8),
-            scale: new Vector3(4, 4, 4)
+            position: new Vector3(-2, 3, 19),
+            scale: new Vector3(2, 2, 2),
+            rotation: new Euler(Math.PI / 5, 0, 0),
         });
+
+        const panel = await loadModel(panelModelUrl, {
+            scene,
+            position: new Vector3(0, -8, 18),
+            rotation: new Euler(0, -Math.PI / 2, 0),
+            scale: new Vector3(0.8, 0.8, 0.8),
+
+        });
+
 
         // Amount to invest display
         const amountToInvest = addText(gameLogic.getAmountToInvest().toString(), {
-            position: new Vector3(-2, 0.5, 7),
-            rotation: new Euler(-Math.PI / 2, 0, 0),
+            position: new Vector3(-4.3, 5.2, 17),
+            rotation: new Euler(-Math.PI / 5, 0, 0),
+            scale: new Vector3(0.7, 0.7, 0.7),
             scene
         });
+
+        const screen = await loadModel(screenModelUrl, {
+            scene,
+            position: new Vector3(1.5, 4, 18),
+            scale: new Vector3(3.5, 2.5, 2.5),
+            rotation: new Euler(Math.PI / 5, 0, 0),
+
+        });
+
+        const balance = addText(``, {
+            position: new Vector3(-1.1, 5, 17),
+            scale: new Vector3(0.3, 0.3, 0.3),
+            rotation: new Euler(-Math.PI / 5, 0, 0),
+            scene
+        });
+
+        const invested = addText(`}`, {
+            position: new Vector3(-1.1, 4.9, 17.6),
+            scale: new Vector3(0.3, 0.3, 0.3),
+            rotation: new Euler(-Math.PI / 5, 0, 0),
+            scene
+        });
+
+        const profit = addText(``, {
+            position: new Vector3(-1.1, 4.8, 18.2),
+            scale: new Vector3(0.3, 0.3, 0.3),
+            rotation: new Euler(-Math.PI / 5, 0, 0),
+            scene
+        });
+
+        const selectedStock = addText(``, {
+            position: new Vector3(-1.1, 4.7, 18.8),
+            scale: new Vector3(0.3, 0.3, 0.3),
+            rotation: new Euler(-Math.PI / 5, 0, 0),
+            scene
+        });
+        addText("Portfolio:", {
+            position: new Vector3(-1.1, 4.6, 19.4),
+            scale: new Vector3(0.3, 0.3, 0.3),
+            rotation: new Euler(-Math.PI / 5, 0, 0),
+            scene
+        });
+
+
+        const offsetY = -0.05;
+        const offsetZ = 0.4;
+        const baseY = 4.5;
+        const baseZ = 19.7;
+
+        const portFolioTexts = Object.keys(gameLogic.getPortfolio()).map((stock, index) => {
+            const positionY = baseY + index * offsetY;
+            const positionZ = baseZ + index * offsetZ;
+
+            return addText("", {
+                position: new Vector3(1, positionY, positionZ),
+                scale: new Vector3(0.2, 0.2, 0.2),
+                rotation: new Euler(-Math.PI / 5, 0, 0),
+                scene
+            });
+        });
+
 
         isLoaded = true
 
 
-        if (!balance || !totalInvested || !profit || !total || !amountToInvest) {
+        if (!balance || !profit || !amountToInvest || !portFolioTexts || !profit || !selectedStock) {
             console.error("One of the room objects is missing");
             return;
         }
         roomObjects = {
             balance,
-            totalInvested,
             profit,
-            total,
             amountToInvest,
             minusButton,
             plusButton,
             buyButton,
             sellButton,
+            portFolioTexts: portFolioTexts,
+            selectedStock,
+            invested
         };
+
+        gameLogic.updateAllUI()
 
     }
 
