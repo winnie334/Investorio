@@ -58,7 +58,6 @@ async function loadPriceData() {
 }
 
 await loadPriceData();
-console.log(allPrices);
 
 export function getGameLogic() {
     return gameLogic
@@ -118,6 +117,9 @@ function createGameLogic() {
 
         const selectedStockElement = gameWorld.getRoomObjects()?.selectedStock;
         if (!selectedStockElement) return;
+
+        updateQuantityUI();
+        updateOrderUI();
         updateTextValue(
             selectedStockElement,
             `Stock: ${stockNames[getSelectedStock()] || 'None'}`
