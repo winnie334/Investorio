@@ -146,7 +146,7 @@ export async function loadDefaultFont() {
     defaultFont = await loadFont(defaultFontUrl);
 }
 
-export function addText(title: string, params: TextAddParams = {}): Mesh | undefined {
+export function addText(title: any, params: TextAddParams = {}): Mesh | undefined {
     if (!defaultFont) {
         console.error('Default font not loaded');
         return;
@@ -161,7 +161,7 @@ export function addText(title: string, params: TextAddParams = {}): Mesh | undef
         scene
     } = params;
 
-    const textGeometry = new TextGeometry(title, {
+    const textGeometry = new TextGeometry(title.toString(), {
         font: defaultFont,
         ...defaultTextGeometryParams,
         ...geometryParams,
@@ -235,21 +235,13 @@ export function addInteractiveText(
     }];
 }
 
-export function updateTextValue(
-    textMesh: Mesh,
-    newText: string,
-    geometryParams: Partial<TextGeometryParameters> = {}
-) {
-    if (!defaultFont) {
-        console.error('Default font not loaded');
+export function updateTextValue(textMesh: Mesh | undefined, newText: any, geometryParams: Partial<TextGeometryParameters> = {}) {
+    if (!defaultFont || textMesh === undefined) {
+        console.error('Update text called before font and mesh initialized');
         return;
     }
 
-    const newGeometry = new TextGeometry(newText, {
-        font: defaultFont,
-        ...defaultTextGeometryParams,
-        ...geometryParams,
-    });
+    const newGeometry = new TextGeometry(newText.toString(), {font: defaultFont, ...defaultTextGeometryParams, ...geometryParams,});
 
     textMesh.geometry.dispose();
     textMesh.geometry = newGeometry;

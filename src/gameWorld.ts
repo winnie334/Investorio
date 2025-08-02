@@ -123,7 +123,7 @@ function createGameWorld() {
             scene,
             camera,
             canvas,
-            onClick: () => gameLogic.setAmountToInvest(gameLogic.getAmountToInvest() + 10),
+            onClick: () => gameLogic.incrementQuantity(),
             position: new Vector3(-0.5, 2.5, 20),
             scale: new Vector3(2, 2, 2),
             rotation: new Euler(Math.PI / 5, 0, 0),
@@ -133,7 +133,7 @@ function createGameWorld() {
             scene,
             camera,
             canvas,
-            onClick: () => gameLogic.setAmountToInvest(gameLogic.getAmountToInvest() - 10),
+            onClick: () => gameLogic.decrementQuantity(),
             position: new Vector3(-2, 3, 19),
             scale: new Vector3(2, 2, 2),
             rotation: new Euler(Math.PI / 5, 0, 0),
@@ -149,7 +149,7 @@ function createGameWorld() {
 
 
         // Amount to invest display
-        const amountToInvest = addText(gameLogic.getAmountToInvest().toString(), {
+        const quantityElement = addText(gameLogic.getQuantity(), {
             position: new Vector3(-4.3, 5.2, 17),
             rotation: new Euler(-Math.PI / 5, 0, 0),
             scale: new Vector3(0.7, 0.7, 0.7),
@@ -220,14 +220,14 @@ function createGameWorld() {
         isLoaded = true
 
 
-        if (!balance || !profit || !amountToInvest || !portFolioTexts || !profit || !selectedStock) {
+        if (!balance || !profit || !quantityElement || !portFolioTexts || !profit || !selectedStock) {
             console.error("One of the room objects is missing");
             return;
         }
         roomObjects = {
             balance,
             profit,
-            amountToInvest,
+            quantityElement: quantityElement,
             minusButton,
             plusButton,
             buyButton,

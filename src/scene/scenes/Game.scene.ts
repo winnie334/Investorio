@@ -9,14 +9,9 @@ export function createGameScreen() {
     const scene = new THREE.Scene();
     scene.background = new THREE.Color(0x222222);
 
-    const camera = new THREE.PerspectiveCamera(
-        50,
-        window.innerWidth / window.innerHeight,
-        0.1,
-        1000
-    );
+    const camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 0.1, 1000);
 
-    // I do not understand why a timeout is necessary lol
+    // I do not understand why a timeout is necessary lol -> very cool
     setTimeout(() => {
         camera.position.set(0, 20, 40);
         camera.lookAt(new THREE.Vector3(0, 5, 0));

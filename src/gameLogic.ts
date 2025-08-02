@@ -75,13 +75,12 @@ function createGameLogic() {
     let year = 0;
     let totalInvested = 0
 
+    let currentQuantity = 0;
+
     let portfolio: Record<Stock, number> = {...startPortfolio};
 
     let timeBeforeNextDay = SECS_PER_DAY;
     let selectedStock: Stock = Stock.WORLD;
-
-
-    let amountMoneyToInvest = 50;
 
     let monkey = new ai(AiType.MONKEY, STARTING_BALANCE)
     let rock = new ai(AiType.ROCK, STARTING_BALANCE)
@@ -125,48 +124,44 @@ function createGameLogic() {
         const portfolioElements = gameWorld.getRoomObjects()?.portFolioTexts;
         if (!portfolioElements) return;
 
-        const portfolio = gameLogic.getPortfolio();
-
         Object.keys(portfolio).forEach(stock => {
-            const element = portfolioElements?.[stock];
-            if (element) {
-                const shares = portfolio[stock];
-                const value = Math.round(shares * allPrices[stock][day]);
-                updateTextValue(
-                    element,
-                    `${stockNames[stock]}: $${value} (${shares.toFixed(2).toString()})`
-                );
-            }
+            const value = Math.round(portfolio[stock] * allPrices[stock][day]);
+            updateTextValue(portfolioElements?.[stock], `${stockNames[stock]}: $${value} (${portfolio[stock].toString()})`);
         });
     }
 
+    function incrementQuantity() {
+        currentQuantity += 1;
+        updateQuantityUI();
+    }
+
+    function decrementQuantity() {
+        if (currentQuantity <= 0) return;
+        currentQuantity -= 1;
+        updateQuantityUI();
+    }
+
+    function updateQuantityUI() {
+        updateTextValue(gameWorld.getRoomObjects()?.quantityElement, currentQuantity)
+    }
+
+    function getQuantity() {
+        return currentQuantity;
+    }
 
     function getTotalInvested() {
-        return totalInvested;
+        return Math.max(0, totalInvested);
     }
 
     function getTotalValue() {
         return getProfit() + getTotalInvested();
     }
 
-
-    function setAmountToInvest(amount: number) {
-        amountMoneyToInvest = amount;
-        const amountToInvestElement = gameWorld.getRoomObjects()?.amountToInvest
-        if (!amountToInvestElement) return;
-        updateTextValue(amountToInvestElement, amount.toString())
-    }
-
-    function updateInvestedUI(amount: number) {
+    function updateTotalInvested(amount: number) {
         totalInvested = amount;
-        totalInvested = Math.max(0, totalInvested)
         const element = gameWorld.getRoomObjects()?.invested
         if (!element) return;
         updateTextValue(element, `Invested: $${getTotalInvested()}`)
-    }
-
-    function getAmountToInvest() {
-        return amountMoneyToInvest;
     }
 
     function getProfit() {
@@ -179,21 +174,21 @@ function createGameLogic() {
         updateTextValue(element, `P/L: $${getTotalValue()} (${getProfit() >= 0 ? '+' : ''}${getProfit()})`)
     }
 
-    function buyStock(stock: Stock = selectedStock, money: number = amountMoneyToInvest) {
+    function buyStock(stock: Stock = selectedStock) {
         const currentPrice = allPrices[stock][day]
-        if (money > balance && money > 0) return false;
+        let total = currentPrice * currentQuantity;
+        if (total > balance) return false;
 
-        const amount = money / currentPrice;
-        portfolio[stock] += amount;
-        updateInvestedUI(totalInvested + money)
+        portfolio[stock] += currentQuantity;
+        currentQuantity = 0;
+        trades.push({stock, price: currentPrice, amount: currentQuantity, date: day, transactionType: 'buy'});
 
-
-        updateBalanceUI(-money)
+        updateBalanceUI(-total);
+        updateTotalInvested(total)
         updatePortfolioUI()
+        updateQuantityUI();
 
-        trades.push({stock, price: currentPrice, amount, date: day, transactionType: 'buy'});
         return true;
-
     }
 
     function getSelectedStock() {
@@ -204,26 +199,21 @@ function createGameLogic() {
         return secondsPassed;
     }
 
-    function sellStock(stock: Stock = selectedStock, money: number = amountMoneyToInvest) {
-        const owned = portfolio[stock]; // todo: param is money to sell?
-        const amountStocksToSell = money / allPrices[stock][day]
-        if (owned < amountStocksToSell) return false;
+    function sellStock(stock: Stock = selectedStock) {
+        const owned = portfolio[stock];
+        if (owned < currentQuantity) return false;
 
-        updateBalanceUI(money);
-        updateInvestedUI(totalInvested - money)
-        portfolio[stock] -= amountStocksToSell;
-        updatePortfolioUI()
+        let profit = currentQuantity * allPrices[stock][day];
+        trades.push({stock, price: allPrices[stock][day], amount: currentQuantity, date: day, transactionType: 'sell'});
+        portfolio[stock] -= currentQuantity;
+        currentQuantity = 0;
 
-        trades.push({
-            stock,
-            price: allPrices[stock][day],
-            amount: amountStocksToSell,
-            date: day,
-            transactionType: 'sell'
-        });
+        updateBalanceUI(profit);
+        updateTotalInvested(totalInvested)
         updatePortfolioUI()
+        updateQuantityUI();
+
         return true;
-
     }
 
     function addToBalance(amount: number) {
@@ -233,7 +223,7 @@ function createGameLogic() {
     function updateBalanceUI(amount: number) {
         balance += amount;
         const balanceElement = gameWorld.getRoomObjects()?.balance
-        if (balanceElement) updateTextValue(balanceElement, `Balance: $${balance}`)
+        if (balanceElement) updateTextValue(balanceElement, `Balance: $${Math.floor(balance)}`)
     }
 
     function update(delta: number): boolean {
@@ -270,7 +260,7 @@ function createGameLogic() {
     function updateAllUI() {
         updateBalanceUI(0)
         selectStock(selectedStock)
-        updateInvestedUI(totalInvested)
+        updateTotalInvested(totalInvested)
         updatePortfolioUI()
         updateProfitUI()
     }
@@ -289,10 +279,11 @@ function createGameLogic() {
         addToBalance,
         getSelectedStock,
         getTotalInvested,
-        getAmountToInvest,
-        setAmountToInvest,
         getProfit,
         getTotalValue,
+        incrementQuantity,
+        decrementQuantity,
+        getQuantity,
         getTime,
         updateAllUI
     };
