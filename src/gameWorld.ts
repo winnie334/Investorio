@@ -1,5 +1,5 @@
 import * as THREE from "three";
-import {Euler, Vector3} from "three";
+import {Euler, MeshBasicMaterial, Vector3} from "three";
 import {getGameLogic, Stock} from "./gameLogic.ts";
 import {loadGraphModel} from "./graph.ts";
 import {
@@ -165,10 +165,9 @@ function createGameWorld() {
             camera,
             canvas,
             onClick: () => gameLogic.buyStock(),
-            position: new Vector3(-3.8, 2.5, 20),
+            position: new Vector3(-3.8, 3.3, 19),
             scale: new Vector3(0.5, 0.5, 0.5),
             rotation: new Euler(Math.PI / 5, 0, 0),
-
         });
 
         const [sellButton,] = await loadModelInteractive(sellButtonModelUrl, {
@@ -176,7 +175,7 @@ function createGameWorld() {
             camera,
             canvas,
             onClick: () => gameLogic.sellStock(),
-            position: new Vector3(-3.8, 3.3, 19),
+            position: new Vector3(-3.8, 2.5, 20),
             scale: new Vector3(0.5, 0.5, 0.5),
             rotation: new Euler(Math.PI / 5, 0, 0),
         });
@@ -186,9 +185,9 @@ function createGameWorld() {
             camera,
             canvas,
             onClick: () => gameLogic.incrementQuantity(),
-            position: new Vector3(-0.5, 2.5, 20),
+            position: new Vector3(-6.3, 3.2, 19.5),
             scale: new Vector3(2, 2, 2),
-            rotation: new Euler(Math.PI / 5, 0, 0),
+            rotation: new Euler(Math.PI / 5, -Math.PI/2, 0),
         });
 
         const [minusButton,] = await loadModelInteractive(quantityMinusModelUrl, {
@@ -196,9 +195,9 @@ function createGameWorld() {
             camera,
             canvas,
             onClick: () => gameLogic.decrementQuantity(),
-            position: new Vector3(-2, 3, 19),
+            position: new Vector3(-6.3, 3.2, 19.5),
             scale: new Vector3(2, 2, 2),
-            rotation: new Euler(Math.PI / 5, 0, 0),
+            rotation: new Euler(Math.PI / 5, -Math.PI/2, 0),
         });
 
         const panel = await loadModel(panelModelUrl, {
@@ -212,9 +211,19 @@ function createGameWorld() {
 
         // Amount to invest display
         const quantityElement = addText(gameLogic.getQuantity(), {
-            position: new Vector3(-4.3, 5.2, 17),
+            position: new Vector3(-3.7, 5.6, 17),
             rotation: new Euler(-Math.PI / 5, 0, 0),
             scale: new Vector3(0.7, 0.7, 0.7),
+            color: 0x000000,
+            scene
+        });
+
+        // Total order preview
+        const orderElement = addText("$0", {
+            position: new Vector3(-4.7, 4.3, 19),
+            rotation: new Euler(-Math.PI / 5, 0, 0),
+            scale: new Vector3(0.5, 0.5, 0.5),
+            color: 0x000000,
             scene
         });
 
@@ -287,7 +296,7 @@ function createGameWorld() {
         })
 
 
-        if (!balance || !profit || !quantityElement || !portFolioTexts || !profit || !selectedStock) {
+        if (!balance || !profit || !orderElement || !portFolioTexts || !profit || !selectedStock) {
             console.error("One of the room objects is missing");
             return;
         }
@@ -300,6 +309,7 @@ function createGameWorld() {
             buyButton,
             sellButton,
             portFolioTexts: portFolioTexts,
+            orderElement: orderElement,
             selectStockModels,
             selectedStock,
             invested,

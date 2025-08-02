@@ -148,15 +148,24 @@ function createGameLogic() {
         });
     }
 
+    function updateOrderUI() {
+        const orderElement = gameWorld.getRoomObjects()?.orderElement;
+        if (!orderElement) return;
+
+        updateTextValue(orderElement, "$" + (currentQuantity * allPrices[selectedStock][day]).toFixed(1));
+    }
+
     function incrementQuantity() {
         currentQuantity += 1;
         updateQuantityUI();
+        updateOrderUI();
     }
 
     function decrementQuantity() {
         if (currentQuantity <= 0) return;
         currentQuantity -= 1;
         updateQuantityUI();
+        updateOrderUI();
     }
 
     function updateQuantityUI() {
@@ -227,7 +236,7 @@ function createGameLogic() {
         currentQuantity = 0;
 
         updateBalanceUI(profit);
-        updateTotalInvested(totalInvested)
+        updateTotalInvested(-profit)
         updatePortfolioUI()
         updateQuantityUI();
 
@@ -262,6 +271,7 @@ function createGameLogic() {
 
         updateGraphData(selectedStock, secondsPassed);
         updatePortfolioUI()
+        updateOrderUI()
 
         monkey?.update()
         rock?.update()
