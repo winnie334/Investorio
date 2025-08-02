@@ -98,7 +98,7 @@ function createGameLogic() {
         trades = [];
         hasGameStarted = true;
         time = 0;
-        portfolio = startPortfolio;
+        portfolio = {...startPortfolio};
         monkey = new ai(AiType.MONKEY, STARTING_BALANCE, stockToPricesMap)
         rock = new ai(AiType.ROCK, STARTING_BALANCE, stockToPricesMap)
     }
