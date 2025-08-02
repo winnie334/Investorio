@@ -8,7 +8,7 @@ import {
     type ModelLoadParams
 } from "./models.ts";
 
-const MAXVALUE = 10000;
+const MAXVALUE = 100000;
 
 let playerBar: THREE.Mesh;
 let monkeyBar: THREE.Mesh;

@@ -26,7 +26,7 @@ export function loadScene(key: SceneKey) {
     if (!factory) throw new Error(`Scene '${key}' not registered`);
 
     const {scene, camera, update} = factory();
-    if (isDev) addFreeCamControls(camera, getRenderer())
+    // if (isDev) addFreeCamControls(camera, getRenderer())
     currentScene = scene;
     currentCamera = camera;
     currentUpdate = update;

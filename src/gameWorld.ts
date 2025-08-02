@@ -1,6 +1,6 @@
 import * as THREE from "three";
 import {Euler, MeshBasicMaterial, Vector3} from "three";
-import {getGameLogic, Stock} from "./gameLogic.ts";
+import {CASH_VALUE, getGameLogic, Stock} from "./gameLogic.ts";
 import {loadGraphModel} from "./graph.ts";
 import {
     addText,
@@ -16,7 +16,13 @@ import {
     textBubbleUrl1,
     screenModelUrl,
     sellButtonModelUrl,
-    snowballModelUrl, potatoModelUrl, addInteractiveText, grannyModelUrl, monkeyModelUrl, anonymousModelUrl,
+    snowballModelUrl,
+    potatoModelUrl,
+    addInteractiveText,
+    grannyModelUrl,
+    monkeyModelUrl,
+    anonymousModelUrl,
+    cashModelUrl,
 } from "./models.ts";
 import {loadMonkeyComparator} from "./monkeyComparator.ts";
 
@@ -30,13 +36,26 @@ function createGameWorld() {
     let isLoaded = false
 
 
-    let roomObjects: Record<string, THREE.Mesh> | undefined
+
+    let roomObjects: Record<string, THREE.Mesh | THREE.Mesh[]> | undefined
+    const cashObjects = new Map<string, THREE.Mesh>();
 
     function isGameWorldLoaded() {
         return isLoaded;
     }
 
-    async function createRoom(scene: THREE.Scene, camera: THREE.Camera, canvas: HTMLCanvasElement) {
+    let scene: THREE.Scene
+    let camera: THREE.Camera
+    let canvas: HTMLCanvasElement
+
+    function init(newScene: THREE.Scene, newCamera: THREE.Camera, newCanvas: HTMLCanvasElement) {
+        scene = newScene
+        camera = newCamera
+        canvas = newCanvas
+    }
+
+    async function createRoom() {
+        if (!scene || !camera || !canvas) return
         isLoaded = false
         const gameLogic = getGameLogic();
 
@@ -399,9 +418,37 @@ function createGameWorld() {
 
     }
 
+    let i = 0
+
+    async function spawnCash() {
+        const gameLogic = getGameLogic();
+        const id = `${i++}`;
+
+        const [cash, clearCash] = await loadModelInteractive(cashModelUrl, {
+            scene,
+            camera,
+            canvas,
+            onClick: () => {
+                clearCash();
+                gameLogic.addToBalance(CASH_VALUE);
+                cashObjects.delete(id);
+                scene.remove(cash);
+            },
+            scale: new Vector3(2, 2, 2),
+            position: new Vector3(0, 1, 0),
+        });
+
+        cashObjects.set(id, cash);
+        return cash;
+    }
+
     function getRoomObjects() {
         return roomObjects;
     }
 
-    return {createRoom, isGameWorldLoaded, getRoomObjects};
+    function getCashObjects() {
+        return cashObjects;
+    }
+
+    return {createRoom, isGameWorldLoaded, getRoomObjects, init, spawnCash, getCashObjects};
 }

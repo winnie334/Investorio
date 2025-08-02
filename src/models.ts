@@ -19,6 +19,8 @@ import snowball from './assets/models/snowball.glb';
 import granny from './assets/models/granny.glb';
 import monkey from './assets/models/monkey.glb';
 import anonymous from './assets/models/anonymous.glb';
+import cash from './assets/models/cash.glb';
+import cash2 from './assets/models/Cheque.glb';
 
 import {
     Camera,
@@ -93,6 +95,8 @@ export const potatoModelUrl = potato;
 export const grannyModelUrl = granny;
 export const monkeyModelUrl = monkey;
 export const anonymousModelUrl = anonymous;
+export const cashModelUrl = cash;
+export const cashModelUrl2 = cash2;
 
 // Loaders
 const gltfLoader = new GLTFLoader();
