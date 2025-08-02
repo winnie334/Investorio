@@ -3,7 +3,6 @@ import {getGameWorld} from "./gameWorld.ts";
 import {updateTextValue} from "./models.ts";
 import {ai, AiType} from "./ai.ts";
 
-// @ts-ignore
 export enum Stock {
     WORLD,
     GRAIN,
@@ -29,14 +28,12 @@ export const startPortfolio: Record<Stock, number> = {
 };
 
 const STARTING_BALANCE = 1000
-const UPDATE_LOGIC_TIME_INTERVAL_IN_SECONDS = 1
-const GAME_DURATION_IN_SECONDS = 3600;
+const SECS_PER_DAY = 1
+const DAYS_PER_YEAR = 12; // We only have 500 stock data points xp
 const FINAL_AGE = 60;
 const STARTING_AGE = 20;
 
-
 let gameLogic = createGameLogic();
-
 
 export let allPrices: number[][] = [];
 async function loadPriceData() {
@@ -64,34 +61,21 @@ function createGameLogic() {
     let balance = STARTING_BALANCE;
     let trades: Trade[] = [];
     let isGameFinished = false;
-    let hasGameStarted = false;
-    let time = 0; // in seconds
+    let secondsPassed = 0; // in seconds
     let day = 0;
+    let year = 0;
     let totalInvested = 0
-
-    let currentAge = STARTING_AGE;
 
     let portfolio: Record<Stock, number> = {...startPortfolio};
 
-    let timeLeftBeforeLogicUpdate = UPDATE_LOGIC_TIME_INTERVAL_IN_SECONDS;
+    let timeBeforeNextDay = SECS_PER_DAY;
     let selectedStock: Stock = Stock.WORLD;
 
 
     let amountMoneyToInvest = 50;
 
-    let monkey: ai | undefined
-    let rock: ai | undefined
-
-
-    function start() {
-        balance = STARTING_BALANCE;
-        trades = [];
-        hasGameStarted = true;
-        time = 0;
-        portfolio = {...startPortfolio};
-        monkey = new ai(AiType.MONKEY, STARTING_BALANCE)
-        rock = new ai(AiType.ROCK, STARTING_BALANCE)
-    }
+    let monkey = new ai(AiType.MONKEY, STARTING_BALANCE)
+    let rock = new ai(AiType.ROCK, STARTING_BALANCE)
 
     function getBalance() {
         return balance;
@@ -106,7 +90,7 @@ function createGameLogic() {
     }
 
     function getAge() {
-        return currentAge
+        return STARTING_AGE + year;
     }
 
     function getPortfolioValue() {
@@ -120,7 +104,7 @@ function createGameLogic() {
     function selectStock(stock: Stock) {
         console.log("Selected", stock)
         selectedStock = stock;
-        updateGraphData(stock, time);
+        updateGraphData(stock, secondsPassed);
     }
 
     function getTotalInvested() {
@@ -167,7 +151,7 @@ function createGameLogic() {
     }
 
     function getTime() {
-        return time;
+        return secondsPassed;
     }
 
     function sellStock(stock: Stock = selectedStock, money: number = amountMoneyToInvest) {
@@ -195,17 +179,22 @@ function createGameLogic() {
     }
 
     function update(delta: number): boolean {
-        if (isGameFinished || !hasGameStarted) return false;
+        if (isGameFinished) return false;
 
-        timeLeftBeforeLogicUpdate -= delta;
-        if (timeLeftBeforeLogicUpdate > 0) return false;
+        timeBeforeNextDay -= delta;
+        if (timeBeforeNextDay > 0) return false;
 
-        timeLeftBeforeLogicUpdate = UPDATE_LOGIC_TIME_INTERVAL_IN_SECONDS; // todo make updates consistent
-        time += UPDATE_LOGIC_TIME_INTERVAL_IN_SECONDS;
-        if (time > GAME_DURATION_IN_SECONDS) isGameFinished = true;
-        currentAge = Math.min(FINAL_AGE, Math.floor(time / GAME_DURATION_IN_SECONDS * (FINAL_AGE - STARTING_AGE) + STARTING_AGE));
+        return dayUpdate();
+    }
 
-        updateGraphData(selectedStock, time);
+    function dayUpdate() {
+        day++;
+        timeBeforeNextDay = SECS_PER_DAY; // todo make updates consistent
+        secondsPassed += SECS_PER_DAY;
+
+        if (day % DAYS_PER_YEAR == 0) yearUpdate();
+
+        updateGraphData(selectedStock, secondsPassed);
 
         monkey?.update()
         rock?.update()
@@ -213,6 +202,11 @@ function createGameLogic() {
         return true;
     }
 
+    function yearUpdate() {
+        year++
+        // Todo get recurring income
+        if (year == FINAL_AGE) isGameFinished = true;
+    }
 
     return {
         getBalance,
@@ -221,7 +215,6 @@ function createGameLogic() {
         buyStock,
         sellStock,
         update,
-        start,
         isFinished: () => isGameFinished,
         getAge,
         getNetWorth,

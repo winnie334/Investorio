@@ -32,7 +32,6 @@ export function createGameScreen() {
     const logic = getGameLogic()
     const gameWorld = getGameWorld()
     gameWorld.createRoom(scene, camera, canvas)
-    logic.start()
 
     function update(deltaT: number) {
         logic.update(deltaT)
