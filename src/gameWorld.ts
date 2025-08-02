@@ -87,29 +87,29 @@ function createGameWorld() {
         backWall.receiveShadow = true;
         scene.add(backWall);
 
-        loadModelInteractive(grannyModelUrl, {
-            scene,
-            camera,
-            canvas,
-            onClick: () => {
-                console.log("I am a granny")
-            },
-            scale: new Vector3(1.5, 1.5, 1.5),
-            position: new Vector3(-8, -1, 8),
-        })
-
-
-        loadModelInteractive(monkeyModelUrl, {
-            scene,
-            camera,
-            canvas,
-            onClick: () => {
-                console.log("I am a granny")
-            },
-            scale: new Vector3(0.8, 0.8, 0.8),
-            position: new Vector3(7, 2, 8),
-            rotation: new Euler(0, -Math.PI/2, 0),
-        })
+        // loadModelInteractive(grannyModelUrl, {
+        //     scene,
+        //     camera,
+        //     canvas,
+        //     onClick: () => {
+        //         console.log("I am a granny")
+        //     },
+        //     scale: new Vector3(1.5, 1.5, 1.5),
+        //     position: new Vector3(-8, -1, 8),
+        // })
+        //
+        //
+        // loadModelInteractive(monkeyModelUrl, {
+        //     scene,
+        //     camera,
+        //     canvas,
+        //     onClick: () => {
+        //         console.log("I am a granny")
+        //     },
+        //     scale: new Vector3(0.8, 0.8, 0.8),
+        //     position: new Vector3(7, 2, 8),
+        //     rotation: new Euler(0, -Math.PI/2, 0),
+        // })
 
 
         const modelConfigs = [
@@ -319,6 +319,13 @@ function createGameWorld() {
             scene
         })
 
+        // text on the graph, aka end text
+        const graphText = addText(``, {
+            position: new Vector3(-7.4, 17, -13.8),
+            color: 0x000000,
+            scene
+        })
+
 
         if (!balance || !profit || !orderElement || !portFolioTexts || !profit || !selectedStock) {
             console.error("One of the room objects is missing");
@@ -336,6 +343,7 @@ function createGameWorld() {
             orderElement: orderElement,
             selectStockModels,
             selectedStock,
+            graphText,
             invested,
             year
         };

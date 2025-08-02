@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import {Scene, Group} from 'three';
 import {addText} from "./models.ts";
-import {allPrices, type Stock} from "./gameLogic.ts";
+import {allPrices, getGameLogic, type Stock} from "./gameLogic.ts";
 
 let MAX_VALUES = 47;
 let CUBE_WIDTH = 0.07;
@@ -47,8 +47,9 @@ export function updateGraphData(stock: Stock, day: number) {
     cubeGroup.add(createBg());
     cubeGroup.add(createBgOutline());
 
-    // const start = Math.max(0, values.length - MAX_VALUES);
+    if (getGameLogic().getFinishTime() != -1) MAX_VALUES -= 3
     const visibleValues = allPrices[stock].slice(Math.max(0, day-MAX_VALUES+1), day+1) // +1 so day is included
+    if (MAX_VALUES == 0) return
 
     const min = Math.min(...visibleValues);
     const max = Math.max(...visibleValues);

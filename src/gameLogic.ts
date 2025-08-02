@@ -1,15 +1,16 @@
 import {updateGraphData} from "./graph.ts";
 import {getGameWorld} from "./gameWorld.ts";
-import {updateTextValue} from "./models.ts";
+import {addText, updateTextValue} from "./models.ts";
 import {ai, AiType} from "./ai.ts";
 import * as THREE from "three";
+import {Vector3} from "three";
 
 export enum Stock {
     Apple,
     Potato,
     Fish,
     MoonLoops,
-    WORLD, // TODO important that this on is on the same index as sp500
+    WORLD,
 }
 
 export const stockNames = {
@@ -38,8 +39,8 @@ export const startPortfolio: Record<Stock, number> = {
 
 const STARTING_BALANCE = 1000
 const SECS_PER_DAY = 1
-const DAYS_PER_YEAR = 12; // We only have 500 stock data points xp
-const FINAL_AGE = 60;
+const DAYS_PER_YEAR = 5; // We only have 500 stock data points xp
+const FINAL_AGE = 31;
 const STARTING_AGE = 20;
 
 let gameLogic = createGameLogic();
@@ -71,7 +72,7 @@ function createGameLogic() {
 
     let balance = STARTING_BALANCE;
     let trades: Trade[] = [];
-    let isGameFinished = false;
+    let gameFinishTime = -1;
     let secondsPassed = 0; // in seconds
     let day = 0;
     let year = 0;
@@ -256,29 +257,34 @@ function createGameLogic() {
         if (balanceElement) updateTextValue(balanceElement, `Balance: $${Math.floor(balance)}`)
     }
 
-    function update(delta: number): boolean {
-        if (isGameFinished) return false;
+    function update(delta: number) {
+        if (gameFinishTime != -1) {
+            endUpdate();
+            return
+        }
 
         timeBeforeNextDay -= delta;
+        secondsPassed += delta;
         if (timeBeforeNextDay > 0) return false;
 
-        return dayUpdate();
+        while (timeBeforeNextDay < 0) {
+            dayUpdate();
+            timeBeforeNextDay += SECS_PER_DAY
+        }
+
     }
 
     function dayUpdate() {
         day++;
-        timeBeforeNextDay = SECS_PER_DAY; // todo make updates consistent
-        secondsPassed += SECS_PER_DAY;
 
-        if (day % DAYS_PER_YEAR == 0) yearUpdate();
-
-        updateGraphData(selectedStock, secondsPassed);
+        updateGraphData(selectedStock, day);
         updatePortfolioUI()
         updateOrderUI()
 
         monkey?.update()
         rock?.update()
 
+        if (day % DAYS_PER_YEAR == 0) yearUpdate();
         return true;
     }
 
@@ -288,8 +294,11 @@ function createGameLogic() {
         updateTextValue(element, `Year: ${year}`)
 
         // Todo get recurring income
-        if (year == FINAL_AGE) isGameFinished = true;
+        if (year + STARTING_AGE >= FINAL_AGE && gameFinishTime == -1) triggerEnding()
+    }
 
+    function getFinishTime() {
+        return gameFinishTime;
     }
 
     function updateAllUI() {
@@ -300,6 +309,16 @@ function createGameLogic() {
         updateProfitUI()
     }
 
+    function triggerEnding() {
+        gameFinishTime = getGameLogic().getTime();
+        updateGraphData(selectedStock, day+100000);
+        updateTextValue(gameWorld.getRoomObjects()?.graphText, "Your journey has come\nto an end.\nYour net worth is:\n$" + getPortfolioValue())
+        console.log("triggered")
+    }
+
+    function endUpdate() {
+    }
+
     return {
         getBalance,
         getTrades,
@@ -307,7 +326,6 @@ function createGameLogic() {
         buyStock,
         sellStock,
         update,
-        isFinished: () => isGameFinished,
         getAge,
         getNetWorth,
         selectStock,
@@ -316,6 +334,7 @@ function createGameLogic() {
         getTotalInvested,
         getProfit,
         getTotalValue,
+        getFinishTime,
         incrementQuantity,
         decrementQuantity,
         getQuantity,
