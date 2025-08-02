@@ -17,6 +17,7 @@ import potato from './assets/models/potato.glb';
 import snowball from './assets/models/snowball.glb';
 import granny from './assets/models/granny.glb';
 import monkey from './assets/models/monkey.glb';
+import anonymous from './assets/models/anonymous.glb';
 
 import {
     Camera,
@@ -65,9 +66,9 @@ export interface InteractiveTextAddParams extends TextAddParams {
 
 // Constants
 const defaultFontUrl = new URL('./assets/fonts/nata.json', import.meta.url).href;
-const defaultScale = new Vector3(1, 1, 1);
-const defaultPosition = new Vector3(0, 0, 0);
-const defaultRotation = new Euler(0, 0, 0);
+export const defaultScale = new Vector3(1, 1, 1);
+export const defaultPosition = new Vector3(0, 0, 0);
+export const defaultRotation = new Euler(0, 0, 0);
 const defaultTextGeometryParams: Partial<TextGeometryParameters> = {
     size: 1,
     depth: 0.1
@@ -87,6 +88,7 @@ export const snowballModelUrl = snowball;
 export const potatoModelUrl = potato;
 export const grannyModelUrl = granny;
 export const monkeyModelUrl = monkey;
+export const anonymousModelUrl = anonymous;
 
 // Loaders
 const gltfLoader = new GLTFLoader();
