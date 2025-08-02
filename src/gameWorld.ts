@@ -28,7 +28,7 @@ import {loadMonkeyComparator} from "./monkeyComparator.ts";
 
 const gameWorld = createGameWorld();
 
-enum Character {
+export enum Character {
     MONKEY,
     GRANNY,
     NARRATOR
@@ -521,16 +521,16 @@ function createGameWorld() {
     }
 
     type ShowTextOptions = {
-        duration?: number;
         onDone?: () => void;
         character?: Character;
+        fadeout?: boolean;
     };
 
     function showText(
         text: string,
         options: ShowTextOptions = {}
     ) {
-        const {duration, onDone, character} = options;
+        const {onDone, character, fadeout} = options;
         const characterToUse = character || Character.NARRATOR;
 
         bubbleMesh.visible = true;
@@ -558,7 +558,11 @@ function createGameWorld() {
             return {object: lineText, line};
         });
 
-        animateTextReveal(textObjects, 30);
+        animateTextReveal(textObjects, 30, () => { // fade out dialogue after last character is printed
+            setTimeout(() => {
+                fadeOutText(bubbleMesh, characterPortraits[characterToUse], textObjects, fadeout ? 500 : 0, cleanup);
+            }, 1000);
+        });
 
         let timeoutId: number | undefined;
 
@@ -582,12 +586,6 @@ function createGameWorld() {
         };
 
         window.addEventListener('click', onClick);
-
-        if (duration) {
-            timeoutId = window.setTimeout(() => {
-                fadeOutText(bubbleMesh, characterPortraits[characterToUse], textObjects, 500, cleanup);
-            }, duration);
-        }
     }
 
 
@@ -651,7 +649,7 @@ function createGameWorld() {
         return lines;
     }
 
-    function animateTextReveal(textObjects, delay = 50) {
+    function animateTextReveal(textObjects, delay = 50, onComplete?: () => void) {
         let currentLine = 0;
         let currentChar = 0;
 
@@ -671,6 +669,8 @@ function createGameWorld() {
 
             if (currentLine < textObjects.length) {
                 setTimeout(update, delay);
+            } else {
+                if (onComplete) onComplete();
             }
         }
 

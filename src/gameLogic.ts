@@ -285,7 +285,6 @@ function createGameLogic() {
             dayUpdate();
             timeBeforeNextDay += SECS_PER_DAY
         }
-
     }
 
     function dayUpdate() {
@@ -299,8 +298,6 @@ function createGameLogic() {
             rock.balance += CASH_VALUE;
         }
 
-        if (day % DAYS_PER_YEAR == 0) yearUpdate();
-
         updateGraphData(selectedStock, day);
         updateMonkeyComparator()
         updatePortfolioUI()
@@ -309,7 +306,7 @@ function createGameLogic() {
         monkey?.update()
         rock?.update()
 
-
+        if (day % DAYS_PER_YEAR == 0) yearUpdate();
         return true;
     }
 
@@ -318,7 +315,6 @@ function createGameLogic() {
         const element = gameWorld.getRoomObjects().year
         updateTextValue(element, `Year: ${year}`)
 
-        // Todo get recurring income
         if (year + STARTING_AGE >= FINAL_AGE && gameFinishTime == -1) triggerEnding()
     }
 
@@ -352,10 +348,6 @@ function createGameLogic() {
     function endUpdate() {
     }
 
-    function tapBubble() {
-        narrator.tapBubble();
-    }
-
     return {
         getBalance,
         getTrades,
@@ -380,6 +372,5 @@ function createGameLogic() {
         updateAllUI,
         getMonkeyScore,
         getStoneScore,
-        tapBubble
     };
 }

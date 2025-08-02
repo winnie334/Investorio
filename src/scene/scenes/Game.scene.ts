@@ -29,14 +29,6 @@ export function createGameScreen() {
     gameWorld.init(scene, camera, canvas)
     gameWorld.createRoom()
 
-    setTimeout(() => {
-        gameWorld.showText("Winand Jij bent een coole gast en het doet me ontzettend veel pijn maar deze code suckt echt balls. Hopelijk moet je er niet aan komen", {
-            duration: 10000,
-            onDone: () => console.log("done")
-        })
-    }, 1000)
-
-
     function update(deltaT: number) {
         logic.update(deltaT)
         const models = gameWorld.getRoomObjects()?.selectStockModels as THREE.Mesh[]
