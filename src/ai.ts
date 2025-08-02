@@ -1,4 +1,4 @@
-import {allPrices, startPortfolio, Stock} from "./gameLogic.ts";
+import {allPrices, startPortfolio, Stock, stockNames} from "./gameLogic.ts";
 import {getGameLogic} from "./gameLogic.ts";
 
 export enum AiType {
@@ -27,7 +27,9 @@ export class ai {
     update() { // should be called once a day!
         if (this.type === AiType.MONKEY) {
             if (Math.random() < MONKEY_CHANCE) this.monkeyLogic()
-        } else while (this.balance >= allPrices[Stock.WORLD][day()]) this.buy(Stock.WORLD, 1);
+        } else if (this.balance >= allPrices[Stock.WORLD][day()]) {
+            this.buy(Stock.WORLD, Math.floor(this.balance / allPrices[Stock.WORLD][day()]));
+        }
     }
 
     monkeyLogic() {
@@ -35,16 +37,15 @@ export class ai {
             // Monkey buys something, get all stocks that we can buy at least one of
             const affordable = Object.entries(allPrices).filter(([_, p]) => p[day()] <= this.balance);
             if (affordable.length > 0) {
-                console.log(affordable)
                 // Pick a random one and buy a random amount
-                const [i, p] = affordable[Math.random() * affordable.length];
+                const [i, p] = affordable[Math.floor(Math.random() * affordable.length)];
                 this.buy(+i, Math.floor(Math.random() * this.balance / p[day()]) + 1);
             }
         } else {
             // Sell a random amount of stocks that we have at least one of
             const owned = Object.entries(this.portfolio).filter(([_, q]) => q > 0);
             if (owned.length > 0) {
-                const [i, q] = owned[Math.random() * owned.length];
+                const [i, q] = owned[Math.floor(Math.random() * owned.length)];
                 this.sell(+i, Math.floor(Math.random() * q) + 1);
             }
         }
@@ -60,6 +61,7 @@ export class ai {
 
         this.balance -= cost;
         this.portfolio[stock] += quantity;
+        console.log(this.type + " bought " + quantity + " " + stockNames[stock] + " for $" + cost.toFixed(1))
     }
 
     sell(stock: Stock, quantity: number) {
@@ -67,5 +69,6 @@ export class ai {
 
         this.portfolio[stock] -= quantity;
         this.balance += allPrices[stock][day()] * quantity;
+        console.log(this.type + " sold " + quantity + " " + stockNames[stock] + " for $" + (allPrices[stock][day()] * quantity).toFixed(1))
     }
 }

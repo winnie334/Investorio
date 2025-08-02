@@ -47,12 +47,13 @@ let gameLogic = createGameLogic();
 export let allPrices: number[][] = [];
 
 async function loadPriceData() {
-    const files = ['iwda', 'bats', 'gme', 'irtc', 'baba'];
+    const files = ['baba', 'irtc', 'bats', 'gme', 'iwda'];
     allPrices = await Promise.all(
         files.map(f =>
             fetch(`/${f}.csv`)
                 .then(r => r.text())
                 .then(t => t.trim().split('\n').slice(1).map(l => parseFloat(l.split(',')[4].replace(/"/g, ''))))
+                .then(t => t.reverse())
         )
     );
 }
