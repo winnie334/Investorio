@@ -5,19 +5,19 @@ import {ai, AiType} from "./ai.ts";
 import * as THREE from "three";
 
 export enum Stock {
-    GRAIN,
-    WEED,
-    TUNGSTEN,
-    CURCUMA,
+    Apple,
+    Potato,
+    Fish,
+    MoonLoops,
     WORLD, // TODO important that this on is on the same index as sp500
 }
 
 export const stockNames = {
     [Stock.WORLD]: 'World',
-    [Stock.GRAIN]: 'Grain',
-    [Stock.WEED]: 'Weed',
-    [Stock.TUNGSTEN]: 'Tungsten',
-    [Stock.CURCUMA]: 'Curcuma',
+    [Stock.Potato]: 'Potatos',
+    [Stock.Apple]: 'Apples',
+    [Stock.Fish]: 'Fish',
+    [Stock.MoonLoops]: 'Moonloops',
 }
 
 export type Trade = {
@@ -30,10 +30,10 @@ export type Trade = {
 
 export const startPortfolio: Record<Stock, number> = {
     [Stock.WORLD]: 0,
-    [Stock.GRAIN]: 0,
-    [Stock.WEED]: 0,
-    [Stock.TUNGSTEN]: 0,
-    [Stock.CURCUMA]: 0
+    [Stock.Potato]: 0,
+    [Stock.Apple]: 0,
+    [Stock.Fish]: 0,
+    [Stock.MoonLoops]: 0
 };
 
 const STARTING_BALANCE = 1000
@@ -120,7 +120,7 @@ function createGameLogic() {
         if (!selectedStockElement) return;
         updateTextValue(
             selectedStockElement,
-            `Selected Stock: ${stockNames[getSelectedStock()] || 'None'}`
+            `Stock: ${stockNames[getSelectedStock()] || 'None'}`
         );
 
         const models = gameWorld.getRoomObjects().selectStockModels as THREE.Mesh[];
@@ -271,8 +271,12 @@ function createGameLogic() {
 
     function yearUpdate() {
         year++
+        const element = gameWorld.getRoomObjects().year
+        updateTextValue(element, `Year: ${year}`)
+
         // Todo get recurring income
         if (year == FINAL_AGE) isGameFinished = true;
+
     }
 
     function updateAllUI() {

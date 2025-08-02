@@ -15,7 +15,7 @@ import {
     quantityPlusModelUrl,
     screenModelUrl,
     sellButtonModelUrl,
-    snowballModelUrl, potatoModelUrl,
+    snowballModelUrl, potatoModelUrl, addInteractiveText,
 } from "./models.ts";
 
 const gameWorld = createGameWorld();
@@ -91,27 +91,27 @@ function createGameWorld() {
         const modelConfigs = [
             {
                 url: appleModelUrl,
-                position: new Vector3(-7, 4, -12),
+                position: new Vector3(-8, 5, -12),
                 scale: new Vector3(1.5, 1.5, 1.5),
             },
             {
                 url: potatoModelUrl,
-                position: new Vector3(-4, 4, -12),
-                scale: new Vector3(0.01, 0.01, 0.01),
+                position: new Vector3(-4, 3.5, -12),
+                scale: new Vector3(0.012, 0.012, 0.012),
             },
             {
                 url: fishModelUrl,
-                position: new Vector3(-1, 4, -12),
-                scale: new Vector3(0.5, 0.5, 0.5),
+                position: new Vector3(0, 3.8, -12),
+                scale: new Vector3(0.35, 0.35, 0.35),
             },
             {
                 url: snowballModelUrl,
-                position: new Vector3(2, 4, -12),
+                position: new Vector3(4, 5.5, -12),
                 scale: new Vector3(1.5, 1.5, 1.5),
             },
             {
                 url: planetModelUrl,
-                position: new Vector3(5, 4, -12),
+                position: new Vector3(8, 4, -12),
                 scale: new Vector3(1.5, 1.5, 1.5),
             },
         ];
@@ -142,7 +142,6 @@ function createGameWorld() {
         }
 
 
-
         // Left wall
         const leftWall = new THREE.Mesh(new THREE.BoxGeometry(wallThickness, wallHeight, roomDepth), wallMaterial);
         leftWall.position.set(-roomWidth / 2, wallHeight / 2, 0);
@@ -155,10 +154,8 @@ function createGameWorld() {
         rightWall.receiveShadow = true;
         scene.add(rightWall);
 
-        const m =
 
-
-            loadGraphModel(scene, -4, 6, -14, new Euler(Math.PI / 2, 0, 0), 4);
+        loadGraphModel(scene, -4, 6, -14, new Euler(Math.PI / 2, 0, 0), 4);
 
 
         // Buy/Sell/Quantity buttons
@@ -284,6 +281,11 @@ function createGameWorld() {
 
         isLoaded = true
 
+        const year = addText(`Year: 0`, {
+            position: new Vector3(-8, 21, -13),
+            scene
+        })
+
 
         if (!balance || !profit || !quantityElement || !portFolioTexts || !profit || !selectedStock) {
             console.error("One of the room objects is missing");
@@ -300,7 +302,8 @@ function createGameWorld() {
             portFolioTexts: portFolioTexts,
             selectStockModels,
             selectedStock,
-            invested
+            invested,
+            year
         };
 
         gameLogic.updateAllUI()
