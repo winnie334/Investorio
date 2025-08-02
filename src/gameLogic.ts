@@ -42,6 +42,8 @@ const SECS_PER_DAY = 1
 const DAYS_PER_YEAR = 5; // We only have 500 stock data points xp
 const FINAL_AGE = 31;
 const STARTING_AGE = 20;
+const SPAWN_CASH_EVERY_X_DAY = 5 // amount of days for cash to spawn in
+export const CASH_VALUE = 500
 
 let gameLogic = createGameLogic();
 
@@ -87,6 +89,8 @@ function createGameLogic() {
 
     let monkey = new ai(AiType.MONKEY, STARTING_BALANCE)
     let rock = new ai(AiType.ROCK, STARTING_BALANCE)
+
+    let daysBeforeSalary = SPAWN_CASH_EVERY_X_DAY;
 
     function getBalance() {
         return balance;
@@ -277,6 +281,16 @@ function createGameLogic() {
     function dayUpdate() {
         day++;
 
+        daysBeforeSalary--;
+        if (daysBeforeSalary == 0) {
+            daysBeforeSalary = SPAWN_CASH_EVERY_X_DAY;
+            gameWorld.spawnCash()
+            monkey.balance += CASH_VALUE;
+            rock.balance += CASH_VALUE;
+        }
+
+        if (day % DAYS_PER_YEAR == 0) yearUpdate();
+
         updateGraphData(selectedStock, day);
         updateMonkeyComparator()
         updatePortfolioUI()
@@ -285,7 +299,7 @@ function createGameLogic() {
         monkey?.update()
         rock?.update()
 
-        if (day % DAYS_PER_YEAR == 0) yearUpdate();
+
         return true;
     }
 
@@ -327,6 +341,7 @@ function createGameLogic() {
 
     function endUpdate() {
     }
+
 
     return {
         getBalance,

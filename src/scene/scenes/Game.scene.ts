@@ -11,7 +11,7 @@ export function createGameScreen() {
 
     const camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 0.1, 1000);
 
-    // I do not understand why a timeout is necessary lol -> very cool
+    // I do not understand why a timeout is necessary lol -> very cool --> sisi :(
     setTimeout(() => {
         camera.position.set(0, 20, 40);
         camera.lookAt(new THREE.Vector3(0, 5, 0));
@@ -26,16 +26,25 @@ export function createGameScreen() {
 
     const logic = getGameLogic()
     const gameWorld = getGameWorld()
-    gameWorld.createRoom(scene, camera, canvas)
+    gameWorld.init(scene, camera, canvas)
+    gameWorld.createRoom()
+
 
     function update(deltaT: number) {
         logic.update(deltaT)
         const models = gameWorld.getRoomObjects()?.selectStockModels as THREE.Mesh[]
-        if (!models) return
+        if (models) {
+            models.forEach(model => {
+                model.rotation.y += deltaT / 2
+            })
+        }
 
-        models.forEach(model => {
-            model.rotation.y += deltaT/2
-        })
+        const cash = gameWorld.getCashObjects();
+        cash.forEach((cashObject, id) => {
+            cashObject.rotation.y += deltaT / 4
+        });
+
+
     }
 
     return {scene, camera, renderer, update};
