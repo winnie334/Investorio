@@ -30,7 +30,8 @@ export function createGameScreen() {
 
     function update(deltaT: number) {
         logic.update(deltaT)
-        const models = gameWorld.getRoomObjects().selectStockModels as THREE.Mesh[]
+        const models = gameWorld.getRoomObjects()?.selectStockModels as THREE.Mesh[]
+        if (!models) return
 
         models.forEach(model => {
             model.rotation.y += deltaT/2
