@@ -76,7 +76,7 @@ export const defaultPosition = new Vector3(0, 0, 0);
 export const defaultRotation = new Euler(0, 0, 0);
 const defaultTextGeometryParams: Partial<TextGeometryParameters> = {
     size: 1,
-    depth: 0.1
+    depth: 0.1,
 };
 
 // Model URLs
@@ -206,7 +206,7 @@ export function addText(title: any, params: TextAddParams = {}): Mesh | undefine
         ...geometryParams,
     });
 
-    const material = new MeshBasicMaterial({color});
+    const material = new MeshBasicMaterial({color, transparent: true, opacity: 1});
     const textMesh = new Mesh(textGeometry, material);
     textMesh.position.copy(position);
     textMesh.rotation.copy(rotation);
