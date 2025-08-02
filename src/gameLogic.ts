@@ -231,7 +231,7 @@ function createGameLogic() {
     }
 
     function getTime() {
-        return secondsPassed;
+        return day;
     }
 
     function sellStock(stock: Stock = selectedStock) {
