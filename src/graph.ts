@@ -61,7 +61,7 @@ export function updateGraphData(stock: Stock, day: number) {
 
     visibleValues.forEach((val, index) => {
         const geometry = new THREE.BoxGeometry(CUBE_WIDTH, CUBE_WIDTH / 2, CUBE_WIDTH * 3);
-        const material = new THREE.MeshStandardMaterial({color: new THREE.Color(`hsl(${val * 20}, 100%, 50%)`)});
+        const material = new THREE.MeshStandardMaterial({color: new THREE.Color(`hsl(${val * 10}, 100%, 50%)`)});
         const cube = new THREE.Mesh(geometry, material);
 
         const scaledZ = graphMin - ((val - min) / range) * graphHeight;
@@ -70,7 +70,13 @@ export function updateGraphData(stock: Stock, day: number) {
         cubeGroup?.add(cube);
     });
 
-    for (let i = Math.ceil(min); i <= Math.floor(max); i++) {
+    let start = Math.ceil(min)
+    let stepHeight = 1
+    if (range > 15) {
+        stepHeight = 5
+        start = Math.ceil(min) + stepHeight - (Math.ceil(min) % stepHeight)
+    }
+    for (let i = start; i <= Math.floor(max); i += stepHeight) {
         const scaledZ = graphMin - ((i - min) / range) * graphHeight;
 
         const geometry = new THREE.BoxGeometry(BG_WIDTH * 0.85, CUBE_WIDTH / 2, CUBE_WIDTH / 5);
