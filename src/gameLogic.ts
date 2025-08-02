@@ -3,6 +3,7 @@ import {getGameWorld} from "./gameWorld.ts";
 import {updateTextValue} from "./models.ts";
 import {ai, AiType} from "./ai.ts";
 import * as THREE from "three";
+import {updateMonkeyComparator} from "./monkeyComparator.ts";
 
 export enum Stock {
     Apple,
@@ -207,7 +208,7 @@ function createGameLogic() {
     function buyStock(stock: Stock = selectedStock) {
         const currentPrice = allPrices[stock][day]
         let total = currentPrice * currentQuantity;
-        if (total > balance) return false;
+        if (total > balance || total == 0) return false;
 
         portfolio[stock] += currentQuantity;
         currentQuantity = 0;
@@ -273,11 +274,13 @@ function createGameLogic() {
         if (day % DAYS_PER_YEAR == 0) yearUpdate();
 
         updateGraphData(selectedStock, secondsPassed);
+        updateMonkeyComparator()
         updatePortfolioUI()
         updateOrderUI()
 
         monkey?.update()
         rock?.update()
+
 
         return true;
     }
@@ -290,6 +293,18 @@ function createGameLogic() {
         // Todo get recurring income
         if (year == FINAL_AGE) isGameFinished = true;
 
+    }
+
+    function getScore() {
+        return getPortfolioValue() + balance || 0
+    }
+
+    function getMonkeyScore() {
+        return monkey?.getPortfolioValue() + monkey.balance || 0
+    }
+
+    function getStoneScore() {
+        return rock?.getPortfolioValue() + rock.balance || 0
     }
 
     function updateAllUI() {
@@ -320,6 +335,9 @@ function createGameLogic() {
         decrementQuantity,
         getQuantity,
         getTime,
-        updateAllUI
+        updateAllUI,
+        getMonkeyScore,
+        getStoneScore,
+        getScore
     };
 }

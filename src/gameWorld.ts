@@ -15,8 +15,9 @@ import {
     quantityPlusModelUrl,
     screenModelUrl,
     sellButtonModelUrl,
-    snowballModelUrl, potatoModelUrl, addInteractiveText, grannyModelUrl, monkeyModelUrl,
+    snowballModelUrl, potatoModelUrl, addInteractiveText, grannyModelUrl, monkeyModelUrl, anonymousModelUrl,
 } from "./models.ts";
+import {loadMonkeyComparator} from "./monkeyComparator.ts";
 
 const gameWorld = createGameWorld();
 
@@ -87,6 +88,13 @@ function createGameWorld() {
         backWall.receiveShadow = true;
         scene.add(backWall);
 
+        loadMonkeyComparator({
+            scene,
+            width: 20,
+            rotation: new Euler(0, Math.PI / 2, 0),
+            position: new Vector3(-4, 16.8, -14)
+        });
+
         loadModelInteractive(grannyModelUrl, {
             scene,
             camera,
@@ -94,8 +102,9 @@ function createGameWorld() {
             onClick: () => {
                 console.log("I am a granny")
             },
-            scale: new Vector3(1.5, 1.5, 1.5),
-            position: new Vector3(-8, -1, 8),
+            scale: new Vector3(1.3, 1.3, 1.3),
+            rotation: new Euler(Math.PI / 2, 0, 0),
+            position: new Vector3(-7, 16.7, -13),
         })
 
 
@@ -106,36 +115,48 @@ function createGameWorld() {
             onClick: () => {
                 console.log("I am a granny")
             },
-            scale: new Vector3(0.8, 0.8, 0.8),
-            position: new Vector3(7, 2, 8),
-            rotation: new Euler(0, -Math.PI/2, 0),
+            scale: new Vector3(1.3, 1.3, 1.3),
+            rotation: new Euler(Math.PI / 2, 0, 0),
+            position: new Vector3(-7, 19.5, -13),
+        })
+
+        loadModelInteractive(anonymousModelUrl, {
+            scene,
+            camera,
+            canvas,
+            onClick: () => {
+                console.log("I am a granny")
+            },
+            scale: new Vector3(1.3, 1.3, 1.3),
+            rotation: new Euler(Math.PI / 2, 0, 0),
+            position: new Vector3(-7, 22.5, -13),
         })
 
 
         const modelConfigs = [
             {
                 url: appleModelUrl,
-                position: new Vector3(-8, 5, -12),
+                position: new Vector3(-8, 2, -12),
                 scale: new Vector3(1.5, 1.5, 1.5),
             },
             {
                 url: potatoModelUrl,
-                position: new Vector3(-4, 3.5, -12),
+                position: new Vector3(-4, 0.5, -12),
                 scale: new Vector3(0.012, 0.012, 0.012),
             },
             {
                 url: fishModelUrl,
-                position: new Vector3(0, 3.8, -12),
+                position: new Vector3(0, 0.8, -12),
                 scale: new Vector3(0.35, 0.35, 0.35),
             },
             {
                 url: snowballModelUrl,
-                position: new Vector3(4, 5.5, -12),
+                position: new Vector3(4, 2.5, -12),
                 scale: new Vector3(1.5, 1.5, 1.5),
             },
             {
                 url: planetModelUrl,
-                position: new Vector3(8, 4, -12),
+                position: new Vector3(8, 1, -12),
                 scale: new Vector3(1.5, 1.5, 1.5),
             },
         ];
@@ -179,7 +200,7 @@ function createGameWorld() {
         scene.add(rightWall);
 
 
-        loadGraphModel(scene, -4, 6, -14, new Euler(Math.PI / 2, 0, 0), 4);
+        loadGraphModel(scene, -4, 2, -14, new Euler(Math.PI / 2, 0, 0), 4);
 
 
         // Buy/Sell/Quantity buttons
@@ -211,7 +232,7 @@ function createGameWorld() {
             onClick: () => gameLogic.incrementQuantity(),
             position: new Vector3(-6.3, 3.2, 19.5),
             scale: new Vector3(2, 2, 2),
-            rotation: new Euler(Math.PI / 5, -Math.PI/2, 0),
+            rotation: new Euler(Math.PI / 5, -Math.PI / 2, 0),
         });
 
         const [minusButton,] = await loadModelInteractive(quantityMinusModelUrl, {
@@ -221,7 +242,7 @@ function createGameWorld() {
             onClick: () => gameLogic.decrementQuantity(),
             position: new Vector3(-6.3, 3.2, 19.5),
             scale: new Vector3(2, 2, 2),
-            rotation: new Euler(Math.PI / 5, -Math.PI/2, 0),
+            rotation: new Euler(Math.PI / 5, -Math.PI / 2, 0),
         });
 
         const panel = await loadModel(panelModelUrl, {
@@ -315,7 +336,9 @@ function createGameWorld() {
         isLoaded = true
 
         const year = addText(`Year: 0`, {
-            position: new Vector3(-8, 21, -13),
+            position: new Vector3(2.6, 5, 17),
+            scale: new Vector3(0.3, 0.3, 0.3),
+            rotation: new Euler(-Math.PI / 5, 0, 0),
             scene
         })
 
