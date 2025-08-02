@@ -302,10 +302,6 @@ function createGameLogic() {
         return gameFinishTime;
     }
 
-    function getScore() {
-        return getPortfolioValue() + balance || 0
-    }
-
     function getMonkeyScore() {
         return monkey?.getPortfolioValue() + monkey.balance || 0
     }
@@ -325,7 +321,7 @@ function createGameLogic() {
     function triggerEnding() {
         gameFinishTime = getGameLogic().getTime();
         updateGraphData(selectedStock, day+100000);
-        updateTextValue(gameWorld.getRoomObjects()?.graphText, "Your journey has come\nto an end.\nYour net worth is:\n$" + getPortfolioValue())
+        updateTextValue(gameWorld.getRoomObjects()?.graphText, "Your journey has come\nto an end.\nYour net worth is:\n$" + getNetWorth())
         console.log("triggered")
     }
 
@@ -354,7 +350,6 @@ function createGameLogic() {
         getTime,
         updateAllUI,
         getMonkeyScore,
-        getStoneScore,
-        getScore
+        getStoneScore
     };
 }

@@ -65,7 +65,7 @@ export function loadMonkeyComparator(params: MonkeyComparatorParams) {
 export function updateMonkeyComparator() {
     const gameLogic = getGameLogic();
 
-    const score = gameLogic.getScore();
+    const score = gameLogic.getNetWorth();
     const monkeyScore = gameLogic.getMonkeyScore();
     const stoneScore = gameLogic.getStoneScore();
 
