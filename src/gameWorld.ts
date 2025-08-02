@@ -15,7 +15,7 @@ import {
     quantityPlusModelUrl,
     screenModelUrl,
     sellButtonModelUrl,
-    snowballModelUrl, potatoModelUrl, addInteractiveText,
+    snowballModelUrl, potatoModelUrl, addInteractiveText, grannyModelUrl, monkeyModelUrl,
 } from "./models.ts";
 
 const gameWorld = createGameWorld();
@@ -86,6 +86,30 @@ function createGameWorld() {
         backWall.position.set(0, wallHeight / 2, -roomDepth / 2);
         backWall.receiveShadow = true;
         scene.add(backWall);
+
+        loadModelInteractive(grannyModelUrl, {
+            scene,
+            camera,
+            canvas,
+            onClick: () => {
+                console.log("I am a granny")
+            },
+            scale: new Vector3(1.5, 1.5, 1.5),
+            position: new Vector3(-8, -1, 8),
+        })
+
+
+        loadModelInteractive(monkeyModelUrl, {
+            scene,
+            camera,
+            canvas,
+            onClick: () => {
+                console.log("I am a granny")
+            },
+            scale: new Vector3(0.8, 0.8, 0.8),
+            position: new Vector3(7, 2, 8),
+            rotation: new Euler(0, -Math.PI/2, 0),
+        })
 
 
         const modelConfigs = [

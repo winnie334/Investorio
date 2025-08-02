@@ -15,6 +15,8 @@ import fishUrl from './assets/models/fish.glb';
 import planet from './assets/models/planet.glb';
 import potato from './assets/models/potato.glb';
 import snowball from './assets/models/snowball.glb';
+import granny from './assets/models/granny.glb';
+import monkey from './assets/models/monkey.glb';
 
 import {
     Camera,
@@ -83,6 +85,8 @@ export const planetModelUrl = planet;
 export const fishModelUrl = fishUrl;
 export const snowballModelUrl = snowball;
 export const potatoModelUrl = potato;
+export const grannyModelUrl = granny;
+export const monkeyModelUrl = monkey;
 
 // Loaders
 const gltfLoader = new GLTFLoader();
