@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import {Scene, Group} from 'three';
 import {addText} from "./models.ts";
+import {allPrices, type Stock} from "./gameLogic.ts";
 
 let MAX_VALUES = 47;
 let CUBE_WIDTH = 0.07;
@@ -10,36 +11,44 @@ const annotationCache: Record<number, THREE.Object3D | undefined> = {};
 
 let cubeGroup: Group | null = null;
 
-
-export function loadGraphModel(scene: Scene, x: number, y: number, z: number, rotation: THREE.Euler = new THREE.Euler(), scale = 1) {
-
-    cubeGroup = new THREE.Group();
-    cubeGroup.position.set(x, y, z);
-    cubeGroup.rotation.copy(rotation); // apply full rotation
-    cubeGroup.scale.copy(new THREE.Vector3(scale, scale, scale));
-    scene.add(cubeGroup);
-
+function createBg() {
     // Background
     const geo = new THREE.BoxGeometry(BG_WIDTH, 0.1, 2.5);
     const mat = new THREE.MeshStandardMaterial({color: 0xaaaaaa});
     const background = new THREE.Mesh(geo, mat);
     background.position.set(1, 0, -2);
-    cubeGroup.add(background);
+    return background;
 }
 
-export function updateGraphData(priceData: number[], day: number) {
+function createBgOutline() {
+    // Background outline
+    const geo2 = new THREE.BoxGeometry(BG_WIDTH * 1.02, 0.1 - 0.01, 2.5 * 1.02);
+    const mat2 = new THREE.MeshStandardMaterial({color: 0x000000});
+    const background2 = new THREE.Mesh(geo2, mat2);
+    background2.position.set(1, 0, -2);
+    return background2
+}
+
+export async function loadGraphModel(scene: Scene, x: number, y: number, z: number, rotation: THREE.Euler = new THREE.Euler(), scale = 1) {
+    cubeGroup = new THREE.Group();
+    cubeGroup.position.set(x, y, z);
+    cubeGroup.rotation.copy(rotation); // apply full rotation
+    cubeGroup.scale.copy(new THREE.Vector3(scale, scale, scale));
+    scene.add(cubeGroup);
+    cubeGroup.add(createBg());
+    cubeGroup.add(createBgOutline());
+}
+
+export function updateGraphData(stock: Stock, day: number) {
     if (!cubeGroup) return;
 
     cubeGroup.clear();
 
-    const geo = new THREE.BoxGeometry(BG_WIDTH, 0.1, 2.5);
-    const mat = new THREE.MeshStandardMaterial({color: 0xaaaaaa});
-    const background = new THREE.Mesh(geo, mat);
-    background.position.set(1, 0, -2);
-    cubeGroup.add(background);
+    cubeGroup.add(createBg());
+    cubeGroup.add(createBgOutline());
 
     // const start = Math.max(0, values.length - MAX_VALUES);
-    const visibleValues = priceData.slice(day, day + MAX_VALUES)
+    const visibleValues = allPrices[stock].slice(Math.max(0, day-MAX_VALUES+1), day+1) // +1 so day is included
 
     const min = Math.min(...visibleValues);
     const max = Math.max(...visibleValues);
@@ -83,7 +92,7 @@ export function updateGraphData(priceData: number[], day: number) {
 function getAnnotation(i: number): THREE.Object3D | undefined {
     if (annotationCache[i]) return annotationCache[i]
 
-    const textMesh = addText("$" + i, 0xbbbbbb);
+    const textMesh = addText("$" + i);
     annotationCache[i] = textMesh;
     return textMesh;
 }

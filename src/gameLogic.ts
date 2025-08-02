@@ -5,36 +5,29 @@ import {ai, AiType} from "./ai.ts";
 
 // @ts-ignore
 export enum Stock {
-    GRAIN = "1",
-    WEED = "2",
-    TUNGSTEN = "3",
-    CURCUMA = "4",
-    ALL = "5"
+    WORLD,
+    GRAIN,
+    WEED,
+    TUNGSTEN,
+    CURCUMA
 }
 
 export type Trade = {
     stock: Stock,
     price: number,
     amount: number,
-    date: Date,
+    date: number,
     transactionType: 'buy' | 'sell',
 }
 
 export const startPortfolio: Record<Stock, number> = {
+    [Stock.WORLD]: 0,
     [Stock.GRAIN]: 0,
     [Stock.WEED]: 0,
     [Stock.TUNGSTEN]: 0,
-    [Stock.CURCUMA]: 0,
-    [Stock.ALL]: 0,
+    [Stock.CURCUMA]: 0
 };
 
-const startStockToPrice: Record<Stock, number[]> = {
-    [Stock.GRAIN]: [],
-    [Stock.WEED]: [],
-    [Stock.TUNGSTEN]: [],
-    [Stock.CURCUMA]: [],
-    [Stock.ALL]: [],
-}
 const STARTING_BALANCE = 1000
 const UPDATE_LOGIC_TIME_INTERVAL_IN_SECONDS = 1
 const GAME_DURATION_IN_SECONDS = 3600;
@@ -45,9 +38,10 @@ const STARTING_AGE = 20;
 let gameLogic = createGameLogic();
 
 
+export let allPrices: number[][] = [];
 async function loadPriceData() {
     const files = ['baba', 'bats', 'gme', 'irtc', 'sp500'];
-    return await Promise.all(
+    allPrices = await Promise.all(
         files.map(f =>
             fetch(`/${f}.csv`)
                 .then(r => r.text())
@@ -55,6 +49,8 @@ async function loadPriceData() {
         )
     );
 }
+
+await loadPriceData();
 
 export function getGameLogic() {
     return gameLogic
@@ -70,24 +66,18 @@ function createGameLogic() {
     let isGameFinished = false;
     let hasGameStarted = false;
     let time = 0; // in seconds
+    let day = 0;
     let totalInvested = 0
 
     let currentAge = STARTING_AGE;
 
     let portfolio: Record<Stock, number> = {...startPortfolio};
-    let stockToPricesMap: Record<Stock, number[]> = {...startStockToPrice}
 
     let timeLeftBeforeLogicUpdate = UPDATE_LOGIC_TIME_INTERVAL_IN_SECONDS;
-    let selectedStock: Stock = Stock.ALL;
+    let selectedStock: Stock = Stock.WORLD;
 
 
     let amountMoneyToInvest = 50;
-
-    loadPriceData().then(priceData => {
-        Object.values(Stock).forEach((stock, index) => {
-            stockToPricesMap[(stock as Stock)] = priceData[index]
-        })
-    })
 
     let monkey: ai | undefined
     let rock: ai | undefined
@@ -99,8 +89,8 @@ function createGameLogic() {
         hasGameStarted = true;
         time = 0;
         portfolio = {...startPortfolio};
-        monkey = new ai(AiType.MONKEY, STARTING_BALANCE, stockToPricesMap)
-        rock = new ai(AiType.ROCK, STARTING_BALANCE, stockToPricesMap)
+        monkey = new ai(AiType.MONKEY, STARTING_BALANCE)
+        rock = new ai(AiType.ROCK, STARTING_BALANCE)
     }
 
     function getBalance() {
@@ -115,26 +105,13 @@ function createGameLogic() {
         return portfolio;
     }
 
-
-    function getPrices(stock: Stock) {
-        return stockToPricesMap[stock];
-    }
-
     function getAge() {
         return currentAge
     }
 
-    function getMarketIndex() {
-        return Object.values(stockToPricesMap).reduce((acc, val) => acc + val[val.length - 1], 0);
-    }
-
     function getPortfolioValue() {
-        return Object.entries(portfolio).reduce((acc, [stock, amountOfStock]) => {
-            // @ts-ignore
-            return acc + stockToPricesMap[stock][stockToPricesMap[stock].length - 1] * amountOfStock
-        }, 0);
+        return Object.entries(portfolio).reduce((acc, [s, q]) => acc + allPrices[+s][day] * q, 0);
     }
-
 
     function getNetWorth() {
         return balance + getPortfolioValue();
@@ -143,7 +120,7 @@ function createGameLogic() {
     function selectStock(stock: Stock) {
         console.log("Selected", stock)
         selectedStock = stock;
-        updateGraphData(stockToPricesMap[stock], time);
+        updateGraphData(stock, time);
     }
 
     function getTotalInvested() {
@@ -170,9 +147,8 @@ function createGameLogic() {
         return Math.round(getPortfolioValue() - totalInvested)
     }
 
-
     function buyStock(stock: Stock = selectedStock, money: number = amountMoneyToInvest) {
-        const currentPrice = stockToPricesMap[stock].at(-1) ?? 1;
+        const currentPrice = allPrices[stock][day]
         if (money > balance && money > 0) return false;
 
         const amount = money / currentPrice;
@@ -181,7 +157,7 @@ function createGameLogic() {
         totalInvested += money;
         updateGameBalance(-money)
 
-        trades.push({stock, price: currentPrice, amount, date: new Date(), transactionType: 'buy'});
+        trades.push({stock, price: currentPrice, amount, date: day, transactionType: 'buy'});
         return true;
 
     }
@@ -190,17 +166,13 @@ function createGameLogic() {
         return selectedStock;
     }
 
-    function getLatestStockPrice(stock: Stock) {
-        return stockToPricesMap[stock].at(-1) ?? 1;
-    }
-
     function getTime() {
         return time;
     }
 
     function sellStock(stock: Stock = selectedStock, money: number = amountMoneyToInvest) {
-        const owned = portfolio[stock];
-        const amountStocksToSell = money / getLatestStockPrice(stock)
+        const owned = portfolio[stock]; // todo: param is money to sell?
+        const amountStocksToSell = money / allPrices[stock][day]
         if (owned < amountStocksToSell) return false;
 
         updateGameBalance(money);
@@ -208,13 +180,7 @@ function createGameLogic() {
         totalInvested = Math.max(0, totalInvested)
         portfolio[stock] -= amountStocksToSell;
 
-        trades.push({
-            stock,
-            price: getLatestStockPrice(stock),
-            amount: amountStocksToSell,
-            date: new Date(),
-            transactionType: 'sell'
-        });
+        trades.push({ stock, price: allPrices[stock][day], amount: amountStocksToSell, date: day, transactionType: 'sell' });
         return true;
     }
 
@@ -228,26 +194,18 @@ function createGameLogic() {
         if (balanceElement) updateTextValue(balanceElement, balance.toString())
     }
 
-    function updateStocks() {
-        // TODO add winand logic
-    }
-
-    function getStockToPricesMap() {
-        return stockToPricesMap;
-    }
-
     function update(delta: number): boolean {
         if (isGameFinished || !hasGameStarted) return false;
+
         timeLeftBeforeLogicUpdate -= delta;
         if (timeLeftBeforeLogicUpdate > 0) return false;
-        timeLeftBeforeLogicUpdate = UPDATE_LOGIC_TIME_INTERVAL_IN_SECONDS;
+
+        timeLeftBeforeLogicUpdate = UPDATE_LOGIC_TIME_INTERVAL_IN_SECONDS; // todo make updates consistent
         time += UPDATE_LOGIC_TIME_INTERVAL_IN_SECONDS;
         if (time > GAME_DURATION_IN_SECONDS) isGameFinished = true;
         currentAge = Math.min(FINAL_AGE, Math.floor(time / GAME_DURATION_IN_SECONDS * (FINAL_AGE - STARTING_AGE) + STARTING_AGE));
 
-        updateGraphData(stockToPricesMap[selectedStock], time);
-
-        updateStocks();
+        updateGraphData(selectedStock, time);
 
         monkey?.update()
         rock?.update()
@@ -260,13 +218,11 @@ function createGameLogic() {
         getBalance,
         getTrades,
         getPortfolio,
-        getPrices,
         buyStock,
         sellStock,
         update,
         start,
         isFinished: () => isGameFinished,
-        getMarketIndex,
         getAge,
         getNetWorth,
         selectStock,
@@ -278,6 +234,5 @@ function createGameLogic() {
         getProfit,
         getTotalValue,
         getTime,
-        getStockToPricesMap
     };
 }
