@@ -1,16 +1,22 @@
 import * as THREE from "three";
-import {getGameLogic, Stock, stockNames} from "./gameLogic.ts";
+import {Euler, Vector3} from "three";
+import {getGameLogic, Stock} from "./gameLogic.ts";
 import {loadGraphModel} from "./graph.ts";
 import {
-    addInteractiveText,
     addText,
-    buyButtonModelUrl, loadModel,
-    loadModelInteractive, panelModelUrl,
+    appleModelUrl,
+    buyButtonModelUrl,
+    fishModelUrl,
+    loadModel,
+    loadModelInteractive,
+    panelModelUrl,
+    planetModelUrl,
     quantityMinusModelUrl,
-    quantityPlusModelUrl, screenModelUrl,
-    sellButtonModelUrl
+    quantityPlusModelUrl,
+    screenModelUrl,
+    sellButtonModelUrl,
+    snowballModelUrl, potatoModelUrl,
 } from "./models.ts";
-import {Euler, Vector3} from "three";
 
 const gameWorld = createGameWorld();
 
@@ -62,6 +68,7 @@ function createGameWorld() {
 
         const wallMaterial = new THREE.MeshStandardMaterial({map: wallTexture});
         const floorMaterial = new THREE.MeshStandardMaterial({map: floorTexture});
+
         const wallHeight = 30;
         const wallThickness = 0.5;
         const roomDepth = 30;
@@ -81,6 +88,61 @@ function createGameWorld() {
         scene.add(backWall);
 
 
+        const modelConfigs = [
+            {
+                url: appleModelUrl,
+                position: new Vector3(-7, 4, -12),
+                scale: new Vector3(1.5, 1.5, 1.5),
+            },
+            {
+                url: potatoModelUrl,
+                position: new Vector3(-4, 4, -12),
+                scale: new Vector3(0.01, 0.01, 0.01),
+            },
+            {
+                url: fishModelUrl,
+                position: new Vector3(-1, 4, -12),
+                scale: new Vector3(0.5, 0.5, 0.5),
+            },
+            {
+                url: snowballModelUrl,
+                position: new Vector3(2, 4, -12),
+                scale: new Vector3(1.5, 1.5, 1.5),
+            },
+            {
+                url: planetModelUrl,
+                position: new Vector3(5, 4, -12),
+                scale: new Vector3(1.5, 1.5, 1.5),
+            },
+        ];
+
+        const selectStockModels: THREE.Object3D[] = [];
+
+        for (const [index, config] of modelConfigs.entries()) {
+            const [model] = await loadModelInteractive(config.url, {
+                scene,
+                camera,
+                canvas,
+                onClick: () => {
+                    gameLogic.selectStock(index); // Use index as Stock
+                },
+                position: config.position,
+                scale: config.scale,
+            });
+
+            // Apply hologram style by default
+            model.traverse((child) => {
+                if (child.isMesh) {
+                    child.material.transparent = true;
+                    child.material.opacity = 0.3;
+                }
+            });
+
+            selectStockModels[index] = model;
+        }
+
+
+
         // Left wall
         const leftWall = new THREE.Mesh(new THREE.BoxGeometry(wallThickness, wallHeight, roomDepth), wallMaterial);
         leftWall.position.set(-roomWidth / 2, wallHeight / 2, 0);
@@ -93,8 +155,10 @@ function createGameWorld() {
         rightWall.receiveShadow = true;
         scene.add(rightWall);
 
+        const m =
 
-        loadGraphModel(scene, -4, 6, -14, new Euler(Math.PI / 2, 0, 0), 4);
+
+            loadGraphModel(scene, -4, 6, -14, new Euler(Math.PI / 2, 0, 0), 4);
 
 
         // Buy/Sell/Quantity buttons
@@ -233,6 +297,7 @@ function createGameWorld() {
             buyButton,
             sellButton,
             portFolioTexts: portFolioTexts,
+            selectStockModels,
             selectedStock,
             invested
         };

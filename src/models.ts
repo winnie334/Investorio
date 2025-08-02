@@ -10,6 +10,11 @@ import quantityMinusUrl from './assets/models/QuantityMinus.glb';
 import quantityPlusUrl from './assets/models/QuantityPlus.glb';
 import panelUrl from './assets/models/panel.glb';
 import screenUrl from './assets/models/screen.glb';
+import appleUrl from './assets/models/apple.glb';
+import fishUrl from './assets/models/fish.glb';
+import planet from './assets/models/planet.glb';
+import potato from './assets/models/potato.glb';
+import snowball from './assets/models/snowball.glb';
 
 import {Camera, Group, Scene, Vector3, Euler, Mesh, MeshBasicMaterial, Raycaster, Vector2} from 'three';
 
@@ -61,6 +66,11 @@ export const quantityMinusModelUrl = quantityMinusUrl;
 export const quantityPlusModelUrl = quantityPlusUrl;
 export const panelModelUrl = panelUrl;
 export const screenModelUrl = screenUrl;
+export const appleModelUrl = appleUrl;
+export const planetModelUrl = planet;
+export const fishModelUrl = fishUrl;
+export const snowballModelUrl = snowball;
+export const potatoModelUrl = potato;
 
 // Loaders
 const gltfLoader = new GLTFLoader();

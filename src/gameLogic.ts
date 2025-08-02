@@ -2,6 +2,7 @@ import {updateGraphData} from "./graph.ts";
 import {getGameWorld} from "./gameWorld.ts";
 import {updateTextValue} from "./models.ts";
 import {ai, AiType} from "./ai.ts";
+import * as THREE from "three";
 
 export enum Stock {
     GRAIN,
@@ -110,13 +111,27 @@ function createGameLogic() {
     }
 
     function selectStock(stock: Stock) {
-        console.log("Selected", stock)
+        console.log("Selected", stock);
         selectedStock = stock;
         updateGraphData(stock, secondsPassed);
 
-        const selectedStockElement = gameWorld.getRoomObjects()?.selectedStock
+        const selectedStockElement = gameWorld.getRoomObjects()?.selectedStock;
         if (!selectedStockElement) return;
-        updateTextValue(selectedStockElement, `Selected Stock: ${stockNames[getSelectedStock()] || 'None'}`)
+        updateTextValue(
+            selectedStockElement,
+            `Selected Stock: ${stockNames[getSelectedStock()] || 'None'}`
+        );
+
+        const models = gameWorld.getRoomObjects().selectStockModels as THREE.Mesh[];
+
+        models.forEach((model, index) => {
+            model.traverse((child) => {
+                if (child.isMesh) {
+                    child.material.transparent = true;
+                    child.material.opacity = index === stock ? 1.0 : 0.3;
+                }
+            });
+        });
     }
 
     function updatePortfolioUI() {
