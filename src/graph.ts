@@ -1,7 +1,6 @@
 import * as THREE from 'three';
 import {Scene, Group} from 'three';
 import {addText} from "./models.ts";
-import type {Stock} from "./gameLogic.ts";
 
 let MAX_VALUES = 47;
 let CUBE_WIDTH = 0.07;
@@ -10,21 +9,9 @@ let BG_WIDTH = 4
 const annotationCache: Record<number, THREE.Object3D | undefined> = {};
 
 let cubeGroup: Group | null = null;
-const files = ['baba', 'bats', 'gme', 'irtc', 'sp500'];
-export let allPrices: number[][] = [];
 
-(async () => {
-    allPrices = await Promise.all(
-        files.map(f =>
-            fetch(`/${f}.csv`)
-                .then(r => r.text())
-                .then(t => t.trim().split('\n').slice(1).map(l => parseFloat(l.split(',')[4].replace(/"/g, ''))))
-        )
-    );
-    console.log('Loaded:', allPrices);
-})();
 
-export async function loadGraphModel(scene: Scene, x: number, y: number, z: number, rotation: THREE.Euler = new THREE.Euler(), scale = 1) {
+export function loadGraphModel(scene: Scene, x: number, y: number, z: number, rotation: THREE.Euler = new THREE.Euler(), scale = 1) {
 
     cubeGroup = new THREE.Group();
     cubeGroup.position.set(x, y, z);
@@ -40,7 +27,7 @@ export async function loadGraphModel(scene: Scene, x: number, y: number, z: numb
     cubeGroup.add(background);
 }
 
-export function updateGraphData(stock: Stock, day: number) {
+export function updateGraphData(priceData: number[], day: number) {
     if (!cubeGroup) return;
 
     cubeGroup.clear();
@@ -52,7 +39,7 @@ export function updateGraphData(stock: Stock, day: number) {
     cubeGroup.add(background);
 
     // const start = Math.max(0, values.length - MAX_VALUES);
-    const visibleValues = allPrices[1].slice(day, day+MAX_VALUES)
+    const visibleValues = priceData.slice(day, day + MAX_VALUES)
 
     const min = Math.min(...visibleValues);
     const max = Math.max(...visibleValues);

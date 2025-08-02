@@ -1,44 +1,85 @@
 import {GLTFLoader} from 'three/addons/loaders/GLTFLoader.js';
 import {FBXLoader} from 'three/addons/loaders/FBXLoader.js';
-import buyButtonUrl from "./assets/models/BuyButton.glb";
-import sellButtonUrl from "./assets/models/SellButton.glb";
-import quantityMinusUrl from "./assets/models/QuantityMinus.glb";
-import quantityPlusUrl from "./assets/models/QuantityPlus.glb";
-import quantityUrl from "./assets/models/Quantity.glb";
-import * as THREE from "three";
-import {Camera, Group, Raycaster, Scene, Vector2, Vector3} from "three";
+
 import {TextGeometry, type TextGeometryParameters} from 'three/examples/jsm/geometries/TextGeometry.js';
 import {Font, FontLoader} from 'three/addons/loaders/FontLoader.js';
 
+import buyButtonUrl from './assets/models/BuyButton.glb';
+import sellButtonUrl from './assets/models/SellButton.glb';
+import quantityMinusUrl from './assets/models/QuantityMinus.glb';
+import quantityPlusUrl from './assets/models/QuantityPlus.glb';
+import quantityUrl from './assets/models/Quantity.glb';
+
+import {Camera, Group, Scene, Vector3, Euler, Mesh, MeshBasicMaterial, Raycaster, Vector2} from 'three';
+
+export type InteractionCallback = (model: Group | Mesh, event?: Event) => void;
+
+export interface ModelLoadParams {
+    scene?: Scene;
+    scale?: Vector3;
+    position?: Vector3;
+    rotation?: Euler;
+
+}
+
+export interface InteractiveModelParams extends ModelLoadParams {
+    camera: Camera;
+    canvas: HTMLCanvasElement;
+    onClick?: InteractionCallback;
+}
+
+export interface TextAddParams extends ModelLoadParams {
+    position?: Vector3;
+    color?: number;
+    geometryParams?: Partial<TextGeometryParameters>;
+
+}
+
+export interface InteractiveTextAddParams extends TextAddParams {
+    scene: Scene;
+    camera: Camera;
+    canvas: HTMLCanvasElement;
+    onClick: InteractionCallback;
+}
+
+
+// Constants
 const defaultFontUrl = new URL('./assets/fonts/nata.json', import.meta.url).href;
+const defaultScale = new Vector3(1, 1, 1);
+const defaultPosition = new Vector3(0, 0, 0);
+const defaultRotation = new Euler(0, 0, 0);
+const defaultTextGeometryParams: Partial<TextGeometryParameters> = {
+    size: 1,
+    depth: 0.1
+};
 
-const fontLoader = new FontLoader();
-
-type InteractionCallback = (model: Group, event?: Event) => void;
-
+// Model URLs
 export const buyButtonModelUrl = buyButtonUrl;
 export const sellButtonModelUrl = sellButtonUrl;
 export const quantityMinusModelUrl = quantityMinusUrl;
 export const quantityPlusModelUrl = quantityPlusUrl;
 export const quantityModelUrl = quantityUrl;
 
+// Loaders
 const gltfLoader = new GLTFLoader();
 const fbxLoader = new FBXLoader();
+const fontLoader = new FontLoader();
 
-const defaultScale = new Vector3(1, 1, 1);
-const defaultPosition = new Vector3(0, 0, 0);
+// Font state
+let defaultFont: Font | undefined = undefined;
 
 function getLoader(url: string): GLTFLoader | FBXLoader {
     return url.toLowerCase().endsWith('.fbx') ? fbxLoader : gltfLoader;
 }
 
+export async function loadModel(url: string, params: ModelLoadParams = {}): Promise<Group | undefined> {
+    const {
+        scene,
+        scale = defaultScale,
+        position = defaultPosition,
+        rotation = defaultRotation
+    } = params;
 
-export async function loadModel(
-    url: string,
-    scene?: Scene,
-    scale: Vector3 = defaultScale,
-    position: Vector3 = defaultPosition
-): Promise<Group | undefined> {
     try {
         const loader = getLoader(url);
 
@@ -48,8 +89,10 @@ export async function loadModel(
 
         model.scale.copy(scale);
         model.position.copy(position);
+        model.rotation.copy(rotation);
 
-        if (scene) scene.add(model);
+
+        scene?.add(model);
 
         return model;
     } catch (error) {
@@ -59,35 +102,21 @@ export async function loadModel(
 
 export async function loadModelInteractive(
     url: string,
-    scene: Scene,
-    camera: Camera,
-    canvas: HTMLCanvasElement,
-    onClick?: InteractionCallback,
-    scale: Vector3 = defaultScale,
-    position: Vector3 = defaultPosition,
+    params: InteractiveModelParams
 ): Promise<[Group, () => void] | undefined> {
-    const model = await loadModel(url, scene, scale, position);
-    if (!model) return
+    const {scene, camera, canvas, onClick, scale, position} = params;
 
-    if (!onClick) return
+    const model = await loadModel(url, {scene, scale, position});
+    if (!model || !onClick) return;
 
     const raycaster = new Raycaster();
     const mouse = new Vector2();
 
     function handleClick(event: MouseEvent) {
+        if (!model || !onClick) return;
         const rect = canvas.getBoundingClientRect();
         mouse.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
         mouse.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
-
-        if (!model) {
-            console.error('Handle click called without model');
-            return;
-        }
-
-        if (!onClick) {
-            console.error('Handle click callback not set');
-            return;
-        }
 
         raycaster.setFromCamera(mouse, camera);
         const intersects = raycaster.intersectObject(model, true);
@@ -99,13 +128,10 @@ export async function loadModelInteractive(
 
     canvas.addEventListener('click', handleClick);
 
-    return [model, () => {
-        canvas.removeEventListener('click', handleClick);
-    }];
+    return [model, () => canvas.removeEventListener('click', handleClick)];
 }
 
-
-export async function loadFont(fontUrl: string) {
+export async function loadFont(fontUrl: string): Promise<Font | undefined> {
     try {
         console.log('Loading font', fontUrl);
         return await fontLoader.loadAsync(fontUrl);
@@ -114,91 +140,72 @@ export async function loadFont(fontUrl: string) {
     }
 }
 
-let defaultFont: Font | undefined = undefined;
-
 export async function loadDefaultFont() {
-    // @ts-ignore
-    defaultFont = await loadFont(defaultFontUrl)
+    defaultFont = await loadFont(defaultFontUrl);
 }
 
-const defaultTextGeometryParams: Partial<TextGeometryParameters> = {
-    size: 1,
-    depth: 0.1
-};
-
-export function addText(
-    title: string,
-    color = 0x00ff0,
-    userParams: Partial<TextGeometryParameters> = {},
-    location: Vector3 = new Vector3(0, 0, 0),
-    rotation: THREE.Euler = new THREE.Euler(),
-) {
-    if (!defaultFont) {
-        console.error('Default font not loaded');
-        return undefined;
-    }
-
-    const textGeometry = new TextGeometry(title, {
-        font: defaultFont,
-        ...defaultTextGeometryParams,
-        ...userParams,
-    });
-
-    const material = new THREE.MeshBasicMaterial({color});
-    const text = new THREE.Mesh(textGeometry, material);
-    text.position.copy(location);
-    text.rotation.copy(rotation);
-    return text;
-}
-
-export function updateTextValue(
-    textMesh: THREE.Mesh,
-    newText: string,
-    userParams: Partial<TextGeometryParameters> = {}
-) {
+export function addText(title: string, params: TextAddParams = {}): Mesh | undefined {
     if (!defaultFont) {
         console.error('Default font not loaded');
         return;
     }
 
-    const newGeometry = new TextGeometry(newText, {
-        font: defaultFont,
-        ...defaultTextGeometryParams,
-        ...userParams,
-    });
-
-    // Dispose old geometry to free memory
-    textMesh.geometry.dispose();
-
-    // Assign the new geometry
-    textMesh.geometry = newGeometry;
-}
-
-export function addInteractiveText(
-    title: string,
-    scene: Scene,
-    camera: Camera,
-    canvas: HTMLCanvasElement,
-    onClick: InteractionCallback,
-    color = 0x00ff00,
-    userParams: Partial<TextGeometryParameters> = {},
-    location: Vector3 = new Vector3(0, 0, 0),
-    rotation: THREE.Euler = new THREE.Euler(),
-): [THREE.Mesh, () => void] | undefined {
-    if (!defaultFont) {
-        console.error('Default font not loaded');
-        return undefined;
-    }
+    const {
+        position = new Vector3(0, 0, 0),
+        rotation = new Euler(),
+        scale = defaultScale,
+        color = 0x00ff00,
+        geometryParams = {},
+        scene
+    } = params;
 
     const textGeometry = new TextGeometry(title, {
         font: defaultFont,
         ...defaultTextGeometryParams,
-        ...userParams,
+        ...geometryParams,
     });
 
-    const material = new THREE.MeshBasicMaterial({color});
-    const textMesh = new THREE.Mesh(textGeometry, material);
-    textMesh.position.copy(location);
+    const material = new MeshBasicMaterial({color});
+    const textMesh = new Mesh(textGeometry, material);
+    textMesh.position.copy(position);
+    textMesh.rotation.copy(rotation);
+    textMesh.scale.copy(scale);
+    scene?.add(textMesh);
+
+    return textMesh;
+}
+
+export function addInteractiveText(
+    title: string,
+    params: InteractiveTextAddParams
+): [Mesh, () => void] | undefined {
+    if (!defaultFont) {
+        console.error('Default font not loaded');
+        return;
+    }
+
+    const {
+        scene,
+        camera,
+        canvas,
+        onClick,
+        position = defaultPosition,
+        rotation = defaultRotation,
+        scale = defaultScale,
+        color = 0x00ff00,
+        geometryParams = {}
+    } = params;
+
+    const textGeometry = new TextGeometry(title, {
+        font: defaultFont,
+        ...defaultTextGeometryParams,
+        ...geometryParams,
+    });
+
+    const material = new MeshBasicMaterial({color});
+    const textMesh = new Mesh(textGeometry, material);
+    textMesh.position.copy(position);
+    textMesh.scale.copy(scale);
     textMesh.rotation.copy(rotation);
     scene.add(textMesh);
 
@@ -213,7 +220,6 @@ export function addInteractiveText(
         raycaster.setFromCamera(mouse, camera);
         const intersects = raycaster.intersectObject(textMesh, true);
 
-
         if (intersects.length > 0) {
             onClick(textMesh, event);
         }
@@ -225,4 +231,24 @@ export function addInteractiveText(
         canvas.removeEventListener('click', handleClick);
         scene.remove(textMesh);
     }];
+}
+
+export function updateTextValue(
+    textMesh: Mesh,
+    newText: string,
+    geometryParams: Partial<TextGeometryParameters> = {}
+) {
+    if (!defaultFont) {
+        console.error('Default font not loaded');
+        return;
+    }
+
+    const newGeometry = new TextGeometry(newText, {
+        font: defaultFont,
+        ...defaultTextGeometryParams,
+        ...geometryParams,
+    });
+
+    textMesh.geometry.dispose();
+    textMesh.geometry = newGeometry;
 }
