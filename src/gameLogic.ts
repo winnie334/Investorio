@@ -1,6 +1,6 @@
 import {updateGraphData} from "./graph.ts";
+import {ai, AiType} from "./ai.ts";
 
-// @ts-ignore
 export enum Stock {
     VT,
     AAPL,
@@ -33,11 +33,15 @@ const startStockToPrice: Record<Stock, number[]> = {
     [Stock.AMZN]: [250]
 }
 
+
 const STARTING_BALANCE = 1000
 const UPDATE_LOGIC_TIME_INTERVAL_IN_SECONDS = 1
 const GAME_DURATION_IN_SECONDS = 3600;
 const FINAL_AGE = 60;
 const STARTING_AGE = 20;
+
+const monkey = new ai(AiType.MONKEY, STARTING_BALANCE)
+const rock   = new ai(AiType.ROCK  , STARTING_BALANCE)
 
 let gameLogic = createGameLogic();
 
@@ -214,16 +218,23 @@ function createGameLogic() {
 
     function update(delta: number): boolean {
         if (isGameFinished) return false;
+
         timeLeftBeforeLogicUpdate -= delta;
         if (timeLeftBeforeLogicUpdate > 0) return false;
+
         timeLeftBeforeLogicUpdate = UPDATE_LOGIC_TIME_INTERVAL_IN_SECONDS;
         time += UPDATE_LOGIC_TIME_INTERVAL_IN_SECONDS;
         if (time > GAME_DURATION_IN_SECONDS) isGameFinished = true;
+
         currentAge = Math.min(FINAL_AGE, Math.floor(time / GAME_DURATION_IN_SECONDS * (FINAL_AGE - STARTING_AGE) + STARTING_AGE));
 
         updateGraphData(selectedStock, time);
 
         updateStocks();
+
+        monkey.update()
+        rock.update()
+
         return true;
     }
 

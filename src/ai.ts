@@ -3,7 +3,7 @@ import {allPrices} from "./graph.ts";
 import {getGameLogic} from "./gameLogic.ts";
 
 export enum AiType {
-    AAP = 'AAP',
+    MONKEY = 'MONKEY',
     ROCK = 'ROCK'
 }
 
@@ -11,7 +11,10 @@ function day() {
     return getGameLogic().getTime();
 }
 
-class ai {
+const MONKEY_CHANCE = 0.2
+const MONKEY_BUY_CHANCE = 0.5
+
+export class ai {
     type: AiType;
     balance: number;
     portfolio: Record<Stock, number>;
@@ -22,11 +25,30 @@ class ai {
         this.portfolio = {[Stock.AAPL]: 0, [Stock.MSFT]: 0, [Stock.GOOG]: 0, [Stock.AMZN]: 0, [Stock.VT]: 0};
     }
 
-    update() {
-        if (this.type === AiType.AAP) {
-            // Todo buy random
+    update() { // should be called once a day!
+        if (this.type === AiType.MONKEY) {
+            if (Math.random() < MONKEY_CHANCE) this.monkeyLogic()
         }
-        else while (this.balance > allPrices[Stock.VT][day()]) this.buy(Stock.VT, 1);
+        else while (this.balance >= allPrices[Stock.VT][day()]) this.buy(Stock.VT, 1);
+    }
+
+    monkeyLogic() {
+        if (Math.random() < MONKEY_BUY_CHANCE) {
+            // Monkey buys something, get all stocks that we can buy at least one of
+            const affordable = Object.entries(allPrices).filter(([_, p]) => p[day()] <= this.balance);
+            if (affordable.length) {
+                // Pick a random one and buy a random amount
+                const [i, p] = affordable[Math.random() * affordable.length];
+                this.buy(+i, Math.floor(Math.random() * this.balance / p[day()]) + 1);
+            }
+        } else {
+            // Sell a random amount of stocks that we have at least one of
+            const owned = Object.entries(this.portfolio).filter(([_, q]) => q > 0);
+            if (owned.length) {
+                const [i, q] = owned[Math.random() * owned.length];
+                this.sell(+i, Math.floor(Math.random() * q) + 1);
+            }
+        }
     }
 
     getPortfolioValue() {
