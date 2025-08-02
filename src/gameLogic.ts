@@ -4,6 +4,7 @@ import {addText, updateTextValue} from "./models.ts";
 import {ai, AiType} from "./ai.ts";
 import * as THREE from "three";
 import {updateMonkeyComparator} from "./monkeyComparator.ts";
+import {Narrator} from "./narrator.ts";
 
 export enum Stock {
     Apple,
@@ -87,6 +88,8 @@ function createGameLogic() {
 
     let monkey = new ai(AiType.MONKEY, STARTING_BALANCE)
     let rock = new ai(AiType.ROCK, STARTING_BALANCE)
+
+    let narrator = new Narrator();
 
     function getBalance() {
         return balance;
@@ -258,6 +261,8 @@ function createGameLogic() {
     }
 
     function update(delta: number) {
+        narrator.update(delta);
+
         if (gameFinishTime != -1) {
             endUpdate();
             return
@@ -328,6 +333,10 @@ function createGameLogic() {
     function endUpdate() {
     }
 
+    function tapBubble() {
+        narrator.tapBubble();
+    }
+
     return {
         getBalance,
         getTrades,
@@ -350,6 +359,7 @@ function createGameLogic() {
         getTime,
         updateAllUI,
         getMonkeyScore,
-        getStoneScore
+        getStoneScore,
+        tapBubble
     };
 }

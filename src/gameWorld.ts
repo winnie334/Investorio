@@ -13,6 +13,7 @@ import {
     planetModelUrl,
     quantityMinusModelUrl,
     quantityPlusModelUrl,
+    textBubbleUrl1,
     screenModelUrl,
     sellButtonModelUrl,
     snowballModelUrl, potatoModelUrl, addInteractiveText, grannyModelUrl, monkeyModelUrl, anonymousModelUrl,
@@ -29,7 +30,7 @@ function createGameWorld() {
     let isLoaded = false
 
 
-    let roomObjects: Record<string, THREE.Mesh | THREE.Mesh[]> | undefined
+    let roomObjects: Record<string, THREE.Mesh> | undefined
 
     function isGameWorldLoaded() {
         return isLoaded;
@@ -245,12 +246,33 @@ function createGameWorld() {
             rotation: new Euler(Math.PI / 5, -Math.PI / 2, 0),
         });
 
+        const [textBubble,] = await loadModelInteractive(textBubbleUrl1, {
+            scene,
+            camera,
+            canvas,
+            onClick: () => gameLogic.tapBubble(),
+            position: new Vector3(1, 5.2, 7),
+            scale: new Vector3(4, 4, 4),
+            rotation: new Euler(-Math.PI/7, Math.PI/2, 0),
+            visible:false,
+        });
+        textBubble.receiveShadow = false;
+
         const panel = await loadModel(panelModelUrl, {
             scene,
             position: new Vector3(0, -8, 18),
             rotation: new Euler(0, -Math.PI / 2, 0),
             scale: new Vector3(0.8, 0.8, 0.8),
 
+        });
+
+        const textBubbleElement = addText("Heyo", {
+            position: new Vector3(-5.8, 6.2, 7.2),
+            scale: new Vector3(0.6, 0.6, 0.6),
+            rotation: new Euler(-Math.PI/7, 0, 0),
+            color: 0x000000,
+            visible: false,
+            scene
         });
 
 
@@ -344,7 +366,7 @@ function createGameWorld() {
 
         // text on the graph, aka end text
         const graphText = addText(``, {
-            position: new Vector3(-7.4, 17, -13.8),
+            position: new Vector3(-7.4, 12, -13.8),
             color: 0x000000,
             scene
         })
@@ -365,6 +387,8 @@ function createGameWorld() {
             portFolioTexts: portFolioTexts,
             orderElement: orderElement,
             selectStockModels,
+            textBubble,
+            textBubbleElement,
             selectedStock,
             graphText,
             invested,

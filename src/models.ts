@@ -8,6 +8,7 @@ import buyButtonUrl from './assets/models/BuyButton.glb';
 import sellButtonUrl from './assets/models/SellButton.glb';
 import quantityMinusUrl from './assets/models/QuantityMinus.glb';
 import quantityPlusUrl from './assets/models/QuantityPlus.glb';
+import textBubbleUrl2 from './assets/models/TextBubble.glb';
 import panelUrl from './assets/models/panel.glb';
 import screenUrl from './assets/models/screen.glb';
 import appleUrl from './assets/models/apple.glb';
@@ -37,21 +38,23 @@ export type InteractionCallback = (model: Group | Mesh, event?: Event) => void;
 
 export interface ModelLoadParams {
     scene?: Scene;
+    visible?: boolean;
     scale?: Vector3;
     position?: Vector3;
     rotation?: Euler;
-
 }
 
 export interface InteractiveModelParams extends ModelLoadParams {
     camera: Camera;
     canvas: HTMLCanvasElement;
     onClick?: InteractionCallback;
+    visible?: boolean;
 }
 
 export interface TextAddParams extends ModelLoadParams {
     position?: Vector3;
     color?: number;
+    visible?: boolean;
     geometryParams?: Partial<TextGeometryParameters>;
 
 }
@@ -79,6 +82,7 @@ export const buyButtonModelUrl = buyButtonUrl;
 export const sellButtonModelUrl = sellButtonUrl;
 export const quantityMinusModelUrl = quantityMinusUrl;
 export const quantityPlusModelUrl = quantityPlusUrl;
+export const textBubbleUrl1 = textBubbleUrl2;
 export const panelModelUrl = panelUrl;
 export const screenModelUrl = screenUrl;
 export const appleModelUrl = appleUrl;
@@ -105,6 +109,7 @@ function getLoader(url: string): GLTFLoader | FBXLoader {
 export async function loadModel(url: string, params: ModelLoadParams = {}): Promise<Group | undefined> {
     const {
         scene,
+        visible = true,
         scale = defaultScale,
         position = defaultPosition,
         rotation = defaultRotation
@@ -120,6 +125,7 @@ export async function loadModel(url: string, params: ModelLoadParams = {}): Prom
         model.scale.copy(scale);
         model.position.copy(position);
         model.rotation.copy(rotation);
+        model.visible = visible;
 
 
         scene?.add(model);
@@ -134,9 +140,9 @@ export async function loadModelInteractive(
     url: string,
     params: InteractiveModelParams
 ): Promise<[Group, () => void] | undefined> {
-    const {scene, camera, canvas, onClick, scale, position, rotation} = params;
+    const {scene, camera, canvas, visible, onClick, scale, position, rotation} = params;
 
-    const model = await loadModel(url, {scene, scale, position, rotation});
+    const model = await loadModel(url, {scene, visible, scale, position, rotation});
     if (!model || !onClick) return;
 
     const raycaster = new Raycaster();
@@ -185,6 +191,7 @@ export function addText(title: any, params: TextAddParams = {}): Mesh | undefine
         rotation = new Euler(),
         scale = defaultScale,
         color = 0x00ff00,
+        visible = true,
         geometryParams = {},
         scene
     } = params;
@@ -200,6 +207,7 @@ export function addText(title: any, params: TextAddParams = {}): Mesh | undefine
     textMesh.position.copy(position);
     textMesh.rotation.copy(rotation);
     textMesh.scale.copy(scale);
+    textMesh.visible = visible;
     scene?.add(textMesh);
 
     return textMesh;
@@ -263,7 +271,7 @@ export function addInteractiveText(
     }];
 }
 
-export function updateTextValue(textMesh: Mesh<BufferGeometry, Material | Material[], Object3DEventMap> | Mesh[] | undefined, newText: any, geometryParams: Partial<TextGeometryParameters> = {}) {
+export function updateTextValue(textMesh: Mesh | Mesh[] | undefined, newText: any, geometryParams: Partial<TextGeometryParameters> = {}) {
     if (!defaultFont || textMesh === undefined) {
         console.error('Update text called before font and mesh initialized');
         return;
