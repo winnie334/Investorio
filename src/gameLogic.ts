@@ -5,6 +5,7 @@ import {ai, AiType} from "./ai.ts";
 import * as THREE from "three";
 import {updateMonkeyComparator} from "./monkeyComparator.ts";
 import {Narrator} from "./narrator.ts";
+import {playSound, type SoundKey} from "./soundManager.ts";
 
 export enum Stock {
     Apple,
@@ -37,6 +38,15 @@ export const startPortfolio: Record<Stock, number> = {
     [Stock.Fish]: 0,
     [Stock.MoonLoops]: 0
 };
+
+export const stockToSoundMap: Record<Stock, SoundKey> = {
+    [Stock.Fish]: "FISH",
+    [Stock.Potato]: "POTATO",
+    [Stock.MoonLoops]: "MOON",
+    [Stock.WORLD]: "MOON",
+    [Stock.Apple]: "APPLE",
+}
+
 
 const STARTING_BALANCE = 1000
 const SECS_PER_DAY = 1
@@ -90,7 +100,7 @@ function createGameLogic() {
 
     let monkey = new ai(AiType.MONKEY, STARTING_BALANCE)
     let rock = new ai(AiType.ROCK, STARTING_BALANCE)
-    
+
     let narrator = new Narrator();
 
     let daysBeforeSalary = SPAWN_CASH_EVERY_X_DAY;
@@ -123,6 +133,7 @@ function createGameLogic() {
     function selectStock(stock: Stock) {
         console.log("Selected", stock);
         selectedStock = stock;
+        playSound("SELECT")
         updateGraphData(stock, secondsPassed);
 
         const selectedStockElement = gameWorld.getRoomObjects()?.selectedStock;
@@ -170,12 +181,14 @@ function createGameLogic() {
     function incrementQuantity() {
         currentQuantity += 1;
         updateQuantityUI();
+        playSound("CLICK")
         updateOrderUI();
     }
 
     function decrementQuantity() {
         if (currentQuantity <= 0) return;
         currentQuantity -= 1;
+        playSound("CLICK")
         updateQuantityUI();
         updateOrderUI();
     }
@@ -216,7 +229,10 @@ function createGameLogic() {
     function buyStock(stock: Stock = selectedStock) {
         const currentPrice = allPrices[stock][day]
         let total = currentPrice * currentQuantity;
-        if (total > balance || total == 0) return false;
+        if (total > balance || total == 0) {
+            playSound("ERROR", 2)
+            return false;
+        }
 
         portfolio[stock] += currentQuantity;
         currentQuantity = 0;
@@ -226,6 +242,8 @@ function createGameLogic() {
         updateTotalInvested(total)
         updatePortfolioUI()
         updateQuantityUI();
+        playSound(stockToSoundMap[stock])
+
 
         return true;
     }
@@ -244,7 +262,10 @@ function createGameLogic() {
 
     function sellStock(stock: Stock = selectedStock) {
         const owned = portfolio[stock];
-        if (owned < currentQuantity) return false;
+        if (owned < currentQuantity) {
+            playSound("ERROR")
+            return false;
+        }
 
         let profit = currentQuantity * allPrices[stock][day];
         trades.push({stock, price: allPrices[stock][day], amount: currentQuantity, date: day, transactionType: 'sell'});
@@ -255,6 +276,7 @@ function createGameLogic() {
         updateTotalInvested(-profit)
         updatePortfolioUI()
         updateQuantityUI();
+        playSound("SELL")
 
         return true;
     }
@@ -340,7 +362,7 @@ function createGameLogic() {
 
     function triggerEnding() {
         gameFinishTime = getGameLogic().getTime();
-        updateGraphData(selectedStock, day+100000);
+        updateGraphData(selectedStock, day + 100000);
         updateTextValue(gameWorld.getRoomObjects()?.graphText, "Your journey has come\nto an end.\nYour net worth is:\n$" + getNetWorth())
         console.log("triggered")
     }

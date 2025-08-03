@@ -3,6 +3,7 @@ import {getRenderer} from '../initRenderer.ts';
 import {fitToPortrait} from '../../helpers/layout.ts';
 import {getGameLogic} from "../../gameLogic.ts";
 import {getGameWorld} from "../../gameWorld.ts";
+import {playSound} from "../../soundManager.ts";
 
 
 export function createGameScreen() {
@@ -26,6 +27,7 @@ export function createGameScreen() {
 
     const logic = getGameLogic()
     const gameWorld = getGameWorld()
+    playSound("BACKGROUND", 0.1)
     gameWorld.init(scene, camera, canvas)
     gameWorld.createRoom()
 

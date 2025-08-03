@@ -26,6 +26,7 @@ import {
     cashModelUrl, updateTextValue,
 } from "./models.ts";
 import {loadMonkeyComparator} from "./monkeyComparator.ts";
+import {playSound, type SoundKey} from "./soundManager.ts";
 
 const gameWorld = createGameWorld();
 
@@ -446,6 +447,7 @@ function createGameWorld() {
             onClick: () => {
                 clearCash();
                 gameLogic.addToBalance(CASH_VALUE);
+                playSound("SELL")
                 cashObjects.delete(id);
                 scene.remove(cash);
             },
@@ -529,13 +531,13 @@ function createGameWorld() {
         fadeout?: boolean;
     };
 
+
     function showText(
         text: string,
         options: ShowTextOptions = {}
     ) {
         const {onDone, character, fadeout} = options;
         const characterToUse = character || Character.NARRATOR;
-        console.log(characterToUse);
 
         bubbleMesh.visible = true;
         characterPortraits[characterToUse].visible = true;
