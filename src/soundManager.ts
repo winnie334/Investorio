@@ -1,6 +1,6 @@
 import apple from "./assets/sounds/apple.mp3"
 import background from "./assets/sounds/background.mp3"
-import click from "./assets/sounds/click.mp3"
+import click from "./assets/sounds/click2.mp3"
 import error from "./assets/sounds/error.mp3"
 import fish from "./assets/sounds/fish.mp3"
 import granny from "./assets/sounds/granny_laugh.mp3"
@@ -31,9 +31,10 @@ export const Sound = {
 export type SoundKey = keyof typeof Sound;
 
 
-export function playSound(sound: SoundKey, volume: number = 1.0) {
+export function playSound(sound: SoundKey, volume: number = 1.0, loop: boolean = false) {
     const audio = new Audio(Sound[sound]);
     audio.volume = Math.min(Math.max(volume, 0), 1);
+    audio.loop = loop;
     audio.play();
 }
 

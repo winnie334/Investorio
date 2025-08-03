@@ -124,7 +124,7 @@ function createGameWorld() {
             scene,
             width: 20,
             rotation: new Euler(0, Math.PI / 2, 0),
-            position: new Vector3(-4, 16.8, -14)
+            position: new Vector3(-4.5, 16.8, -14)
         });
 
         loadModelInteractive(grannyModelUrl, {
@@ -136,7 +136,7 @@ function createGameWorld() {
             },
             scale: new Vector3(1.3, 1.3, 1.3),
             rotation: new Euler(Math.PI / 2, 0, 0),
-            position: new Vector3(-7, 16.7, -13),
+            position: new Vector3(-6.65, 16.7, -13),
         })
 
 
@@ -149,7 +149,7 @@ function createGameWorld() {
             },
             scale: new Vector3(1.3, 1.3, 1.3),
             rotation: new Euler(Math.PI / 2, 0, 0),
-            position: new Vector3(-7, 19.5, -13),
+            position: new Vector3(-6.65, 19.6, -13),
         })
 
         loadModelInteractive(youUrl, {
@@ -161,7 +161,7 @@ function createGameWorld() {
             },
             scale: new Vector3(1.3, 1.3, 1.3),
             rotation: new Euler(Math.PI / 2, 0, 0),
-            position: new Vector3(-7, 22.5, -13),
+            position: new Vector3(-6.65, 22.5, -13),
         })
 
         const modelConfigs = [
@@ -447,7 +447,7 @@ function createGameWorld() {
             onClick: () => {
                 clearCash();
                 gameLogic.addToBalance(CASH_VALUE);
-                playSound("SELL")
+                playSound("SELL", 0.1)
                 cashObjects.delete(id);
                 scene.remove(cash);
             },

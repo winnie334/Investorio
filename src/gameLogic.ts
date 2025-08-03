@@ -133,7 +133,7 @@ function createGameLogic() {
     function selectStock(stock: Stock) {
         console.log("Selected", stock);
         selectedStock = stock;
-        playSound("SELECT")
+        playSound("SELECT", 0.06)
         updateGraphData(stock, secondsPassed);
 
         const selectedStockElement = gameWorld.getRoomObjects()?.selectedStock;
@@ -202,7 +202,7 @@ function createGameLogic() {
     }
 
     function getTotalInvested() {
-        return Math.max(0, totalInvested);
+        return Math.max(0, totalInvested).toFixed(1);
     }
 
     function getTotalValue() {
@@ -217,13 +217,13 @@ function createGameLogic() {
     }
 
     function getProfit() {
-        return Math.round(getPortfolioValue() - totalInvested)
+        return Math.round(getPortfolioValue() - totalInvested);
     }
 
     function updateProfitUI() {
         const element = gameWorld.getRoomObjects()?.profit
         if (!element) return;
-        updateTextValue(element, `P/L: $${getTotalValue()} (${getProfit() >= 0 ? '+' : ''}${getProfit()})`)
+        updateTextValue(element, `P/L: $${getTotalValue()} (${getProfit() >= 0 ? '+' : ''}${getProfit().toFixed(1)})`)
     }
 
     function buyStock(stock: Stock = selectedStock) {
@@ -276,7 +276,7 @@ function createGameLogic() {
         updateTotalInvested(-profit)
         updatePortfolioUI()
         updateQuantityUI();
-        playSound("SELL")
+        playSound("SELL", 0.1)
 
         return true;
     }

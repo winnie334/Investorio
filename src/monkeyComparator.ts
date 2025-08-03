@@ -50,9 +50,9 @@ export function loadMonkeyComparator(params: MonkeyComparatorParams) {
         return bar;
     };
 
-    playerBar = makeBar(0x4CAF50, 6);
-    monkeyBar = makeBar(0xFF9800, 3);
-    stoneBar = makeBar(0x2196F3, 0);
+    playerBar = makeBar(0x4CAF50, 5.7);
+    monkeyBar = makeBar(0xFF9800, 2.85);
+    stoneBar = makeBar(0x2196F3, -0.1);
 
 
     updateMonkeyComparator()
