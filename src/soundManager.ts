@@ -11,6 +11,7 @@ import potato from "./assets/sounds/potato.mp3"
 import salary from "./assets/sounds/salary.mp3"
 import select from "./assets/sounds/select.mp3"
 import sell from "./assets/sounds/sell.mp3"
+import moo from "./assets/sounds/moo.mp3"
 
 export const Sound = {
     APPLE: apple,
@@ -26,6 +27,7 @@ export const Sound = {
     SALARY: salary,
     SELECT: select,
     SELL: sell,
+    MOO: moo,
 } as const;
 
 export type SoundKey = keyof typeof Sound;
