@@ -463,7 +463,7 @@ function createGameWorld() {
                 scene.remove(cash);
             },
             scale: new Vector3(2, 2, 2),
-            position: new Vector3(0, 1, 0),
+            position: new Vector3(6*(Math.random()-0.5), 1, 4*(Math.random()-0.5)),
         });
 
         cashObjects.set(id, cash);

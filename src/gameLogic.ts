@@ -102,7 +102,7 @@ function createGameLogic() {
     let portfolio: Record<Stock, number> = {...startPortfolio};
 
     let timeBeforeNextDay = SECS_PER_DAY;
-    let selectedStock: Stock = Stock.WORLD;
+    let selectedStock: Stock = Stock.Apple;
 
     let monkey = new ai(AiType.MONKEY, STARTING_BALANCE)
     let rock = new ai(AiType.ROCK, STARTING_BALANCE)
