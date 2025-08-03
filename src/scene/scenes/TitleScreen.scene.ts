@@ -26,47 +26,65 @@ export function createTitleScreen() {
     scene.add(plane);
 
     addText("Investorio", {
-        position: new Vector3(-3, 7, 0),
+        position: new Vector3(0, 7, 0),
         scale: new Vector3(1, 1, 1),
         color: 0xffaa00,
         scene,
+        center: true,
     });
 
     addText("Learn about investing", {
-        position: new Vector3(-3, 5.2, 0),
+        position: new Vector3(0, 5.2, 0),
         scale: new Vector3(0.5, 0.5, 0.5),
         color: 0xffffff,
         scene,
+        center: true,
     });
 
     addText("in a fun way (maybe)", {
-        position: new Vector3(-3, 4.2, 0),
+        position: new Vector3(0, 4.2, 0),
         scale: new Vector3(0.5, 0.5, 0.5),
         color: 0xffffff,
         scene,
+        center: true,
     });
 
-    addText("Click to Start", {
-        position: new Vector3(-2, 0, 0),
+    const clickToStartMesh = addText("Click to Start", {
+        position: new Vector3(0, 0, 0),
         scale: new Vector3(0.5, 0.5, 0.5),
         color: 0xffffff,
         scene,
+        center: true,
     });
 
     addText("© 2025 Wava Productions", {
-        position: new Vector3(-2.4, -7, 0),
+        position: new Vector3(0, -7, 0),
         scale: new Vector3(0.3, 0.3, 0.3),
         color: 0x888888,
         scene,
+        center: true,
     });
 
-    function update(_deltaT: number) {
-        // No animation for now
+    let elapsedTime = 0;
+
+    function update(deltaT: number) {
+        elapsedTime += deltaT;
+
+        // Animate pulsing scale with sine wave
+        const scaleBase = 0.5;
+        const scaleAmplitude = 0.1;
+        const scale = scaleBase + Math.sin(elapsedTime * 3) * scaleAmplitude;
+
+        clickToStartMesh.scale.set(scale, scale, scale);
     }
 
-    canvas.addEventListener('click', () => {
+    function start() {
+        canvas.removeEventListener('click', start);
         loadScene('game');
-    });
+
+    }
+
+    canvas.addEventListener('click', start);
 
     return {scene, camera, update};
 }

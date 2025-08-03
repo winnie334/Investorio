@@ -4,9 +4,9 @@ import {loadDefaultFont} from "./src/models.ts";
 
 let lastTime = performance.now();
 const path = window.location.pathname; // e.g., "/game/menu"
-const sceneToLoad = path.split('/').filter(Boolean).pop() ?? 'title';
 
 export const isDev = window.location.href.includes('localhost');
+const sceneToLoad = isDev ? path.split('/').filter(Boolean).pop() ?? 'title' : 'title'
 
 
 async function loadAssets() {

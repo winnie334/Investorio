@@ -27,6 +27,8 @@ import {
 } from "./models.ts";
 import {loadMonkeyComparator} from "./monkeyComparator.ts";
 import {playSound, type SoundKey} from "./soundManager.ts";
+import wallTextureUrl from "./assets/textures/wood.jpg"
+import floorTextureUrl from "./assets/textures/woodfloor.jpg"
 
 const gameWorld = createGameWorld();
 
@@ -86,8 +88,8 @@ function createGameWorld() {
 
         // Room dimensions
         const textureLoader = new THREE.TextureLoader();
-        const wallTexture = textureLoader.load('/textures/wood.jpg');
-        const floorTexture = textureLoader.load('/textures/woodfloor.jpg');
+        const wallTexture = textureLoader.load(wallTextureUrl);
+        const floorTexture = textureLoader.load(floorTextureUrl);
         wallTexture.needsUpdate = true;
 
         const wallMaterial = new THREE.MeshStandardMaterial({map: wallTexture});

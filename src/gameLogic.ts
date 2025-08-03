@@ -7,6 +7,13 @@ import {updateMonkeyComparator} from "./monkeyComparator.ts";
 import {Narrator} from "./narrator.ts";
 import {playSound, type SoundKey} from "./soundManager.ts";
 
+import baba from './assets/csv/baba.csv';
+import irtc from './assets/csv/irtc.csv';
+import bats from './assets/csv/bats.csv';
+import gme from './assets/csv/gme.csv';
+import iwda from './assets/csv/iwda.csv';
+
+
 export enum Stock {
     Apple,
     Potato,
@@ -60,10 +67,10 @@ let gameLogic = createGameLogic();
 export let allPrices: number[][] = [];
 
 async function loadPriceData() {
-    const files = ['baba', 'irtc', 'bats', 'gme', 'iwda'];
+    const files = [baba, irtc, bats, gme, iwda];
     allPrices = await Promise.all(
         files.map(f =>
-            fetch(`/${f}.csv`)
+            fetch(`${f}`)
                 .then(r => r.text())
                 .then(t => t.trim().split('\n').slice(1).map(l => parseFloat(l.split(',')[4].replace(/"/g, ''))))
                 .then(t => t.reverse())

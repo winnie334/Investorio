@@ -9,7 +9,7 @@ export default {
     },
     plugins: [glsl()],
     root: '.',
-    assetsInclude: ['**/*.glb', '**/*.fbx'],
+    assetsInclude: ['**/*.glb', '**/*.fbx', '**/*.csv'],
     resolve: {
         alias: {
             '@': path.resolve(__dirname, 'src')
@@ -17,5 +17,6 @@ export default {
     },
     build: {
         rollupOptions: {}
-    }
+    },
+    base: './',
 }

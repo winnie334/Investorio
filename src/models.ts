@@ -60,6 +60,7 @@ export interface TextAddParams extends ModelLoadParams {
     color?: number;
     visible?: boolean;
     geometryParams?: Partial<TextGeometryParameters>;
+    center?: boolean
 
 }
 
@@ -200,7 +201,8 @@ export function addText(title: any, params: TextAddParams = {}): Mesh | undefine
         color = 0x00ff00,
         visible = true,
         geometryParams = {},
-        scene
+        scene,
+        center = false,
     } = params;
 
     const textGeometry = new TextGeometry(title.toString(), {
@@ -215,6 +217,8 @@ export function addText(title: any, params: TextAddParams = {}): Mesh | undefine
     textMesh.rotation.copy(rotation);
     textMesh.scale.copy(scale);
     textMesh.visible = visible;
+
+    if (center) textMesh.geometry.center();
     scene?.add(textMesh);
 
     return textMesh;
