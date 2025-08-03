@@ -72,7 +72,7 @@ function createGameWorld() {
         const gameLogic = getGameLogic();
 
         // Ambient light
-        scene.add(new THREE.AmbientLight(0xffffff, 0.2));
+        scene.add(new THREE.AmbientLight(0xffffff, 1));
 
         // Directional light
         const dirLight = new THREE.DirectionalLight(0xfff8e7, 1);
@@ -82,15 +82,6 @@ function createGameWorld() {
         dirLight.shadow.camera.near = 0.5;
         dirLight.shadow.camera.far = 100;
         scene.add(dirLight);
-
-
-        // Spotlight from above
-        const spotLight = new THREE.SpotLight(0xfffacd, 1.5, 100, Math.PI / 6, 0.3, 1);
-        spotLight.position.set(0, 30, 0);
-        spotLight.castShadow = true;
-        spotLight.target.position.set(0, 0, -30);
-        scene.add(spotLight);
-        scene.add(spotLight.target);
 
 
         // Room dimensions
@@ -487,28 +478,25 @@ function createGameWorld() {
                 scene,
                 scale: new Vector3(1.1, 1.1, 1.1),
                 rotation: new Euler(Math.PI / 2, 0, 0),
-                position: new Vector3(-7.5, 5, 8),
+                position: new Vector3(-7, 5.5, 10),
             }),
             loadModel(monkeyModelUrl, {
                 scene,
                 scale: new Vector3(1.1, 1.1, 1.1),
                 rotation: new Euler(Math.PI / 2, 0, 0),
-                position: new Vector3(-7.5, 5, 8),
+                position: new Vector3(-7, 5.5, 10),
             }),
             loadModel(narratorModelUrl, {
                 scene,
                 scale: new Vector3(1.1, 1.1, 1.1),
                 rotation: new Euler(Math.PI / 2, 0, 0),
-                position: new Vector3(-7.5, 5, 8),
+                position: new Vector3(-7, 5.5, 10),
             }),
         ]);
 
         granny.visible = false;
-        granny.receiveShadow = false;
         monkey.visible = false;
-        monkey.receiveShadow = false;
         narrator.visible = false;
-        narrator.receiveShadow = false;
 
         characterPortraits[Character.GRANNY] = granny;
         characterPortraits[Character.MONKEY] = monkey;
