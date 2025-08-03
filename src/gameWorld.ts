@@ -83,6 +83,7 @@ function createGameWorld() {
         dirLight.shadow.camera.far = 100;
         scene.add(dirLight);
 
+
         // Room dimensions
         const textureLoader = new THREE.TextureLoader();
         const wallTexture = textureLoader.load('/textures/wood.jpg');
@@ -110,15 +111,6 @@ function createGameWorld() {
         backWall.receiveShadow = true;
         scene.add(backWall);
 
-        const leftWall = new THREE.Mesh(new THREE.BoxGeometry(wallThickness, wallHeight, roomDepth), wallMaterial);
-        leftWall.position.set(-roomWidth / 2, wallHeight / 2, 0);
-        leftWall.receiveShadow = true;
-        scene.add(leftWall);
-
-        const rightWall = new THREE.Mesh(new THREE.BoxGeometry(wallThickness, wallHeight, roomDepth), wallMaterial);
-        rightWall.position.set(roomWidth / 2, wallHeight / 2, 0);
-        rightWall.receiveShadow = true;
-        scene.add(rightWall);
 
         loadMonkeyComparator({
             scene,
@@ -127,139 +119,173 @@ function createGameWorld() {
             position: new Vector3(-4.5, 16.8, -14),
         });
 
-        loadGraphModel(scene, -4, 1.5, -14, new Euler(Math.PI / 2, 0, 0), 4);
+        loadModelInteractive(grannyModelUrl, {
+            scene,
+            camera,
+            canvas,
+            onClick: () => {
+                console.log("I am a granny")
+            },
+            scale: new Vector3(1.3, 1.3, 1.3),
+            rotation: new Euler(Math.PI / 2, 0, 0),
+            position: new Vector3(-6.65, 16.7, -13),
+        })
+
+
+        loadModelInteractive(monkeyModelUrl, {
+            scene,
+            camera,
+            canvas,
+            onClick: () => {
+                console.log("I am a granny")
+            },
+            scale: new Vector3(1.3, 1.3, 1.3),
+            rotation: new Euler(Math.PI / 2, 0, 0),
+            position: new Vector3(-6.65, 19.6, -13),
+        })
+
+        loadModelInteractive(youUrl, {
+            scene,
+            camera,
+            canvas,
+            onClick: () => {
+                console.log("I am a granny")
+            },
+            scale: new Vector3(1.3, 1.3, 1.3),
+            rotation: new Euler(Math.PI / 2, 0, 0),
+            position: new Vector3(-6.65, 22.5, -13),
+        })
 
         const modelConfigs = [
-            {url: appleModelUrl, position: new Vector3(-8, 2, -12), scale: new Vector3(1.5, 1.5, 1.5)},
-            {url: potatoModelUrl, position: new Vector3(-4, 0.5, -12), scale: new Vector3(0.012, 0.012, 0.012)},
-            {url: fishModelUrl, position: new Vector3(0, 0.8, -12), scale: new Vector3(0.35, 0.35, 0.35)},
-            {url: snowballModelUrl, position: new Vector3(4, 2.5, -12), scale: new Vector3(1.5, 1.5, 1.5)},
-            {url: planetModelUrl, position: new Vector3(8, 1, -12), scale: new Vector3(1.5, 1.5, 1.5)},
+            {
+                url: appleModelUrl,
+                position: new Vector3(-8, 2, -12),
+                scale: new Vector3(1.5, 1.5, 1.5),
+            },
+            {
+                url: potatoModelUrl,
+                position: new Vector3(-4, 0.5, -12),
+                scale: new Vector3(0.012, 0.012, 0.012),
+            },
+            {
+                url: fishModelUrl,
+                position: new Vector3(0, 0.8, -12),
+                scale: new Vector3(0.35, 0.35, 0.35),
+            },
+            {
+                url: snowballModelUrl,
+                position: new Vector3(4, 2.5, -12),
+                scale: new Vector3(1.5, 1.5, 1.5),
+            },
+            {
+                url: planetModelUrl,
+                position: new Vector3(8, 1, -12),
+                scale: new Vector3(1.5, 1.5, 1.5),
+            },
         ];
 
-        // Gather all async loading promises
-        const interactivePromises = [
-            loadModelInteractive(grannyModelUrl, {
-                scene, camera, canvas,
-                onClick: () => console.log("I am a granny"),
-                scale: new Vector3(1.3, 1.3, 1.3),
-                rotation: new Euler(Math.PI / 2, 0, 0),
-                position: new Vector3(-6.65, 16.7, -13),
-            }),
-            loadModelInteractive(monkeyModelUrl, {
-                scene, camera, canvas,
-                onClick: () => console.log("I am a granny"),
-                scale: new Vector3(1.3, 1.3, 1.3),
-                rotation: new Euler(Math.PI / 2, 0, 0),
-                position: new Vector3(-6.65, 19.6, -13),
-            }),
-            loadModelInteractive(youUrl, {
-                scene, camera, canvas,
-                onClick: () => console.log("I am a granny"),
-                scale: new Vector3(1.3, 1.3, 1.3),
-                rotation: new Euler(Math.PI / 2, 0, 0),
-                position: new Vector3(-6.65, 22.5, -13),
-            }),
-            ...modelConfigs.map((config, index) =>
-                loadModelInteractive(config.url, {
-                    scene, camera, canvas,
-                    onClick: () => gameLogic.selectStock(index),
-                    position: config.position,
-                    scale: config.scale,
-                })
-            ),
-            loadModelInteractive(buyButtonModelUrl, {
-                scene, camera, canvas,
-                onClick: () => gameLogic.buyStock(),
-                position: new Vector3(-3.8, 3.3, 19),
-                scale: new Vector3(0.5, 0.5, 0.5),
-                rotation: new Euler(Math.PI / 5, 0, 0),
-                visible: false,
-            }),
-            loadModelInteractive(sellButtonModelUrl, {
-                scene, camera, canvas,
-                onClick: () => gameLogic.sellStock(),
-                position: new Vector3(-3.8, 2.5, 20),
-                scale: new Vector3(0.5, 0.5, 0.5),
-                rotation: new Euler(Math.PI / 5, 0, 0),
-                visible: false,
-            }),
-            loadModelInteractive(quantityPlusModelUrl, {
-                scene, camera, canvas,
-                onClick: () => gameLogic.incrementQuantity(),
-                position: new Vector3(-6.3, 3.2, 19.5),
-                scale: new Vector3(2, 2, 2),
-                rotation: new Euler(Math.PI / 5, -Math.PI / 2, 0),
-                visible: false,
-            }),
-            loadModelInteractive(quantityMinusModelUrl, {
-                scene, camera, canvas,
-                onClick: () => gameLogic.decrementQuantity(),
-                position: new Vector3(-6.3, 3.2, 19.5),
-                scale: new Vector3(2, 2, 2),
-                rotation: new Euler(Math.PI / 5, -Math.PI / 2, 0),
-                visible: false,
-            }),
-            loadModelInteractive(textBubbleUrl1, {
-                scene, camera, canvas,
-                onClick: () => console.log(".."),
-                position: new Vector3(1, 5.2, 7),
-                scale: new Vector3(4, 4, 4),
-                rotation: new Euler(-Math.PI / 7, Math.PI / 2, 0),
-                visible: false,
-            }),
-        ];
+        const selectStockModels: THREE.Object3D[] = [];
 
-        const modelPromises = [
-            loadModel(panelModelUrl, {
+        for (const [index, config] of modelConfigs.entries()) {
+            const [model] = await loadModelInteractive(config.url, {
                 scene,
-                position: new Vector3(0, -8, 18),
-                rotation: new Euler(0, -Math.PI / 2, 0),
-                scale: new Vector3(0.8, 0.8, 0.8),
-                visible: false,
-            }),
-            loadModel(screenModelUrl, {
-                scene,
-                position: new Vector3(1.5, 4, 18),
-                scale: new Vector3(3.5, 2.5, 2.5),
-                rotation: new Euler(Math.PI / 5, 0, 0),
-                visible: false,
-            }),
-        ];
+                camera,
+                canvas,
+                onClick: () => {
+                    gameLogic.selectStock(index); // Use index as Stock
+                },
+                position: config.position,
+                scale: config.scale,
+            });
 
-        const [interactiveResults, modelResults] = await Promise.all([
-            Promise.all(interactivePromises),
-            Promise.all(modelPromises),
-        ]);
-
-        const [
-            grannyModel, monkeyModel, youModel,
-            ...restInteractive
-        ] = interactiveResults;
-
-        const stockModels = restInteractive.slice(0, modelConfigs.length);
-        const [
-            buyButton, sellButton, plusButton, minusButton, textBubble
-        ] = restInteractive.slice(modelConfigs.length);
-
-        const [panel, screen] = modelResults;
-
-        const selectStockModels = stockModels.map(([model]) => {
+            // Apply hologram style by default
             model.traverse((child) => {
                 if (child.isMesh) {
-                    const materials = Array.isArray(child.material)
-                        ? child.material
-                        : [child.material];
-
-                    for (const mat of materials) {
-                        mat.transparent = true;
-                        mat.opacity = 0.3;
-                        mat.depthWrite = false;
-                        mat.needsUpdate = true;
-                    }
+                    child.material.transparent = true;
+                    child.material.opacity = 0.3;
                 }
             });
-            return model;
+
+            selectStockModels[index] = model;
+        }
+
+
+        // Left wall
+        const leftWall = new THREE.Mesh(new THREE.BoxGeometry(wallThickness, wallHeight, roomDepth), wallMaterial);
+        leftWall.position.set(-roomWidth / 2, wallHeight / 2, 0);
+        leftWall.receiveShadow = true;
+        scene.add(leftWall);
+
+        // Right wall
+        const rightWall = new THREE.Mesh(new THREE.BoxGeometry(wallThickness, wallHeight, roomDepth), wallMaterial);
+        rightWall.position.set(roomWidth / 2, wallHeight / 2, 0);
+        rightWall.receiveShadow = true;
+        scene.add(rightWall);
+
+
+        loadGraphModel(scene, -4, 1.5, -14, new Euler(Math.PI / 2, 0, 0), 4);
+
+
+        // Buy/Sell/Quantity buttons
+        // @ts-ignore
+        const [buyButton,] = await loadModelInteractive(buyButtonModelUrl, {
+            scene,
+            camera,
+            canvas,
+            onClick: () => gameLogic.buyStock(),
+            position: new Vector3(-3.8, 3.3, 19),
+            scale: new Vector3(0.5, 0.5, 0.5),
+            rotation: new Euler(Math.PI / 5, 0, 0),
+        });
+
+        const [sellButton,] = await loadModelInteractive(sellButtonModelUrl, {
+            scene,
+            camera,
+            canvas,
+            onClick: () => gameLogic.sellStock(),
+            position: new Vector3(-3.8, 2.5, 20),
+            scale: new Vector3(0.5, 0.5, 0.5),
+            rotation: new Euler(Math.PI / 5, 0, 0),
+        });
+
+        const [plusButton,] = await loadModelInteractive(quantityPlusModelUrl, {
+            scene,
+            camera,
+            canvas,
+            onClick: () => gameLogic.incrementQuantity(),
+            position: new Vector3(-6.3, 3.2, 19.5),
+            scale: new Vector3(2, 2, 2),
+            rotation: new Euler(Math.PI / 5, -Math.PI / 2, 0),
+        });
+
+        const [minusButton,] = await loadModelInteractive(quantityMinusModelUrl, {
+            scene,
+            camera,
+            canvas,
+            onClick: () => gameLogic.decrementQuantity(),
+            position: new Vector3(-6.3, 3.2, 19.5),
+            scale: new Vector3(2, 2, 2),
+            rotation: new Euler(Math.PI / 5, -Math.PI / 2, 0),
+        });
+
+        const [textBubble,] = await loadModelInteractive(textBubbleUrl1, {
+            scene,
+            camera,
+            canvas,
+            onClick: () => console.log(".."),
+            position: new Vector3(1, 5.2, 7),
+            scale: new Vector3(4, 4, 4),
+            rotation: new Euler(-Math.PI / 7, Math.PI / 2, 0),
+            visible: false,
+        });
+        textBubble.receiveShadow = false;
+
+        const panel = await loadModel(panelModelUrl, {
+            scene,
+            position: new Vector3(0, -8, 18),
+            rotation: new Euler(0, -Math.PI / 2, 0),
+            scale: new Vector3(0.8, 0.8, 0.8),
+
         });
 
 
@@ -272,6 +298,8 @@ function createGameWorld() {
             scene
         });
 
+
+        // Amount to invest display
         const quantityElement = addText(gameLogic.getQuantity(), {
             position: new Vector3(-3.7, 5.6, 17),
             rotation: new Euler(-Math.PI / 5, 0, 0),
@@ -281,6 +309,7 @@ function createGameWorld() {
             scene
         });
 
+        // Total order preview
         const orderElement = addText("$0", {
             position: new Vector3(-4.7, 4.3, 19),
             rotation: new Euler(-Math.PI / 5, 0, 0),
@@ -288,6 +317,14 @@ function createGameWorld() {
             color: 0x000000,
             visible: false,
             scene
+        });
+
+        const screen = await loadModel(screenModelUrl, {
+            scene,
+            position: new Vector3(1.5, 4, 18),
+            scale: new Vector3(3.5, 2.5, 2.5),
+            rotation: new Euler(Math.PI / 5, 0, 0),
+
         });
 
         const balance = addText(``, {
@@ -298,7 +335,7 @@ function createGameWorld() {
             scene
         });
 
-        const invested = addText(``, {
+        const invested = addText(`}`, {
             position: new Vector3(-1.1, 5.1, 17.6),
             scale: new Vector3(0.3, 0.3, 0.3),
             rotation: new Euler(-Math.PI / 5, 0, 0),
@@ -317,8 +354,11 @@ function createGameWorld() {
         const selectedStock = addText(``, {
             position: new Vector3(-7.6, 14, -13.8),
             color: 0xffffff,
+            scene,
+            // position: new Vector3(-1.1, 4.7, 18.8),
             scale: new Vector3(0.6, 0.6, 0.6),
-            scene
+            // rotation: new Euler(-Math.PI / 5, 0, 0),
+            // scene
         });
 
         const portfolio = addText(`---------------------Portfolio`, {
@@ -329,12 +369,13 @@ function createGameWorld() {
             scene
         });
 
+
         const offsetY = -0.2;
         const offsetZ = 0.4;
         const baseY = 5.2;
         const baseZ = 19.7;
 
-        const portFolioTexts = Object.keys(gameLogic.getPortfolio()).map((_, index) => {
+        const portFolioTexts = Object.keys(gameLogic.getPortfolio()).map((stock, index) => {
             const positionY = baseY + index * offsetY;
             const positionZ = baseZ + index * offsetZ;
 
@@ -353,45 +394,45 @@ function createGameWorld() {
             rotation: new Euler(-Math.PI / 5, 0, 0),
             visible: false,
             scene
-        });
+        })
 
+        // text on the graph, aka end text
         const graphText = addText(``, {
             position: new Vector3(-7.4, 12, -13.8),
             color: 0x000000,
             scene
-        });
+        })
 
-        generateChatBubble();
 
-        if (!balance || !profit || !orderElement || !portFolioTexts || !selectedStock) {
+        generateChatBubble()
+
+
+        if (!balance || !profit || !orderElement || !portFolioTexts || !profit || !selectedStock) {
             console.error("One of the room objects is missing");
             return;
         }
 
+
         roomObjects = {
             balance,
             profit,
-            quantityElement,
+            quantityElement: quantityElement,
             minusButton,
             plusButton,
             buyButton,
             sellButton,
-            portFolioTexts,
-            orderElement,
+            portFolioTexts: portFolioTexts,
+            orderElement: orderElement,
             selectStockModels,
             textBubble,
             textBubbleElement,
             selectedStock,
             graphText,
             invested,
-            year,
-            screen,
-            panel,
-            portfolio
+            year
         };
 
-        gameLogic.updateAllUI();
-        isLoaded = true;
+        gameLogic.updateAllUI()
     }
 
 
