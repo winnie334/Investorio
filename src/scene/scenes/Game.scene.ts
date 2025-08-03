@@ -27,7 +27,7 @@ export function createGameScreen() {
 
     const logic = getGameLogic()
     const gameWorld = getGameWorld()
-    playSound("BACKGROUND", 0.1, true)
+    playSound("BACKGROUND", 0.07, true)
     gameWorld.init(scene, camera, canvas)
     gameWorld.createRoom().then(room => getGameLogic().startNarrator())
 

@@ -94,7 +94,7 @@ function createGameLogic() {
     let gameFinishTime = -1;
     let secondsPassed = 0; // in seconds
     let day = -1;
-    let year = 0;
+    let year = 1;
     let totalInvested = 0
 
     let currentQuantity = 0;

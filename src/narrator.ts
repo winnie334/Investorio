@@ -42,16 +42,17 @@ export class Narrator {
          m("The flowers wither when none remain to weep for them — yet, the earth turns.                           ", 0, Character.GRANNY),
          m("They each had the same starting amount     and earn as much side income as you. See if you can beat them!                     ", 0),
 
-         m("OOO AAA AAA OOO                               * Rob is licking a rock. *", 25, Character.MONKEY),
+         m("OOO AAA AAA OOO                               * Rob is licking a rock *", 25, Character.MONKEY),
 
          m("In case I wasn't clear before: you can win by just investing in World. No need to be smart. It's almost cheating.                     ", 25),
 
-         m("Even shadows move with the sun; only the forgotten stay fixed.                            *Grandma accidentally tramples the plant*", 2, Character.GRANNY, () => getGameLogic().flattenPlant()),
+         m("Even shadows move with the sun; only the forgotten stay fixed.                            *Grandma accidentally tramples the plant*", 22, Character.GRANNY, () => getGameLogic().flattenPlant()),
 
-         m("Not much longer to go before retirement, make those years count!", 35),
+         m("OOO AAA AAA OOOOOOO                           * Rob is angry at his reflection *", 35, Character.MONKEY),
 
-         m("To endure is to defy the vanity of ease.            ", 35, Character.GRANNY),
+         m("Not much longer to go before retirement, make those years count!                   ", 35),
 
+         m("To endure is to defy the vanity of ease.                      ", 45, Character.GRANNY),
 
         ];
 

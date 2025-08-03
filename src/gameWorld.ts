@@ -122,7 +122,7 @@ function createGameWorld() {
         const poster = new THREE.Mesh(new THREE.PlaneGeometry(12, 5, 5), new THREE.MeshStandardMaterial({map: posterTexture}));
         poster.position.set(-10.2, 15, -2);
         poster.rotation.y = Math.PI / 2;
-        poster.rotation.z = Math.PI / 2;
+        poster.rotation.z = -Math.PI / 2;
         scene.add(poster)
 
         const plant = await loadModel(plantModelUrl, {
@@ -417,7 +417,7 @@ function createGameWorld() {
             });
         });
 
-        const year = addText(`Year: 0`, {
+        const year = addText(`Year: 1`, {
             position: new Vector3(2.6, 5, 17),
             scale: new Vector3(0.3, 0.3, 0.3),
             rotation: new Euler(-Math.PI / 5, 0, 0),
