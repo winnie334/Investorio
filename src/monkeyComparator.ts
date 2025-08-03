@@ -9,7 +9,7 @@ import {
 } from "./models.ts";
 import {getGameWorld} from "./gameWorld.ts";
 
-const MAXVALUE = 10000;
+const MAXVALUE = 15000;
 
 let playerBar: THREE.Mesh;
 let monkeyBar: THREE.Mesh;

@@ -113,7 +113,7 @@ function createGameWorld() {
         backWall.receiveShadow = true;
         scene.add(backWall);
 
-        loadModel(plantModelUrl, {
+        const plant = await loadModel(plantModelUrl, {
             scene,
             position: new Vector3(-8, 0, 5)
         })
@@ -423,6 +423,7 @@ function createGameWorld() {
         }
 
 
+
         roomObjects = {
             balance,
             profit,
@@ -446,6 +447,7 @@ function createGameWorld() {
             youPortrait,
             monkeyPortrait,
             grannyPortrait,
+            plant
         };
 
         gameLogic.updateAllUI()

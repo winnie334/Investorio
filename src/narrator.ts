@@ -23,7 +23,7 @@ export class Narrator {
 
          m("Let me explain the stocks to you, since clearly you need it...", 30),
          m("Each of these is a random company's stock. With one exception, the World.", 0),
-         m("The world tracks thousands of companies, and (just like real life) most consistently goes up.                                                           ", 0),
+         m("The World tracks thousands of companies, and (just like real life) most consistently goes up.                                                           ", 0),
          m("If you don't want to gamble, that's the one to go for!                    ", 0),
 
          m("Oh and, you have 30 years.               ", 2),
@@ -45,9 +45,13 @@ export class Narrator {
 
          m("In case I wasn't clear before: you can win by just investing in World. No need to be smart. It's almost cheating.                     ", 25),
 
+         m("Even shadows move with the sun; only the forgotten stay fixed.                            * Grandma accidentally tramples the plant *", 2, Character.GRANNY, () => getGameLogic().flattenPlant()),
+
+         m("Not much longer to go before retirement, make those years count!", 25),
+
          m("To endure is to defy the vanity of ease.            ", 25, Character.GRANNY),
 
-         m("Not much longer to go before retirement, make those years count!", 25)
+
         ];
 
     endMessages: Popup[] = [

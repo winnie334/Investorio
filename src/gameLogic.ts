@@ -389,6 +389,11 @@ function createGameLogic() {
         return rock?.getNetWorth()
     }
 
+    function flattenPlant() {
+        let plant = getGameWorld().getRoomObjects()?.plant
+        if (plant) plant.scale.y = 0.25
+    }
+
     function updateAllUI() {
         updateBalanceUI(0)
         selectStock(selectedStock)
@@ -462,6 +467,7 @@ function createGameLogic() {
         showTerminal,
         showBarChart,
         startNarrator,
-        showEndSlide
+        showEndSlide,
+        flattenPlant
     };
 }
