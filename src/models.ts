@@ -22,6 +22,7 @@ import anonymous from './assets/models/anonymous.glb';
 import you from './assets/models/you.glb';
 import cash from './assets/models/cash.glb';
 import plant from './assets/models/plant.glb';
+import carpet from './assets/models/carpet.glb';
 
 import {
     Camera,
@@ -100,6 +101,7 @@ export const monkeyModelUrl = monkey;
 export const narratorModelUrl = anonymous;
 export const cashModelUrl = cash;
 export const plantModelUrl = plant;
+export const carpetModelUrl = carpet;
 
 // Loaders
 const gltfLoader = new GLTFLoader();
