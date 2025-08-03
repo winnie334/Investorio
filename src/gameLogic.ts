@@ -407,6 +407,7 @@ function createGameLogic() {
         updateGraphData(selectedStock, day + 100000);
         narrator.startEndSpeech()
         showEndSlide(0)
+        playSound("FINISH")
         console.log("triggered")
     }
 

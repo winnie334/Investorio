@@ -130,7 +130,7 @@ function createGameWorld() {
             position: new Vector3(-8, 0.5, 5)
         })
 
-        const carpetScale = 5
+        const carpetScale = 3
         loadModel(carpetModelUrl, {
             scene,
             position: new Vector3(0, 0, -4),
