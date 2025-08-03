@@ -145,6 +145,7 @@ function createGameLogic() {
 
         const models = gameWorld.getRoomObjects().selectStockModels as THREE.Mesh[];
 
+
         models.forEach((model, index) => {
             model.traverse((child) => {
                 if (child.isMesh) {

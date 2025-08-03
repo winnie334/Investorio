@@ -241,12 +241,21 @@ function createGameWorld() {
         const selectStockModels = stockModels.map(([model]) => {
             model.traverse((child) => {
                 if (child.isMesh) {
-                    child.material.transparent = true;
-                    child.material.opacity = 0.3;
+                    const materials = Array.isArray(child.material)
+                        ? child.material
+                        : [child.material];
+
+                    for (const mat of materials) {
+                        mat.transparent = true;
+                        mat.opacity = 0.3;
+                        mat.depthWrite = false;
+                        mat.needsUpdate = true;
+                    }
                 }
             });
             return model;
         });
+
 
         const textBubbleElement = addText("Heyo", {
             position: new Vector3(-5.8, 6.2, 7.2),
