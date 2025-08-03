@@ -23,7 +23,7 @@ import {
     grannyModelUrl,
     monkeyModelUrl,
     narratorModelUrl,
-    cashModelUrl, updateTextValue, plantModelUrl,
+    cashModelUrl, updateTextValue, plantModelUrl, carpetModelUrl,
 } from "./models.ts";
 import {loadMonkeyComparator} from "./monkeyComparator.ts";
 import {playSound, type SoundKey} from "./soundManager.ts";
@@ -115,7 +115,14 @@ function createGameWorld() {
 
         loadModel(plantModelUrl, {
             scene,
-            position: new Vector3(-8, 0, 5)
+            position: new Vector3(-8, 0.5, 5)
+        })
+
+        const carpetScale = 5
+        loadModel(carpetModelUrl, {
+            scene,
+            position: new Vector3(0, 0, -4),
+            scale: new Vector3(carpetScale, carpetScale, carpetScale),
         })
 
 
