@@ -28,28 +28,28 @@ export class Narrator {
 
          m("Oh and, you have 30 years.               ", 2),
 
-         m("What has this to do with \"loop\" you ask?                                                                                                         ", 23),
+         m("What has this to do with \"loop\" you ask?                                                                                                         ", 26),
 
          m("...", 3),
 
-         m("To spice it up, let me introduce you to some competition!                       ", 20, Character.NARRATOR, () => getGameLogic().showBarChart()),
+         m("To spice it up, let me introduce you to some competition!                       ", 22, Character.NARRATOR, () => getGameLogic().showBarChart()),
             // < Spawn in bar chart >
          m("First up is Rob the monkey! He randomly buys or sells random quantities of random stocks at random times. He's so random!                         ", 0),
          m("OOOOO OO OOOO  AAAAA AAA AAA                      ", 0, Character.MONKEY),
          m("And then we have my very own grandma.      So old she turned to stone centuries ago, yet her automatic transfer is still running!    ", 0),
          m("She does nothing but buy as much World as possible.      ", 0),
-         m("The flowers wither when none remain to weep for them — and still, the earth turns.                           ", 0, Character.GRANNY),
+         m("The flowers wither when none remain to weep for them — yet, the earth turns.                           ", 0, Character.GRANNY),
          m("They each had the same starting amount     and earn as much side income as you. See if you can beat them!                     ", 0),
 
          m("OOO AAA AAA OOO                               * Rob is licking a rock. *", 25, Character.MONKEY),
 
          m("In case I wasn't clear before: you can win by just investing in World. No need to be smart. It's almost cheating.                     ", 25),
 
-         m("Even shadows move with the sun; only the forgotten stay fixed.                            * Grandma accidentally tramples the plant *", 2, Character.GRANNY, () => getGameLogic().flattenPlant()),
+         m("Even shadows move with the sun; only the forgotten stay fixed.                            *Grandma accidentally tramples the plant*", 2, Character.GRANNY, () => getGameLogic().flattenPlant()),
 
-         m("Not much longer to go before retirement, make those years count!", 25),
+         m("Not much longer to go before retirement, make those years count!", 35),
 
-         m("To endure is to defy the vanity of ease.            ", 25, Character.GRANNY),
+         m("To endure is to defy the vanity of ease.            ", 35, Character.GRANNY),
 
 
         ];
