@@ -37,6 +37,13 @@ export async function loadGraphModel(scene: Scene, x: number, y: number, z: numb
     scene.add(cubeGroup);
     cubeGroup.add(createBg());
     cubeGroup.add(createBgOutline());
+    setShowGraph(false)
+}
+
+export function setShowGraph(isVisible: boolean) {
+    if (cubeGroup) {
+        cubeGroup.visible = isVisible;
+    }
 }
 
 export function updateGraphData(stock: Stock, day: number) {
@@ -48,7 +55,7 @@ export function updateGraphData(stock: Stock, day: number) {
     cubeGroup.add(createBgOutline());
 
     if (getGameLogic().getFinishTime() != -1) MAX_VALUES -= 3
-    const visibleValues = allPrices[stock].slice(Math.max(0, day-MAX_VALUES+1), day+1) // +1 so day is included
+    const visibleValues = allPrices[stock].slice(Math.max(0, day - MAX_VALUES + 1), day + 1) // +1 so day is included
     if (MAX_VALUES == 0) return
 
     const min = Math.min(...visibleValues);

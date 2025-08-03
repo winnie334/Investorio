@@ -530,6 +530,7 @@ function createGameWorld() {
 
     type ShowTextOptions = {
         onDone?: () => void;
+        onStart?: () => void;
         character?: Character;
         fadeout?: boolean;
     };
@@ -539,8 +540,10 @@ function createGameWorld() {
         text: string,
         options: ShowTextOptions = {}
     ) {
-        const {onDone, character, fadeout} = options;
+        const {onDone, character, fadeout, onStart} = options;
         const characterToUse = character ?? Character.NARRATOR;
+
+        if (onStart) onStart();
 
         bubbleMesh.visible = true;
         characterPortraits[characterToUse].visible = true;
