@@ -49,7 +49,7 @@ export const stockToSoundMap: Record<Stock, SoundKey> = {
 
 
 const STARTING_BALANCE = 500
-const SECS_PER_DAY = 1
+const SECS_PER_DAY = 1.2
 const DAYS_PER_YEAR = 12; // We only have 500 stock data points xp
 const YEARS_TO_PLAY = 40;
 const SPAWN_CASH_EVERY_X_DAY = 12 // amount of days for cash to spawn in
