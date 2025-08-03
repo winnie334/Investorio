@@ -3,7 +3,7 @@ import * as THREE from 'three';
 import {createTitleScreen} from "./scenes/TitleScreen.scene.ts";
 import {createGameScreen} from "./scenes/Game.scene.ts";
 import {createTestScreen} from "./scenes/Test.scene.ts";
-import {isDev} from "../main.ts";
+import {isDev} from "../../main.ts";
 import {addFreeCamControls} from "../helpers/camera.ts";
 import {getRenderer} from "./initRenderer.ts";
 

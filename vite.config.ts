@@ -1,5 +1,6 @@
 import glsl from 'vite-plugin-glsl';
 import path from 'path';
+import {resolve} from "node:dns";
 
 export default {
     server: {
@@ -7,10 +8,14 @@ export default {
         port: 4000,
     },
     plugins: [glsl()],
+    root: '.',
     assetsInclude: ['**/*.glb', '**/*.fbx'],
     resolve: {
         alias: {
-            '@': path.resolve(__dirname, 'src'), // ✅ This enables @/...
+            '@': path.resolve(__dirname, 'src')
         },
     },
+    build: {
+        rollupOptions: {}
+    }
 }
