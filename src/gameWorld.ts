@@ -174,6 +174,7 @@ function createGameWorld() {
                 position: new Vector3(-3.8, 3.3, 19),
                 scale: new Vector3(0.5, 0.5, 0.5),
                 rotation: new Euler(Math.PI / 5, 0, 0),
+                visible: false,
             }),
             loadModelInteractive(sellButtonModelUrl, {
                 scene, camera, canvas,
@@ -181,6 +182,7 @@ function createGameWorld() {
                 position: new Vector3(-3.8, 2.5, 20),
                 scale: new Vector3(0.5, 0.5, 0.5),
                 rotation: new Euler(Math.PI / 5, 0, 0),
+                visible: false,
             }),
             loadModelInteractive(quantityPlusModelUrl, {
                 scene, camera, canvas,
@@ -188,6 +190,7 @@ function createGameWorld() {
                 position: new Vector3(-6.3, 3.2, 19.5),
                 scale: new Vector3(2, 2, 2),
                 rotation: new Euler(Math.PI / 5, -Math.PI / 2, 0),
+                visible: false,
             }),
             loadModelInteractive(quantityMinusModelUrl, {
                 scene, camera, canvas,
@@ -195,6 +198,7 @@ function createGameWorld() {
                 position: new Vector3(-6.3, 3.2, 19.5),
                 scale: new Vector3(2, 2, 2),
                 rotation: new Euler(Math.PI / 5, -Math.PI / 2, 0),
+                visible: false,
             }),
             loadModelInteractive(textBubbleUrl1, {
                 scene, camera, canvas,
@@ -212,12 +216,14 @@ function createGameWorld() {
                 position: new Vector3(0, -8, 18),
                 rotation: new Euler(0, -Math.PI / 2, 0),
                 scale: new Vector3(0.8, 0.8, 0.8),
+                visible: false,
             }),
             loadModel(screenModelUrl, {
                 scene,
                 position: new Vector3(1.5, 4, 18),
                 scale: new Vector3(3.5, 2.5, 2.5),
                 rotation: new Euler(Math.PI / 5, 0, 0),
+                visible: false,
             }),
         ];
 
@@ -271,6 +277,7 @@ function createGameWorld() {
             rotation: new Euler(-Math.PI / 5, 0, 0),
             scale: new Vector3(0.7, 0.7, 0.7),
             color: 0x000000,
+            visible: false,
             scene
         });
 
@@ -279,6 +286,7 @@ function createGameWorld() {
             rotation: new Euler(-Math.PI / 5, 0, 0),
             scale: new Vector3(0.5, 0.5, 0.5),
             color: 0x000000,
+            visible: false,
             scene
         });
 
@@ -286,6 +294,7 @@ function createGameWorld() {
             position: new Vector3(-1.1, 5.2, 17),
             scale: new Vector3(0.3, 0.3, 0.3),
             rotation: new Euler(-Math.PI / 5, 0, 0),
+            visible: false,
             scene
         });
 
@@ -293,6 +302,7 @@ function createGameWorld() {
             position: new Vector3(-1.1, 5.1, 17.6),
             scale: new Vector3(0.3, 0.3, 0.3),
             rotation: new Euler(-Math.PI / 5, 0, 0),
+            visible: false,
             scene
         });
 
@@ -300,6 +310,7 @@ function createGameWorld() {
             position: new Vector3(-1.1, 5, 18.2),
             scale: new Vector3(0.3, 0.3, 0.3),
             rotation: new Euler(-Math.PI / 5, 0, 0),
+            visible: false,
             scene
         });
 
@@ -310,10 +321,11 @@ function createGameWorld() {
             scene
         });
 
-        addText("---------------------Portfolio", {
+        const portfolio = addText(`---------------------Portfolio`, {
             position: new Vector3(-1.09, 5.4, 19.4),
             scale: new Vector3(0.28, 0.28, 0.28),
             rotation: new Euler(-Math.PI / 5, 0, 0),
+            visible: false,
             scene
         });
 
@@ -330,6 +342,7 @@ function createGameWorld() {
                 position: new Vector3(-1.1, positionY, positionZ),
                 scale: new Vector3(0.25, 0.25, 0.25),
                 rotation: new Euler(-Math.PI / 5, 0, 0),
+                visible: false,
                 scene
             });
         });
@@ -338,6 +351,7 @@ function createGameWorld() {
             position: new Vector3(2.6, 5, 17),
             scale: new Vector3(0.3, 0.3, 0.3),
             rotation: new Euler(-Math.PI / 5, 0, 0),
+            visible: false,
             scene
         });
 
@@ -370,7 +384,10 @@ function createGameWorld() {
             selectedStock,
             graphText,
             invested,
-            year
+            year,
+            screen,
+            panel,
+            portfolio
         };
 
         gameLogic.updateAllUI();

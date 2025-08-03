@@ -1,7 +1,6 @@
 import {Character, getGameWorld} from "./gameWorld.ts";
-import {getGameLogic} from "./gameLogic.ts";
 import {showMonkeyComparator} from "./monkeyComparator.ts";
-import {setShowGraph} from "./graph.ts";
+import {getGameLogic} from "./gameLogic.ts";
 
 type Popup = {
     message: string;
@@ -19,7 +18,7 @@ export class Narrator {
         [m("Yo dumbass, listen up.                            ", 5),
          m("I'm here to give you some hot finance advice.       ", 0),
          m("I know, it's a game jam, but pay attention and these might be the most profitable minutes of your life.                        I'm not kidding.                   ", 0),
-         m("In this game, you will learn how to INVEST. Or rather, learn that investing is brain-dead simple.                   Charles, bring up the terminal.", 0),
+         m("In this game, you will learn how to INVEST. Or rather, learn that investing is brain-dead simple.                   Charles, bring up the terminal.", 0, Character.NARRATOR, () => getGameLogic().showTerminal(true)),
             // < Spawn in terminal >
          m("Use this to buy and sell stocks to your liking. Have fun!", 3),
 
@@ -31,7 +30,7 @@ export class Narrator {
 
          m("What has this to do with \"loop\" you ask?                                                                                                         ", 20),
 
-         m("To spice it up, let me introduce you to some competition!                       ", 20, Character.NARRATOR, () => {showMonkeyComparator(true); setShowGraph(true);}),
+         m("To spice it up, let me introduce you to some competition!                       ", 20, Character.NARRATOR, () => showMonkeyComparator(true)),
             // < Spawn in bar chart >
          m("First up is Rob the monkey! He randomly buys or sells random quantities of random stocks at random times. He's so random!                     ", 0),
          m("OOOOO OO OOOO  AAAAA AAA AAA                ", 0, Character.MONKEY),

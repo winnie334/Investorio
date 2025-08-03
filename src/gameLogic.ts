@@ -104,7 +104,8 @@ function createGameLogic() {
 
     let daysBeforeSalary = SPAWN_CASH_EVERY_X_DAY;
 
-    let gameStarted = false;
+    let terminalShown = false;
+    showTerminal(false);
 
 
     function getBalance() {
@@ -289,14 +290,43 @@ function createGameLogic() {
         if (balanceElement) updateTextValue(balanceElement, `Balance: $${Math.floor(balance)}`)
     }
 
-    function startGame() {
-        gameStarted = true;
+    function showTerminal(visible: boolean) {
+        terminalShown = visible;
+
+        // Dit is echt om van te wenen
+        const balance = gameWorld.getRoomObjects()?.balance;
+        if (balance) balance.visible = visible;
+        const quantity = gameWorld.getRoomObjects()?.quantityElement;
+        if (quantity) quantity.visible = visible;
+        const order = gameWorld.getRoomObjects()?.orderElement;
+        if (order) order.visible = visible;
+        const invested = gameWorld.getRoomObjects()?.invested;
+        if (invested) invested.visible = visible;
+        const profit = gameWorld.getRoomObjects()?.profit;
+        if (profit) profit.visible = visible;
+        const screen = gameWorld.getRoomObjects()?.screen;
+        if (screen) screen.visible = visible;
+        const portfolio = gameWorld.getRoomObjects()?.portfolio;
+        if (portfolio) portfolio.visible = visible;
+        const panel = gameWorld.getRoomObjects()?.panel;
+        if (panel) panel.visible = visible;
+        const minus = gameWorld.getRoomObjects()?.minusButton;
+        if (minus) minus.visible = visible;
+        const plus = gameWorld.getRoomObjects()?.plusButton;
+        if (plus) plus.visible = visible;
+        const buy = gameWorld.getRoomObjects()?.buyButton;
+        if (buy) buy.visible = visible;
+        const sell = gameWorld.getRoomObjects()?.sellButton;
+        if (sell) sell.visible = visible;
+        const portfolioElements = gameWorld.getRoomObjects()?.portFolioTexts;
+        if (portfolioElements)
+        Object.keys(portfolioElements).forEach(element => element.visible = visible)
     }
 
     function update(delta: number) {
         narrator.update(delta);
 
-        if (!gameStarted) return
+        if (!terminalShown) return
 
         if (gameFinishTime != -1) {
             endUpdate();
@@ -397,6 +427,6 @@ function createGameLogic() {
         updateAllUI,
         getMonkeyScore,
         getStoneScore,
-        startGame,
+        showTerminal,
     };
 }

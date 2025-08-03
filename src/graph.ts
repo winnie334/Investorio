@@ -39,13 +39,6 @@ export async function loadGraphModel(scene: Scene, x: number, y: number, z: numb
     scene.add(cubeGroup);
     cubeGroup.add(createBg());
     cubeGroup.add(createBgOutline());
-    setShowGraph(true)
-}
-
-export function setShowGraph(isVisible: boolean) {
-    if (cubeGroup) {
-        cubeGroup.visible = isVisible;
-    }
 }
 
 export function updateGraphData(stock: Stock, day: number) {
