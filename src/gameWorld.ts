@@ -23,7 +23,7 @@ import {
     grannyModelUrl,
     monkeyModelUrl,
     narratorModelUrl,
-    cashModelUrl, updateTextValue,
+    cashModelUrl, updateTextValue, plantModelUrl,
 } from "./models.ts";
 import {loadMonkeyComparator} from "./monkeyComparator.ts";
 import {playSound, type SoundKey} from "./soundManager.ts";
@@ -112,6 +112,11 @@ function createGameWorld() {
         backWall.position.set(0, wallHeight / 2, -roomDepth / 2);
         backWall.receiveShadow = true;
         scene.add(backWall);
+
+        loadModel(plantModelUrl, {
+            scene,
+            position: new Vector3(-8, 0, 5)
+        })
 
 
         loadMonkeyComparator({

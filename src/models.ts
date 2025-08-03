@@ -21,8 +21,7 @@ import monkey from './assets/models/monkey.glb';
 import anonymous from './assets/models/anonymous.glb';
 import you from './assets/models/you.glb';
 import cash from './assets/models/cash.glb';
-import dino from './assets/models/dino.fbx';
-import cash2 from './assets/models/Cheque.glb';
+import plant from './assets/models/plant.glb';
 
 import {
     Camera,
@@ -100,7 +99,7 @@ export const grannyModelUrl = granny;
 export const monkeyModelUrl = monkey;
 export const narratorModelUrl = anonymous;
 export const cashModelUrl = cash;
-export const dinoModelUrl = dino;
+export const plantModelUrl = plant;
 
 // Loaders
 const gltfLoader = new GLTFLoader();
