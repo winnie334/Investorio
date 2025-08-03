@@ -55,11 +55,18 @@ export function loadMonkeyComparator(params: MonkeyComparatorParams) {
     stoneBar = makeBar(0x2196F3, -0.1);
 
 
+    showMonkeyComparator(false)
     updateMonkeyComparator()
 
 
     scene?.add(comparatorGroup);
 
+}
+
+export function showMonkeyComparator(isVisible: boolean) {
+    if (comparatorGroup) {
+        comparatorGroup.visible = isVisible;
+    }
 }
 
 export function updateMonkeyComparator() {

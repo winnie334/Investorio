@@ -1,14 +1,18 @@
 import {Character, getGameWorld} from "./gameWorld.ts";
+import {getGameLogic} from "./gameLogic.ts";
+import {showMonkeyComparator} from "./monkeyComparator.ts";
+import {setShowGraph} from "./graph.ts";
 
 type Popup = {
     message: string;
     secsBeforeDisplayed: number;
-    character: Character
+    character: Character;
+    onDone: () => void;
 };
 
 // Wrapper for brevity in messages[]
-const m = (content: string, s: number, c: Character = Character.NARRATOR): Popup =>
-          ({ message: content, secsBeforeDisplayed: s, character: c });
+const m = (content: string, s: number, c: Character = Character.NARRATOR, onDone: () => void = () => {}): Popup =>
+          ({ message: content, secsBeforeDisplayed: s, character: c, onDone: onDone });
 
 export class Narrator {
     messages: Popup[] =
@@ -27,7 +31,7 @@ export class Narrator {
 
          m("What has this to do with \"loop\" you ask?                                                                                                         ", 20),
 
-         m("To spice it up, let me introduce you to some competition!                       ", 20),
+         m("To spice it up, let me introduce you to some competition!                       ", 20, Character.NARRATOR, () => {showMonkeyComparator(true); setShowGraph(true);}),
             // < Spawn in bar chart >
          m("First up is Rob the monkey! He randomly buys or sells random quantities of random stocks at random times. He's so random!                     ", 0),
          m("OOOOO OO OOOO  AAAAA AAA AAA                ", 0, Character.MONKEY),
@@ -43,10 +47,9 @@ export class Narrator {
 
          m("Not much longer to go before retirement, make those years count!", 15)];
 
-    messageIndex = -1; // Last (or current) displayed message
+    messageIndex = -1;
     lastMessageDone = true;
-
-    secondsUntilNextMessage: number = this.messages[0].secsBeforeDisplayed
+    secondsUntilNextMessage: number = this.messages[0].secsBeforeDisplayed;
 
     update(delta: number) {
         this.countToNextMessage(delta);
@@ -54,16 +57,19 @@ export class Narrator {
 
     private countToNextMessage(delta: number) {
         if (this.lastMessageDone) this.secondsUntilNextMessage -= delta;
+
         if (this.secondsUntilNextMessage < 0) {
             this.messageIndex++
             if (this.messageIndex >= this.messages.length - 1) this.secondsUntilNextMessage = 999999
             else this.secondsUntilNextMessage = this.messages[this.messageIndex + 1].secsBeforeDisplayed
 
+            let message = this.messages[this.messageIndex]
+
             this.lastMessageDone = false;
-            getGameWorld().showText(this.messages[this.messageIndex].message, {
+            getGameWorld().showText(message.message, {
                 fadeout: this.secondsUntilNextMessage != 0, // Fadeout if the next message is not instantaneous after
-                character: this.messages[this.messageIndex].character,
-                onDone: () => this.lastMessageDone = true
+                character: message.character,
+                onDone: () => {this.lastMessageDone = true; message.onDone()}
             })
 
             console.log("triggered message " + this.messageIndex + ", now waiting " + this.secondsUntilNextMessage + "s")

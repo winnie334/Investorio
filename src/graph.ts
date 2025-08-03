@@ -11,9 +11,11 @@ const annotationCache: Record<number, THREE.Object3D | undefined> = {};
 
 let cubeGroup: Group | null = null;
 
+const height = 2.7
+
 function createBg() {
     // Background
-    const geo = new THREE.BoxGeometry(BG_WIDTH, 0.1, 2.5);
+    const geo = new THREE.BoxGeometry(BG_WIDTH, 0.1, height);
     const mat = new THREE.MeshStandardMaterial({color: 0xaaaaaa});
     const background = new THREE.Mesh(geo, mat);
     background.position.set(1, 0, -2);
@@ -22,7 +24,7 @@ function createBg() {
 
 function createBgOutline() {
     // Background outline
-    const geo2 = new THREE.BoxGeometry(BG_WIDTH * 1.02, 0.1 - 0.01, 2.5 * 1.02);
+    const geo2 = new THREE.BoxGeometry(BG_WIDTH * 1.02, 0.1 - 0.01, height * 1.02);
     const mat2 = new THREE.MeshStandardMaterial({color: 0x000000});
     const background2 = new THREE.Mesh(geo2, mat2);
     background2.position.set(1, 0, -2);
@@ -37,6 +39,13 @@ export async function loadGraphModel(scene: Scene, x: number, y: number, z: numb
     scene.add(cubeGroup);
     cubeGroup.add(createBg());
     cubeGroup.add(createBgOutline());
+    setShowGraph(true)
+}
+
+export function setShowGraph(isVisible: boolean) {
+    if (cubeGroup) {
+        cubeGroup.visible = isVisible;
+    }
 }
 
 export function updateGraphData(stock: Stock, day: number) {
@@ -48,7 +57,7 @@ export function updateGraphData(stock: Stock, day: number) {
     cubeGroup.add(createBgOutline());
 
     if (getGameLogic().getFinishTime() != -1) MAX_VALUES -= 3
-    const visibleValues = allPrices[stock].slice(Math.max(0, day-MAX_VALUES+1), day+1) // +1 so day is included
+    const visibleValues = allPrices[stock].slice(Math.max(0, day - MAX_VALUES + 1), day + 1) // +1 so day is included
     if (MAX_VALUES == 0) return
 
     const min = Math.min(...visibleValues);

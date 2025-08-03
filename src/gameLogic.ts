@@ -104,6 +104,8 @@ function createGameLogic() {
 
     let daysBeforeSalary = SPAWN_CASH_EVERY_X_DAY;
 
+    let gameStarted = false;
+
 
     function getBalance() {
         return balance;
@@ -286,8 +288,14 @@ function createGameLogic() {
         if (balanceElement) updateTextValue(balanceElement, `Balance: $${Math.floor(balance)}`)
     }
 
+    function startGame() {
+        gameStarted = true;
+    }
+
     function update(delta: number) {
         narrator.update(delta);
+
+        if (!gameStarted) return
 
         if (gameFinishTime != -1) {
             endUpdate();
@@ -388,5 +396,6 @@ function createGameLogic() {
         updateAllUI,
         getMonkeyScore,
         getStoneScore,
+        startGame,
     };
 }
