@@ -13,7 +13,7 @@ const m = (content: string, s: number, c: Character = Character.NARRATOR): Popup
 export class Narrator {
     messages: Popup[] =
         [m("Yo dumbass, listen up.                            ", 5),
-         m("I'm here to give you some hot finance advice", 0),
+         m("I'm here to give you some hot finance advice.", 0),
          m("Bazinga", 3),
          m("I am the monkey and I also exist.             However.                                 Due to severe negligence my portrait is broken.           ", 4, Character.MONKEY)];
 
@@ -34,14 +34,13 @@ export class Narrator {
             else this.secondsUntilNextMessage = this.messages[this.messageIndex + 1].secsBeforeDisplayed
 
             this.lastMessageDone = false;
-            console.log(this.messages[this.messageIndex].character)
             getGameWorld().showText(this.messages[this.messageIndex].message, {
                 fadeout: this.secondsUntilNextMessage != 0, // Fadeout if the next message is not instantaneous after
                 character: this.messages[this.messageIndex].character,
                 onDone: () => this.lastMessageDone = true
             })
 
-            console.log("displayed index " + this.messageIndex + ", now waiting " + this.secondsUntilNextMessage)
+            console.log("triggered message " + this.messageIndex + ", now waiting " + this.secondsUntilNextMessage + "s")
         }
     }
 }

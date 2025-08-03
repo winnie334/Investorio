@@ -17,9 +17,9 @@ export enum Stock {
 
 export const stockNames = {
     [Stock.WORLD]: 'World',
-    [Stock.Potato]: 'Potatos',
+    [Stock.Potato]: 'Potatoes',
     [Stock.Apple]: 'Apples',
-    [Stock.Fish]: 'Fish',
+    [Stock.Fish]: 'Non-explosive fish',
     [Stock.MoonLoops]: 'Moonloops',
 }
 
@@ -48,12 +48,11 @@ export const stockToSoundMap: Record<Stock, SoundKey> = {
 }
 
 
-const STARTING_BALANCE = 1000
+const STARTING_BALANCE = 500
 const SECS_PER_DAY = 1
-const DAYS_PER_YEAR = 5; // We only have 500 stock data points xp
-const FINAL_AGE = 31;
-const STARTING_AGE = 20;
-const SPAWN_CASH_EVERY_X_DAY = 5 // amount of days for cash to spawn in
+const DAYS_PER_YEAR = 12; // We only have 500 stock data points xp
+const YEARS_TO_PLAY = 40;
+const SPAWN_CASH_EVERY_X_DAY = 12 // amount of days for cash to spawn in
 export const CASH_VALUE = 500
 
 let gameLogic = createGameLogic();
@@ -118,10 +117,6 @@ function createGameLogic() {
         return portfolio;
     }
 
-    function getAge() {
-        return STARTING_AGE + year;
-    }
-
     function getPortfolioValue() {
         return Object.entries(portfolio).reduce((acc, [s, q]) => acc + allPrices[+s][day] * q, 0); // dit is chinees xd
     }
@@ -143,7 +138,7 @@ function createGameLogic() {
         updateOrderUI();
         updateTextValue(
             selectedStockElement,
-            `Stock: ${stockNames[getSelectedStock()] || 'None'}`
+            `${stockNames[getSelectedStock()] || 'None'}`
         );
 
         const models = gameWorld.getRoomObjects().selectStockModels as THREE.Mesh[];
@@ -202,7 +197,7 @@ function createGameLogic() {
     }
 
     function getTotalInvested() {
-        return Math.max(0, totalInvested).toFixed(1);
+        return Math.max(0, totalInvested);
     }
 
     function getTotalValue() {
@@ -213,7 +208,7 @@ function createGameLogic() {
         totalInvested = amount;
         const element = gameWorld.getRoomObjects()?.invested
         if (!element) return;
-        updateTextValue(element, `Invested: $${getTotalInvested()}`)
+        updateTextValue(element, `Invested: $${getTotalInvested().toFixed(1)}`)
     }
 
     function getProfit() {
@@ -223,7 +218,7 @@ function createGameLogic() {
     function updateProfitUI() {
         const element = gameWorld.getRoomObjects()?.profit
         if (!element) return;
-        updateTextValue(element, `P/L: $${getTotalValue()} (${getProfit() >= 0 ? '+' : ''}${getProfit().toFixed(1)})`)
+        updateTextValue(element, `P/L: $${getTotalValue().toFixed(1)} (${getProfit() >= 0 ? '+' : ''}${getProfit().toFixed(1)})`)
     }
 
     function buyStock(stock: Stock = selectedStock) {
@@ -337,7 +332,7 @@ function createGameLogic() {
         const element = gameWorld.getRoomObjects().year
         updateTextValue(element, `Year: ${year}`)
 
-        if (year + STARTING_AGE >= FINAL_AGE && gameFinishTime == -1) triggerEnding()
+        if (year >= YEARS_TO_PLAY && gameFinishTime == -1) triggerEnding()
     }
 
     function getFinishTime() {
@@ -377,7 +372,6 @@ function createGameLogic() {
         buyStock,
         sellStock,
         update,
-        getAge,
         getNetWorth,
         selectStock,
         addToBalance,

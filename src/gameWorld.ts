@@ -333,43 +333,46 @@ function createGameWorld() {
         });
 
         const balance = addText(``, {
-            position: new Vector3(-1.1, 5, 17),
+            position: new Vector3(-1.1, 5.2, 17),
             scale: new Vector3(0.3, 0.3, 0.3),
             rotation: new Euler(-Math.PI / 5, 0, 0),
             scene
         });
 
         const invested = addText(`}`, {
-            position: new Vector3(-1.1, 4.9, 17.6),
+            position: new Vector3(-1.1, 5.1, 17.6),
             scale: new Vector3(0.3, 0.3, 0.3),
             rotation: new Euler(-Math.PI / 5, 0, 0),
             scene
         });
 
         const profit = addText(``, {
-            position: new Vector3(-1.1, 4.8, 18.2),
+            position: new Vector3(-1.1, 5, 18.2),
             scale: new Vector3(0.3, 0.3, 0.3),
             rotation: new Euler(-Math.PI / 5, 0, 0),
             scene
         });
 
         const selectedStock = addText(``, {
-            position: new Vector3(-1.1, 4.7, 18.8),
-            scale: new Vector3(0.3, 0.3, 0.3),
-            rotation: new Euler(-Math.PI / 5, 0, 0),
+            position: new Vector3(-8.2, 3.8, -13.8),
+            color: 0x000000,
             scene
+            // position: new Vector3(-1.1, 4.7, 18.8),
+            // scale: new Vector3(0.3, 0.3, 0.3),
+            // rotation: new Euler(-Math.PI / 5, 0, 0),
+            // scene
         });
-        addText("Portfolio:", {
-            position: new Vector3(-1.1, 4.6, 19.4),
-            scale: new Vector3(0.3, 0.3, 0.3),
+        addText("---------------------Portfolio", {
+            position: new Vector3(-1.09, 5.4, 19.4),
+            scale: new Vector3(0.28, 0.28, 0.28),
             rotation: new Euler(-Math.PI / 5, 0, 0),
             scene
         });
 
 
-        const offsetY = -0.05;
+        const offsetY = -0.2;
         const offsetZ = 0.4;
-        const baseY = 4.5;
+        const baseY = 5.2;
         const baseZ = 19.7;
 
         const portFolioTexts = Object.keys(gameLogic.getPortfolio()).map((stock, index) => {
@@ -377,8 +380,8 @@ function createGameWorld() {
             const positionZ = baseZ + index * offsetZ;
 
             return addText("", {
-                position: new Vector3(1, positionY, positionZ),
-                scale: new Vector3(0.2, 0.2, 0.2),
+                position: new Vector3(-1.1, positionY, positionZ),
+                scale: new Vector3(0.25, 0.25, 0.25),
                 rotation: new Euler(-Math.PI / 5, 0, 0),
                 scene
             });
