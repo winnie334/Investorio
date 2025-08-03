@@ -216,7 +216,7 @@ function createGameLogic() {
     }
 
     function updateTotalInvested(amount: number) {
-        totalInvested = amount;
+        totalInvested += amount;
         const element = gameWorld.getRoomObjects()?.invested
         if (!element) return;
         updateTextValue(element, `Invested: $${getTotalInvested().toFixed(1)}`)
@@ -229,7 +229,7 @@ function createGameLogic() {
     function updateProfitUI() {
         const element = gameWorld.getRoomObjects()?.profit
         if (!element) return;
-        updateTextValue(element, `P/L: $${getTotalValue().toFixed(1)} (${getProfit() >= 0 ? '+' : ''}${getProfit().toFixed(1)})`)
+        updateTextValue(element, `P/L: ${getProfit() >= 0 ? '+' : ''}${getProfit().toFixed(1)}`)
     }
 
     function buyStock(stock: Stock = selectedStock) {
