@@ -19,7 +19,7 @@ export class Narrator {
          // m("I know, it's a game jam, but pay attention and these might be the most profitable minutes of your life.                        I'm not kidding.                   ", 0),
          m("In this game, you will learn how to INVEST. Or rather, learn that investing is brain-dead simple.                   Charles, bring up the terminal.", 0, Character.NARRATOR, () => getGameLogic().showTerminal(true)),
             // < Spawn in terminal >
-         m("Use this to buy and sell stocks.                  Have fun!", 3, Character.NARRATOR, () => getGameLogic().showBarChart()),
+         m("Use this to buy and sell stocks.                  Have fun!", 3),
 
          m("Let me explain the stocks to you, since clearly you need it...", 30),
          m("Each of these is a random company's stock. With one exception, the World.", 0),
