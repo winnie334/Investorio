@@ -513,7 +513,6 @@ function createGameWorld() {
             bubbleMesh.visible = false;
             characterPortraits[characterToUse].visible = false;
 
-            window.removeEventListener('click', onClick);
             if (timeoutId !== undefined) {
                 clearTimeout(timeoutId);
                 timeoutId = undefined;
@@ -522,11 +521,7 @@ function createGameWorld() {
             if (onDone) onDone();
         };
 
-        const onClick = () => {
-            cleanup();
-        };
 
-        window.addEventListener('click', onClick);
     }
 
 
