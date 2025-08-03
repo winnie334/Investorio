@@ -231,7 +231,7 @@ function createGameWorld() {
         scene.add(rightWall);
 
 
-        loadGraphModel(scene, -4, 2, -14, new Euler(Math.PI / 2, 0, 0), 4);
+        loadGraphModel(scene, -4, 1.5, -14, new Euler(Math.PI / 2, 0, 0), 4);
 
 
         // Buy/Sell/Quantity buttons
@@ -354,11 +354,11 @@ function createGameWorld() {
         });
 
         const selectedStock = addText(``, {
-            position: new Vector3(-8.2, 3.8, -13.8),
-            color: 0x000000,
-            scene
+            position: new Vector3(-7.6, 14, -13.8),
+            color: 0xffffff,
+            scene,
             // position: new Vector3(-1.1, 4.7, 18.8),
-            // scale: new Vector3(0.3, 0.3, 0.3),
+            scale: new Vector3(0.6, 0.6, 0.6),
             // rotation: new Euler(-Math.PI / 5, 0, 0),
             // scene
         });
