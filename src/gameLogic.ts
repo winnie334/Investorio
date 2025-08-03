@@ -3,7 +3,7 @@ import {getGameWorld} from "./gameWorld.ts";
 import {addText, updateTextValue} from "./models.ts";
 import {ai, AiType} from "./ai.ts";
 import * as THREE from "three";
-import {updateMonkeyComparator} from "./monkeyComparator.ts";
+import {showMonkeyComparator, updateMonkeyComparator} from "./monkeyComparator.ts";
 import {Narrator} from "./narrator.ts";
 import {playSound, type SoundKey} from "./soundManager.ts";
 
@@ -59,15 +59,15 @@ const STARTING_BALANCE = 500
 const SECS_PER_DAY = 1.2
 const DAYS_PER_YEAR = 12; // We only have 500 stock data points xp
 const YEARS_TO_PLAY = 40;
-const SPAWN_CASH_EVERY_X_DAY = 12 // amount of days for cash to spawn in
-export const CASH_VALUE = 500
+const SPAWN_CASH_EVERY_X_DAY = 20 // amount of days for cash to spawn in
+export const CASH_VALUE = 300
 
 let gameLogic = createGameLogic();
 
 export let allPrices: number[][] = [];
 
 async function loadPriceData() {
-    const files = [baba, irtc, bats, gme, iwda];
+    const files = [bats, irtc, baba, gme, iwda];
     allPrices = await Promise.all(
         files.map(f =>
             fetch(`${f}`)
@@ -93,7 +93,7 @@ function createGameLogic() {
     let trades: Trade[] = [];
     let gameFinishTime = -1;
     let secondsPassed = 0; // in seconds
-    let day = 0;
+    let day = -1;
     let year = 0;
     let totalInvested = 0
 
@@ -139,7 +139,7 @@ function createGameLogic() {
         console.log("Selected", stock);
         selectedStock = stock;
         playSound("SELECT", 0.06)
-        updateGraphData(stock, secondsPassed);
+        updateGraphData(stock, day);
 
         const selectedStockElement = gameWorld.getRoomObjects()?.selectedStock;
         if (!selectedStockElement) return;
@@ -307,6 +307,8 @@ function createGameLogic() {
         if (quantity) quantity.visible = visible;
         const order = gameWorld.getRoomObjects()?.orderElement;
         if (order) order.visible = visible;
+        const year = gameWorld.getRoomObjects()?.year;
+        if (year) year.visible = visible;
         const invested = gameWorld.getRoomObjects()?.invested;
         if (invested) invested.visible = visible;
         const profit = gameWorld.getRoomObjects()?.profit;
@@ -333,12 +335,7 @@ function createGameLogic() {
     function update(delta: number) {
         narrator.update(delta);
 
-        if (!terminalShown) return
-
-        if (gameFinishTime != -1) {
-            endUpdate();
-            return
-        }
+        if (!terminalShown || gameFinishTime != - 1) return
 
         timeBeforeNextDay -= delta;
         secondsPassed += delta;
@@ -386,11 +383,11 @@ function createGameLogic() {
     }
 
     function getMonkeyScore() {
-        return monkey?.getPortfolioValue() + monkey.balance || 0
+        return monkey?.getNetWorth() + monkey.balance || 0
     }
 
     function getStoneScore() {
-        return rock?.getPortfolioValue() + rock.balance || 0
+        return rock?.getNetWorth() + rock.balance || 0
     }
 
     function updateAllUI() {
@@ -404,11 +401,40 @@ function createGameLogic() {
     function triggerEnding() {
         gameFinishTime = getGameLogic().getTime();
         updateGraphData(selectedStock, day + 100000);
-        updateTextValue(gameWorld.getRoomObjects()?.graphText, "Your journey has come\nto an end.\nYour net worth is:\n$" + getNetWorth())
+        narrator.startEndSpeech()
+        showEndSlide(0)
         console.log("triggered")
     }
 
-    function endUpdate() {
+    function showEndSlide(slide: number) {
+        const totalCash = STARTING_BALANCE + DAYS_PER_YEAR * YEARS_TO_PLAY / SPAWN_CASH_EVERY_X_DAY * CASH_VALUE;
+        switch (slide) {
+            case 0:
+                updateTextValue(gameWorld.getRoomObjects()?.selectedStock, "")
+                updateTextValue(gameWorld.getRoomObjects()?.graphText, ":O")
+                break
+            case 1:
+                updateTextValue(gameWorld.getRoomObjects()?.graphText, "\n   $" + totalCash)
+                break
+            case 2:
+                updateTextValue(gameWorld.getRoomObjects()?.graphText, "\n   $" + totalCash + "\n\n-> $" + getNetWorth().toFixed(1))
+                break
+            case 3:
+                updateTextValue(gameWorld.getRoomObjects()?.graphText, "You: $" + getNetWorth().toFixed(1) + "\nMonkey: $" + monkey.getNetWorth().toFixed(1) + "\nGrandma: $" + rock.getNetWorth().toFixed(1))
+                break
+            case 4:
+                updateTextValue(gameWorld.getRoomObjects()?.graphText, "\n<3")
+                break
+        }
+    }
+
+    function startNarrator() {
+        narrator.startYapping();
+    }
+
+    function showBarChart() {
+        showMonkeyComparator(true);
+        // todo portraits
     }
 
     return {
@@ -435,5 +461,8 @@ function createGameLogic() {
         getMonkeyScore,
         getStoneScore,
         showTerminal,
+        showBarChart,
+        startNarrator,
+        showEndSlide
     };
 }

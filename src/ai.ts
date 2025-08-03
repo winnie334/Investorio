@@ -51,8 +51,8 @@ export class ai {
         }
     }
 
-    getPortfolioValue() {
-        return Object.entries(this.portfolio).reduce((acc, [k, v]) => acc + allPrices[+k][day()] * v, 0);
+    getNetWorth() {
+        return Object.entries(this.portfolio).reduce((acc, [k, v]) => acc + allPrices[+k][day()] * v, 0) + this.balance;
     }
 
     buy(stock: Stock, quantity: number) {

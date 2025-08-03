@@ -29,7 +29,7 @@ export function createGameScreen() {
     const gameWorld = getGameWorld()
     playSound("BACKGROUND", 0.1, true)
     gameWorld.init(scene, camera, canvas)
-    gameWorld.createRoom()
+    gameWorld.createRoom().then(room => getGameLogic().startNarrator())
 
     function update(deltaT: number) {
         logic.update(deltaT)

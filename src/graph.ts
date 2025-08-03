@@ -49,9 +49,8 @@ export function updateGraphData(stock: Stock, day: number) {
     cubeGroup.add(createBg());
     cubeGroup.add(createBgOutline());
 
-    if (getGameLogic().getFinishTime() != -1) MAX_VALUES -= 3
+    if (getGameLogic().getFinishTime() != -1) return;
     const visibleValues = allPrices[stock].slice(Math.max(0, day - MAX_VALUES + 1), day + 1) // +1 so day is included
-    if (MAX_VALUES == 0) return
 
     const min = Math.min(...visibleValues);
     const max = Math.max(...visibleValues);
