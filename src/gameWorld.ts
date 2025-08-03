@@ -19,9 +19,10 @@ import {
     snowballModelUrl,
     potatoModelUrl,
     addInteractiveText,
+    youUrl,
     grannyModelUrl,
     monkeyModelUrl,
-    anonymousModelUrl,
+    narratorModelUrl,
     cashModelUrl, updateTextValue,
 } from "./models.ts";
 import {loadMonkeyComparator} from "./monkeyComparator.ts";
@@ -150,7 +151,7 @@ function createGameWorld() {
             position: new Vector3(-7, 19.5, -13),
         })
 
-        loadModelInteractive(anonymousModelUrl, {
+        loadModelInteractive(youUrl, {
             scene,
             camera,
             canvas,
@@ -161,7 +162,6 @@ function createGameWorld() {
             rotation: new Euler(Math.PI / 2, 0, 0),
             position: new Vector3(-7, 22.5, -13),
         })
-
 
         const modelConfigs = [
             {
@@ -279,7 +279,7 @@ function createGameWorld() {
             scene,
             camera,
             canvas,
-            onClick: () => gameLogic.tapBubble(),
+            onClick: () => console.log(".."),
             position: new Vector3(1, 5.2, 7),
             scale: new Vector3(4, 4, 4),
             rotation: new Euler(-Math.PI / 7, Math.PI / 2, 0),
@@ -490,7 +490,7 @@ function createGameWorld() {
                 rotation: new Euler(Math.PI / 2, 0, 0),
                 position: new Vector3(-7.5, 5, 8),
             }),
-            loadModel(anonymousModelUrl, {
+            loadModel(narratorModelUrl, {
                 scene,
                 scale: new Vector3(1.1, 1.1, 1.1),
                 rotation: new Euler(Math.PI / 2, 0, 0),
@@ -499,8 +499,11 @@ function createGameWorld() {
         ]);
 
         granny.visible = false;
+        granny.receiveShadow = false;
         monkey.visible = false;
+        monkey.receiveShadow = false;
         narrator.visible = false;
+        narrator.receiveShadow = false;
 
         characterPortraits[Character.GRANNY] = granny;
         characterPortraits[Character.MONKEY] = monkey;
@@ -532,6 +535,7 @@ function createGameWorld() {
     ) {
         const {onDone, character, fadeout} = options;
         const characterToUse = character || Character.NARRATOR;
+        console.log(characterToUse);
 
         bubbleMesh.visible = true;
         characterPortraits[characterToUse].visible = true;

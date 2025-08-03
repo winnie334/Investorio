@@ -19,6 +19,7 @@ import snowball from './assets/models/snowball.glb';
 import granny from './assets/models/granny.glb';
 import monkey from './assets/models/monkey.glb';
 import anonymous from './assets/models/anonymous.glb';
+import you from './assets/models/you.glb';
 import cash from './assets/models/cash.glb';
 import cash2 from './assets/models/Cheque.glb';
 
@@ -92,9 +93,10 @@ export const planetModelUrl = planet;
 export const fishModelUrl = fishUrl;
 export const snowballModelUrl = snowball;
 export const potatoModelUrl = potato;
+export const youUrl = you;
 export const grannyModelUrl = granny;
 export const monkeyModelUrl = monkey;
-export const anonymousModelUrl = anonymous;
+export const narratorModelUrl = anonymous;
 export const cashModelUrl = cash;
 export const cashModelUrl2 = cash2;
 

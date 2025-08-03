@@ -1,5 +1,4 @@
 import {Character, getGameWorld} from "./gameWorld.ts";
-import {updateTextValue} from "./models.ts";
 
 type Popup = {
     message: string;
@@ -12,10 +11,11 @@ const m = (content: string, s: number, c: Character = Character.NARRATOR): Popup
           ({ message: content, secsBeforeDisplayed: s, character: c });
 
 export class Narrator {
-    messages: Popup[] = [m("I am the narrator and this is a message.", 5),
-                         m("This is a back-to-back message. But I can also wait, as I will demonstrate now:", 0),
-                         m("Bazinga", 3),
-                         m("I am the monkey and I also exist.             However.                                 Due to severe negligence my portrait is broken. ", 4)];
+    messages: Popup[] =
+        [m("Yo dumbass, listen up.                            ", 5),
+         m("I'm here to give you some hot finance advice", 0),
+         m("Bazinga", 3),
+         m("I am the monkey and I also exist.             However.                                 Due to severe negligence my portrait is broken.           ", 4, Character.MONKEY)];
 
     messageIndex = -1; // Last (or current) displayed message
     lastMessageDone = true;
@@ -34,6 +34,7 @@ export class Narrator {
             else this.secondsUntilNextMessage = this.messages[this.messageIndex + 1].secsBeforeDisplayed
 
             this.lastMessageDone = false;
+            console.log(this.messages[this.messageIndex].character)
             getGameWorld().showText(this.messages[this.messageIndex].message, {
                 fadeout: this.secondsUntilNextMessage != 0, // Fadeout if the next message is not instantaneous after
                 character: this.messages[this.messageIndex].character,
