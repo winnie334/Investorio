@@ -50,7 +50,7 @@ export const stockToSoundMap: Record<Stock, SoundKey> = {
     [Stock.Fish]: "FISH",
     [Stock.Potato]: "POTATO",
     [Stock.MoonLoops]: "MOON",
-    [Stock.WORLD]: "MOON",
+    [Stock.WORLD]: "MOO",
     [Stock.Apple]: "APPLE",
 }
 

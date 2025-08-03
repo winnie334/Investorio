@@ -496,24 +496,24 @@ function createGameWorld() {
                 scale: new Vector3(1.1, 1.1, 1.1),
                 rotation: new Euler(Math.PI / 2, 0, 0),
                 position: new Vector3(-7, 5.5, 10),
+                visible: false,
             }),
             loadModel(monkeyModelUrl, {
                 scene,
                 scale: new Vector3(1.1, 1.1, 1.1),
                 rotation: new Euler(Math.PI / 2, 0, 0),
                 position: new Vector3(-7, 5.5, 10),
+                visible: false,
             }),
             loadModel(narratorModelUrl, {
                 scene,
                 scale: new Vector3(1.1, 1.1, 1.1),
                 rotation: new Euler(Math.PI / 2, 0, 0),
                 position: new Vector3(-7, 5.5, 10),
+                visible: false,
             }),
         ]);
 
-        granny.visible = false;
-        monkey.visible = false;
-        narrator.visible = false;
 
         characterPortraits[Character.GRANNY] = granny;
         characterPortraits[Character.MONKEY] = monkey;
