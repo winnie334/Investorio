@@ -29,6 +29,7 @@ import {loadMonkeyComparator} from "./monkeyComparator.ts";
 import {playSound, type SoundKey} from "./soundManager.ts";
 import wallTextureUrl from "./assets/textures/wood.jpg"
 import floorTextureUrl from "./assets/textures/woodfloor.jpg"
+import posterTextureUrl from "./assets/textures/wava.png"
 
 const gameWorld = createGameWorld();
 
@@ -112,6 +113,17 @@ function createGameWorld() {
         backWall.position.set(0, wallHeight / 2, -roomDepth / 2);
         backWall.receiveShadow = true;
         scene.add(backWall);
+
+        const posterTexture = textureLoader.load(posterTextureUrl);
+        posterTexture.needsUpdate = true;
+        posterTexture.minFilter = THREE.NearestFilter;
+        posterTexture.magFilter = THREE.NearestFilter;
+
+        const poster = new THREE.Mesh(new THREE.PlaneGeometry(12, 5, 5), new THREE.MeshStandardMaterial({map: posterTexture}));
+        poster.position.set(-10.2, 15, -2);
+        poster.rotation.y = Math.PI / 2;
+        poster.rotation.z = Math.PI / 2;
+        scene.add(poster)
 
         const plant = await loadModel(plantModelUrl, {
             scene,
