@@ -267,7 +267,7 @@ function createGameLogic() {
 
     function sellStock(stock: Stock = selectedStock) {
         const owned = portfolio[stock];
-        if (owned < currentQuantity) {
+        if (owned < currentQuantity || currentQuantity == 0) {
             playSound("ERROR")
             return false;
         }
