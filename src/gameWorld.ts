@@ -121,42 +121,8 @@ function createGameWorld() {
             position: new Vector3(-4.5, 16.8, -14),
         });
 
-        loadModelInteractive(grannyModelUrl, {
-            scene,
-            camera,
-            canvas,
-            onClick: () => {
-                console.log("I am a granny")
-            },
-            scale: new Vector3(1.3, 1.3, 1.3),
-            rotation: new Euler(Math.PI / 2, 0, 0),
-            position: new Vector3(-6.65, 16.7, -13),
-        })
+        // @ts-ignore
 
-
-        loadModelInteractive(monkeyModelUrl, {
-            scene,
-            camera,
-            canvas,
-            onClick: () => {
-                console.log("I am a granny")
-            },
-            scale: new Vector3(1.3, 1.3, 1.3),
-            rotation: new Euler(Math.PI / 2, 0, 0),
-            position: new Vector3(-6.65, 19.6, -13),
-        })
-
-        loadModelInteractive(youUrl, {
-            scene,
-            camera,
-            canvas,
-            onClick: () => {
-                console.log("I am a granny")
-            },
-            scale: new Vector3(1.3, 1.3, 1.3),
-            rotation: new Euler(Math.PI / 2, 0, 0),
-            position: new Vector3(-6.65, 22.5, -13),
-        })
 
         const modelConfigs = [
             {
@@ -285,6 +251,39 @@ function createGameWorld() {
             visible: false,
         });
         textBubble.receiveShadow = false;
+
+        const [grannyPortrait,] = await loadModelInteractive(grannyModelUrl, {
+            scene,
+            camera,
+            canvas,
+            onClick: () => console.log("AA"),
+            scale: new Vector3(1.3, 1.3, 1.3),
+            rotation: new Euler(Math.PI / 2, 0, 0),
+            position: new Vector3(-6.65, 16.7, -13),
+            visible: false,
+        })
+
+        const [monkeyPortrait,] = await loadModelInteractive(monkeyModelUrl, {
+            scene,
+            camera,
+            canvas,
+            onClick: () => console.log("AA"),
+            scale: new Vector3(1.3, 1.3, 1.3),
+            rotation: new Euler(Math.PI / 2, 0, 0),
+            position: new Vector3(-6.65, 19.6, -13),
+            visible: false,
+        })
+
+        const [youPortrait,] = await loadModelInteractive(youUrl, {
+            scene,
+            camera,
+            canvas,
+            onClick: () => console.log("AA"),
+            scale: new Vector3(1.3, 1.3, 1.3),
+            rotation: new Euler(Math.PI / 2, 0, 0),
+            position: new Vector3(-6.65, 22.5, -13),
+            visible: false,
+        })
 
         const panel = await loadModel(panelModelUrl, {
             scene,
@@ -438,7 +437,10 @@ function createGameWorld() {
             invested,
             year,
             screen,
-            panel
+            panel,
+            youPortrait,
+            monkeyPortrait,
+            grannyPortrait,
         };
 
         gameLogic.updateAllUI()

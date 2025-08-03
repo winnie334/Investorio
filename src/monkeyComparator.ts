@@ -7,6 +7,7 @@ import {
     defaultScale,
     type ModelLoadParams
 } from "./models.ts";
+import {getGameWorld} from "./gameWorld.ts";
 
 const MAXVALUE = 10000;
 
@@ -67,6 +68,13 @@ export function showMonkeyComparator(isVisible: boolean) {
     if (comparatorGroup) {
         comparatorGroup.visible = isVisible;
     }
+
+    const gran = getGameWorld().getRoomObjects()?.grannyPortrait
+    if (gran) gran.visible = isVisible;
+    const monk = getGameWorld().getRoomObjects()?.monkeyPortrait
+    if (monk) monk.visible = isVisible;
+    const you = getGameWorld().getRoomObjects()?.youPortrait
+    if (you) you.visible = isVisible;
 }
 
 export function updateMonkeyComparator() {

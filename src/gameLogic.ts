@@ -382,11 +382,11 @@ function createGameLogic() {
     }
 
     function getMonkeyScore() {
-        return monkey?.getNetWorth() + monkey.balance || 0
+        return monkey?.getNetWorth()
     }
 
     function getStoneScore() {
-        return rock?.getNetWorth() + rock.balance || 0
+        return rock?.getNetWorth()
     }
 
     function updateAllUI() {
