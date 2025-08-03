@@ -14,6 +14,7 @@ import sell from "./assets/sounds/sell.mp3"
 import moo from "./assets/sounds/moo.mp3"
 import stone from "./assets/sounds/stone.mp3"
 import finish from "./assets/sounds/finish.mp3"
+import drum from "./assets/sounds/drum.mp3"
 
 export const Sound = {
     APPLE: apple,
@@ -32,6 +33,7 @@ export const Sound = {
     STONE: stone,
     MOO: moo,
     FINISH: finish,
+    DRUM: drum,
 } as const;
 
 export type SoundKey = keyof typeof Sound;

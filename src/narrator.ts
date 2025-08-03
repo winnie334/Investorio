@@ -1,5 +1,6 @@
 import {Character, getGameWorld} from "./gameWorld.ts";
 import {getGameLogic} from "./gameLogic.ts";
+import {playSound} from "./soundManager.ts";
 
 type Popup = {
     message: string;
@@ -56,7 +57,7 @@ export class Narrator {
 
     endMessages: Popup[] = [
         m("Time's up! Let's see how you did.                                                                                                    ", 0, Character.NARRATOR, () => getGameLogic().showEndSlide(1)),
-        m("This is how much you earned with your job.                              In other words, what you would have had without investing.                                                                  ", 0),
+        m("This is how much you earned with your job.                              In other words, what you would have had without investing.                                                                  ", 0, Character.NARRATOR, () => playSound("DRUM")),
         m("But you turned it into...                      ", 0, Character.NARRATOR, () => getGameLogic().showEndSlide(2)),
         m("This!                                      Whether it is an impressive result I cannot say, because these are pre-programmed messages.                                                              ", 0),
         m("Now, let's have a look at your competition...                                ", 2, Character.NARRATOR, () => getGameLogic().showEndSlide(3)),
