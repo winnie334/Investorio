@@ -159,7 +159,7 @@ function createGameLogic() {
 
     function updatePortfolioUI() {
         updateProfitUI();
-        const portfolioElements = gameWorld.getRoomObjects()?.portFolioTexts;
+        const portfolioElements = gameWorld.getRoomObjects()?.portfolioTexts;
         if (!portfolioElements) return;
 
         Object.keys(portfolio).forEach(stock => {
@@ -318,9 +318,9 @@ function createGameLogic() {
         if (buy) buy.visible = visible;
         const sell = gameWorld.getRoomObjects()?.sellButton;
         if (sell) sell.visible = visible;
-        const portfolioElements = gameWorld.getRoomObjects()?.portFolioTexts;
-        if (portfolioElements)
-        Object.keys(portfolioElements).forEach(element => element.visible = visible)
+        const portfolioElements = gameWorld.getRoomObjects()?.portfolioTexts;
+        console.log("elements: " + portfolioElements)
+        if (portfolioElements) Object.values(portfolioElements).forEach(element => element.visible = visible)
     }
 
     function update(delta: number) {

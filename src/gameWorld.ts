@@ -236,6 +236,7 @@ function createGameWorld() {
             position: new Vector3(-3.8, 3.3, 19),
             scale: new Vector3(0.5, 0.5, 0.5),
             rotation: new Euler(Math.PI / 5, 0, 0),
+            visible: false,
         });
 
         const [sellButton,] = await loadModelInteractive(sellButtonModelUrl, {
@@ -246,6 +247,7 @@ function createGameWorld() {
             position: new Vector3(-3.8, 2.5, 20),
             scale: new Vector3(0.5, 0.5, 0.5),
             rotation: new Euler(Math.PI / 5, 0, 0),
+            visible: false,
         });
 
         const [plusButton,] = await loadModelInteractive(quantityPlusModelUrl, {
@@ -256,6 +258,7 @@ function createGameWorld() {
             position: new Vector3(-6.3, 3.2, 19.5),
             scale: new Vector3(2, 2, 2),
             rotation: new Euler(Math.PI / 5, -Math.PI / 2, 0),
+            visible: false,
         });
 
         const [minusButton,] = await loadModelInteractive(quantityMinusModelUrl, {
@@ -266,6 +269,7 @@ function createGameWorld() {
             position: new Vector3(-6.3, 3.2, 19.5),
             scale: new Vector3(2, 2, 2),
             rotation: new Euler(Math.PI / 5, -Math.PI / 2, 0),
+            visible: false,
         });
 
         const [textBubble,] = await loadModelInteractive(textBubbleUrl1, {
@@ -285,7 +289,7 @@ function createGameWorld() {
             position: new Vector3(0, -8, 18),
             rotation: new Euler(0, -Math.PI / 2, 0),
             scale: new Vector3(0.8, 0.8, 0.8),
-
+            visible: false,
         });
 
 
@@ -324,7 +328,7 @@ function createGameWorld() {
             position: new Vector3(1.5, 4, 18),
             scale: new Vector3(3.5, 2.5, 2.5),
             rotation: new Euler(Math.PI / 5, 0, 0),
-
+            visible: false,
         });
 
         const balance = addText(``, {
@@ -375,7 +379,7 @@ function createGameWorld() {
         const baseY = 5.2;
         const baseZ = 19.7;
 
-        const portFolioTexts = Object.keys(gameLogic.getPortfolio()).map((stock, index) => {
+        const portfolioTexts = Object.keys(gameLogic.getPortfolio()).map((stock, index) => {
             const positionY = baseY + index * offsetY;
             const positionZ = baseZ + index * offsetZ;
 
@@ -407,7 +411,7 @@ function createGameWorld() {
         generateChatBubble()
 
 
-        if (!balance || !profit || !orderElement || !portFolioTexts || !profit || !selectedStock) {
+        if (!balance || !profit || !orderElement || !portfolioTexts || !profit || !selectedStock) {
             console.error("One of the room objects is missing");
             return;
         }
@@ -421,7 +425,8 @@ function createGameWorld() {
             plusButton,
             buyButton,
             sellButton,
-            portFolioTexts: portFolioTexts,
+            portfolioTexts: portfolioTexts,
+            portfolio,
             orderElement: orderElement,
             selectStockModels,
             textBubble,
@@ -429,7 +434,9 @@ function createGameWorld() {
             selectedStock,
             graphText,
             invested,
-            year
+            year,
+            screen,
+            panel
         };
 
         gameLogic.updateAllUI()

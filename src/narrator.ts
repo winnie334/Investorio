@@ -16,8 +16,8 @@ const m = (content: string, s: number, c: Character = Character.NARRATOR, onDone
 export class Narrator {
     messages: Popup[] =
         [m("Yo dumbass, listen up.                            ", 5),
-         m("I'm here to give you some hot finance advice.       ", 0),
-         m("I know, it's a game jam, but pay attention and these might be the most profitable minutes of your life.                        I'm not kidding.                   ", 0),
+         // m("I'm here to give you some hot finance advice.       ", 0),
+         // m("I know, it's a game jam, but pay attention and these might be the most profitable minutes of your life.                        I'm not kidding.                   ", 0),
          m("In this game, you will learn how to INVEST. Or rather, learn that investing is brain-dead simple.                   Charles, bring up the terminal.", 0, Character.NARRATOR, () => getGameLogic().showTerminal(true)),
             // < Spawn in terminal >
          m("Use this to buy and sell stocks to your liking. Have fun!", 3),
@@ -44,7 +44,9 @@ export class Narrator {
 
          m("To endure is to defy the vanity of ease.            ", 25, Character.GRANNY),
 
-         m("Not much longer to go before retirement, make those years count!", 15)];
+         m("Not much longer to go before retirement, make those years count!", 15),
+        // Sync with year end -> gaat eigenlijk niet door timeout en deltatime mismatch
+         m("Your time is up! Let's see how you did.", 50)];
 
     messageIndex = -1;
     lastMessageDone = true;
