@@ -14,7 +14,7 @@ const m = (content: string, s: number, c: Character = Character.NARRATOR, onDone
 
 export class Narrator {
     messages: Popup[] =
-        [m("Yo dumbass, listen up.                            ", 3),
+        [m("Yo dumbass, listen up.                            ", 2),
          // m("I'm here to give you some hot finance advice.       ", 0),
          // m("I know, it's a game jam, but pay attention and these might be the most profitable minutes of your life.                        I'm not kidding.                   ", 0),
          m("In this game, you will learn how to INVEST. Or rather, learn that investing is brain-dead simple.                   Charles, bring up the terminal.", 0, Character.NARRATOR, () => getGameLogic().showTerminal(true)),
@@ -25,20 +25,22 @@ export class Narrator {
          m("Each of these is a random company's stock. With one exception, the World. It tracks thousands of companies, and (just like real life) most consistently goes up.                                                           ", 0),
          m("If you don't want to gamble, that's the one to go for!                    ", 0),
 
-         m("Oh and, you have 40 years.               ", 2),
+         m("Oh and, you have 30 years.               ", 2),
 
-         m("What has this to do with \"loop\" you ask?                                                                                                         ", 20),
+         m("What has this to do with \"loop\" you ask?                                                                                                         ", 23),
+
+         m("...", 3),
 
          m("To spice it up, let me introduce you to some competition!                       ", 20, Character.NARRATOR, () => getGameLogic().showBarChart()),
             // < Spawn in bar chart >
          m("First up is Rob the monkey! He randomly buys or sells random quantities of random stocks at random times. He's so random!                         ", 0),
          m("OOOOO OO OOOO  AAAAA AAA AAA                      ", 0, Character.MONKEY),
          m("And then we have my very own grandma.      So old she turned to stone centuries ago, yet her automatic transfer is still running!    ", 0),
-         m("She does nothing but buy as much World as possible.  ", 0),
+         m("She does nothing but buy as much World as possible.      ", 0),
          m("The flowers wither when none remain to weep for them — and still, the earth turns.                           ", 0, Character.GRANNY),
-         m("They each had the same starting amount and earn as much side income as you. See if you can beat them!                     ", 0),
+         m("They each had the same starting amount     and earn as much side income as you. See if you can beat them!                     ", 0),
 
-         m("OOO AAA AAA OOO                      * Rob is licking a rock. *", 25, Character.MONKEY),
+         m("OOO AAA AAA OOO                               * Rob is licking a rock. *", 25, Character.MONKEY),
 
          m("In case I wasn't clear before: you can win by just investing in World. No need to be smart. It's almost cheating.                     ", 25),
 

@@ -495,21 +495,21 @@ function createGameWorld() {
                 scene,
                 scale: new Vector3(1.1, 1.1, 1.1),
                 rotation: new Euler(Math.PI / 2, 0, 0),
-                position: new Vector3(-7, 5.5, 10),
+                position: new Vector3(-7, 6.5, 10),
                 visible: false,
             }),
             loadModel(monkeyModelUrl, {
                 scene,
                 scale: new Vector3(1.1, 1.1, 1.1),
                 rotation: new Euler(Math.PI / 2, 0, 0),
-                position: new Vector3(-7, 5.5, 10),
+                position: new Vector3(-7, 6.5, 10),
                 visible: false,
             }),
             loadModel(narratorModelUrl, {
                 scene,
                 scale: new Vector3(1.1, 1.1, 1.1),
                 rotation: new Euler(Math.PI / 2, 0, 0),
-                position: new Vector3(-7, 5.5, 10),
+                position: new Vector3(-7, 6.5, 10),
                 visible: false,
             }),
         ]);
@@ -550,6 +550,9 @@ function createGameWorld() {
 
         if (onStart) onStart();
 
+        if (characterToUse == Character.MONKEY) playSound("MONKEY2", 0.5)
+        if (characterToUse == Character.GRANNY) playSound("STONE")
+
         bubbleMesh.visible = true;
         characterPortraits[characterToUse].visible = true;
 
@@ -567,7 +570,7 @@ function createGameWorld() {
 
         const textObjects: { object: any; line: string }[] = wrappedTextLines.map((line, i) => {
             const lineText = addText('', {
-                position: new THREE.Vector3(-6, 5.6 - i * 0.8, 8.01),
+                position: new THREE.Vector3(-6, 6.2 - i * 0.8, 8.01),
                 scale: new THREE.Vector3(0.5, 0.5, 0.5),
                 color: 0xffffff,
                 scene,

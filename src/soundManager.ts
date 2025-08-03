@@ -12,6 +12,7 @@ import salary from "./assets/sounds/salary.mp3"
 import select from "./assets/sounds/select.mp3"
 import sell from "./assets/sounds/sell.mp3"
 import moo from "./assets/sounds/moo.mp3"
+import stone from "./assets/sounds/stone.mp3"
 
 export const Sound = {
     APPLE: apple,
@@ -27,6 +28,7 @@ export const Sound = {
     SALARY: salary,
     SELECT: select,
     SELL: sell,
+    STONE: stone,
     MOO: moo,
 } as const;
 
